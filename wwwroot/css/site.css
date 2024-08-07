@@ -1,10 +1,16 @@
+@import url('https://fonts.googleapis.com/css2?family=Abel&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&family=Fira+Sans+Condensed:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Kanit:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Mulish:ital,wght@0,200..1000;1,200..1000&family=Sedan+SC&family=Wix+Madefor+Display:wght@400..800&display=swap');
+* {
+    font-family: "Kanit", sans-serif;
+   
+}
 html {
-  font-size: 14px;
+    font-size: 22px;
+    
 }
 
 @media (min-width: 768px) {
   html {
-    font-size: 16px;
+    font-size: 18px;
   }
 }
 
@@ -18,5 +24,143 @@ html {
 }
 
 body {
-  margin-bottom: 60px;
+    margin-bottom: 60px;
 }
+.main {
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+   
+    
+} /*стиль для главного div*/
+.formDiv {
+    top: 5px;
+    position: relative;
+    flex: 1;
+    display: none;
+    padding: 55px;
+    background-color: #261E7D;
+    border-radius: 35px;
+    box-sizing: content-box;
+    box-shadow: 0 0 30px -8px #0269FA;
+    flex-direction: column;
+}/*стиль для дивов в которых формы*/
+.inputBlock {
+    position: relative;
+    height: 150px;
+}/*стиль для блоков в которых инпуты*/
+.allInput {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: auto;
+    text-align: center;
+    border-radius: 10px;
+    width: 85%;
+    background-color: transparent;
+    border: none;
+    border-bottom: 3px solid white;
+    box-sizing: border-box;
+    color: white;
+}/*стиль инпутов*/
+
+    .allInput:focus {
+        outline: none;
+    }
+
+.label {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    font-size: 1.4rem;
+    color: white
+}
+.submitButton {
+    width: 90%;
+    padding: 8px;
+    background-color: #2685CC;
+    color: white;
+    border: none;
+    cursor: pointer;
+    border-radius: 15px;
+    font-size: 1.2rem;
+    box-shadow: 0 0 10px -5px #2D5C29;
+    transition: all 0.1s;
+    display: block;
+    text-align: center;
+    margin: 0 auto 0;
+}/*стиль для submit кнопки*/
+    .submitButton:hover {
+        bottom: 31px;
+        font-size: 1.3rem;
+        background-color: #2685CC;
+        transition: all 0.1s;
+        box-shadow: 0 0 20px -2px #00A2E8;
+    }
+
+@media (max-width: 450px) {
+
+  
+    .formDiv {
+       
+        background-color: transparent;
+        border: none;
+        box-shadow: none;
+    }
+    .allInput {
+        height: 30%;
+        width: 100%;
+        color: black;
+        /* border: 3px solid black;*/
+        background-color: #D3DDFF
+    }
+    .label {
+        color: black;
+        font-weight: 200
+    }
+    .submitButton{
+        width: 100%;
+        height: 2%;
+    }
+   
+}
+@media (max-width: 1050px) {
+
+    .formDiv{
+        padding: 35px;
+    }
+   
+
+}
+
+.container {
+    display: flex;
+    justify-content: center;
+    margin-top: 30px;
+}
+
+.tab {
+    cursor: pointer;
+    padding: 10px;
+    border-bottom: 2px solid transparent;
+}
+
+    .tab.active {
+        border-bottom: 2px solid #000;
+    }
+
+.formDiv.active {
+    display: block;
+}
+
+.validation {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    font-size: 18px;
+    color: red;
+} /*исправить позже, когда дойдет до валидации*/

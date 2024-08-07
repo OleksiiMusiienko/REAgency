@@ -1,0 +1,81 @@
+﻿@{
+    ViewBag.Title = "Login";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+
+<div class="main">
+    <div class="container">
+        <div id="loginTab" class="tab active" onclick="switchForm('login')">Увійти</div>
+        <div id="registerTab" class="tab" onclick="switchForm('register')">Зареєструватися</div>
+    </div>
+
+
+    <div class="container">
+        <div class="formDiv active" id="loginForm">
+
+            <form asp-action="Login">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <div class="inputBlock">
+                    <label class="label">Login</label>
+                    <input class="allInput" name="loginEmail" type="email" required />
+                    <span class="validation"></span>
+                </div>
+                <div class="inputBlock">
+                    <label class="label">Password</label>
+                    <input class="allInput" name="loginPassword" type="password" required />
+                    <span class="validation"></span>
+                </div>
+                <div >
+                    <input type="submit" value="Login" class="submitButton" />
+                </div>
+            </form>
+        </div>
+
+        <div class="formDiv" id="registerForm">
+
+            <form asp-action="Register">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <div class="inputBlock">
+                    <label class="label">Email</label>
+                    <input class="allInput" name="registerEmail" type="email" required />
+                    <span class="validation"></span>
+                </div>
+                <div class="inputBlock">
+                    <label class="label">Password</label>
+                    <input class="allInput" name="registerPassword" type="password" required />
+                    <span class="validation"></span>
+                </div>
+                <div class="inputBlock">
+                    <label class="label">Confirm Password</label>
+                    <input class="allInput" name="confirmPassword" type="password" required />
+                    <span class="validation"></span>
+                </div>
+                <div class="form-group">
+                    <input type="submit" value="Register" class="submitButton" />
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+    
+
+    <script>
+        function switchForm(formType) {
+            document.getElementById('loginForm').classList.remove('active');
+            document.getElementById('registerForm').classList.remove('active');
+            document.getElementById('loginTab').classList.remove('active');
+            document.getElementById('registerTab').classList.remove('active');
+
+            if (formType === 'login') {
+                document.getElementById('loginForm').classList.add('active');
+                document.getElementById('loginTab').classList.add('active');
+            } else {
+                document.getElementById('registerForm').classList.add('active');
+                document.getElementById('registerTab').classList.add('active');
+            }
+        }
+    </script>
+
