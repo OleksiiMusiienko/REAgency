@@ -1,4 +1,5 @@
-﻿@{
+﻿@model AuthViewModel
+@{
     ViewBag.Title = "Login";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
@@ -7,25 +8,25 @@
 
 <div class="main">
     <div class="container">
-        <div id="loginTab" class="tab active" onclick="switchForm('login')">Увійти</div>
-        <div id="registerTab" class="tab" onclick="switchForm('register')">Зареєструватися</div>
+        <div id="loginTab" class="tab active" >Увійти</div>
+        <div id="registerTab" class="tab" >Зареєструватися</div>
     </div>
 
 
     <div class="container">
         <div class="formDiv active" id="loginForm">
 
-            <form asp-action="Login">
+            <form asp-action="Login" method="post">
                 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                 <div class="inputBlock">
                     <label class="label">Login</label>
-                    <input class="allInput" name="loginEmail" type="email" required />
+                    <input class="allInput" type="email" required asp-for="LoginEmail" />
                     <span class="validation"></span>
                 </div>
                 <div class="inputBlock">
                     <label class="label">Password</label>
-                    <input class="allInput" name="loginPassword" type="password" required />
-                    <span class="validation"></span>
+                    <input class="allInput" asp-for="LoginPassword" type="password" required />
+                    <span class="validationS"></span>
                 </div>
                 <div >
                     <input type="submit" value="Login" class="submitButton" />
@@ -38,18 +39,23 @@
             <form asp-action="Register">
                 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                 <div class="inputBlock">
-                    <label class="label">Email</label>
-                    <input class="allInput" name="registerEmail" type="email" required />
+                    <label class="label">FullName</label>
+                    <input class="allInput" asp-for="RegisterName" type="text" required />
                     <span class="validation"></span>
+                </div>
+                <div class="inputBlock">
+                    <label class="label" asp-for="RegisterEmail">Email</label>
+                    <input class="allInput" id="RegisterEmail" asp-for="RegisterEmail" type="email" required />
+                    <span class="validation" asp-validation-for="RegisterEmail" id="validationRegEmail"></span>
                 </div>
                 <div class="inputBlock">
                     <label class="label">Password</label>
-                    <input class="allInput" name="registerPassword" type="password" required />
-                    <span class="validation"></span>
+                    <input class="allInput" asp-for="RegisterPassword" type="password" required />
+                    <span class="validation" asp-validation-for="RegisterPassword"></span>
                 </div>
                 <div class="inputBlock">
                     <label class="label">Confirm Password</label>
-                    <input class="allInput" name="confirmPassword" type="password" required />
+                    <input class="allInput" asp-for="ConfirmPassword" type="password" required />
                     <span class="validation"></span>
                 </div>
                 <div class="form-group">
@@ -59,10 +65,20 @@
         </div>
     </div>
 </div>
+<div id="result">
 
+</div>
+
+<script>
     
+    $(document).ready(function () {
+        $('#loginTab').on('click', function () {
+            switchForm('login');
+        });
 
-    <script>
+        $('#registerTab').on('click', function () {
+            switchForm('register');
+        });
         function switchForm(formType) {
             document.getElementById('loginForm').classList.remove('active');
             document.getElementById('registerForm').classList.remove('active');
@@ -76,6 +92,50 @@
                 document.getElementById('registerForm').classList.add('active');
                 document.getElementById('registerTab').classList.add('active');
             }
-        }
-    </script>
 
+        }
+       
+       
+        $('#RegisterEmail').change(function () {
+            let email = $('#RegisterEmail').val();
+
+            const url = '/Login/CheckEmail'; 
+            console.log(email)
+            checkEmail(url, email);
+        });
+
+        async function checkEmail(url, email) {
+            try {
+                const response = await fetch(url, {
+                    method: "POST",
+                    headers: {
+                        'Content-Type': 'application/json;charset=utf-8'
+                    },
+                    body: JSON.stringify(email)
+                    
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                const responseData = await response.json();
+                console.log(responseData);
+                if (responseData.success === false) 
+                {
+                    $('#validationRegEmail').text(responseData.message);
+                } 
+                else 
+                {
+                    $('#validationRegEmail').text(''); 
+                }
+                
+            } 
+            catch (error) {
+                console.error('Error:', error);
+                $('#result').html = 'An error occurred';
+            }
+        }
+
+    }); 
+</script>

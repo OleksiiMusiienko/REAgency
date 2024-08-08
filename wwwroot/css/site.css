@@ -24,7 +24,7 @@ html {
 }
 
 body {
-    margin-bottom: 60px;
+    margin-bottom: 70px;
 }
 .main {
     margin: 0;
@@ -40,16 +40,17 @@ body {
     position: relative;
     flex: 1;
     display: none;
-    padding: 55px;
+    padding: 50px;
     background-color: #261E7D;
     border-radius: 35px;
     box-sizing: content-box;
     box-shadow: 0 0 30px -8px #0269FA;
     flex-direction: column;
+    margin-top: 10px
 }/*стиль для дивов в которых формы*/
 .inputBlock {
     position: relative;
-    height: 150px;
+    height: 105px;
 }/*стиль для блоков в которых инпуты*/
 .allInput {
     display: flex;
@@ -125,6 +126,10 @@ body {
         width: 100%;
         height: 2%;
     }
+    .formDiv .validation {
+        color: red;
+    }
+    
    
 }
 @media (max-width: 1050px) {
@@ -139,7 +144,8 @@ body {
 .container {
     display: flex;
     justify-content: center;
-    margin-top: 30px;
+    
+    margin-top: 0;
 }
 
 .tab {
@@ -162,5 +168,5 @@ body {
     justify-content: center;
     text-align: center;
     font-size: 18px;
-    color: red;
+    color: white;
 } /*исправить позже, когда дойдет до валидации*/

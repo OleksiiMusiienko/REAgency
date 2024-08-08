@@ -1,12 +1,17 @@
 using REAgency.BLL.Infrastructure;
+using REAgency.BLL.Interfaces.Persons;
+using REAgency.BLL.Services.Persons;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
+builder.Services.AddSession();
+
 string? connection = builder.Configuration.GetConnectionString("DefaultConnection");
 builder.Services.AddREAgencyContext(connection);
-builder.Services.AddUnitOfWorkService();
+builder.Services.AddUnitOfWorkService(); 
+builder.Services.AddTransient<IClientService, ClientService>();
 builder.Services.AddControllersWithViews();
+
 
 var app = builder.Build();
 
@@ -22,7 +27,7 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
-
+app.UseSession();
 app.UseAuthorization();
 
 app.MapControllerRoute(
