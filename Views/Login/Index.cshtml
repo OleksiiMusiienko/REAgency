@@ -20,13 +20,13 @@
                 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                 <div class="inputBlock">
                     <label class="label">Login</label>
-                    <input class="allInput" type="email" required asp-for="LoginEmail" />
+                    <input class="allInput" type="email" asp-for="LoginEmail" />
                     <span class="validation"></span>
                 </div>
                 <div class="inputBlock">
                     <label class="label">Password</label>
-                    <input class="allInput" asp-for="LoginPassword" type="password" required />
-                    <span class="validationS"></span>
+                    <input class="allInput" asp-for="LoginPassword" type="password" />
+                    <span class="validation" asp-validation-for="LoginPassword"></span>
                 </div>
                 <div >
                     <input type="submit" value="Login" class="submitButton" />
@@ -40,23 +40,23 @@
                 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                 <div class="inputBlock">
                     <label class="label">FullName</label>
-                    <input class="allInput" asp-for="RegisterName" type="text" required />
+                    <input class="allInput" asp-for="RegisterName" type="text" />
                     <span class="validation"></span>
                 </div>
                 <div class="inputBlock">
                     <label class="label" asp-for="RegisterEmail">Email</label>
-                    <input class="allInput" id="RegisterEmail" asp-for="RegisterEmail" type="email" required />
+                    <input class="allInput" id="RegisterEmail" asp-for="RegisterEmail" type="email" />
                     <span class="validation" asp-validation-for="RegisterEmail" id="validationRegEmail"></span>
                 </div>
                 <div class="inputBlock">
                     <label class="label">Password</label>
-                    <input class="allInput" asp-for="RegisterPassword" type="password" required />
+                    <input class="allInput" asp-for="RegisterPassword" type="password" />
                     <span class="validation" asp-validation-for="RegisterPassword"></span>
                 </div>
                 <div class="inputBlock">
                     <label class="label">Confirm Password</label>
-                    <input class="allInput" asp-for="ConfirmPassword" type="password" required />
-                    <span class="validation"></span>
+                    <input class="allInput" asp-for="ConfirmPassword" type="password" />
+                    <span class="validation" asp-validation-for="ConfirmPassword"></span>
                 </div>
                 <div class="form-group">
                     <input type="submit" value="Register" class="submitButton" />

@@ -30,6 +30,15 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Login" asp-action="Index">Login</a>
                         </li>
+                        @if (Context.Session.GetInt32("Id") != null)
+                        {
+                            <li style="margin-left: auto; margin-top: 5px;">
+                                <a asp-area=""> <img src="https://cdn-icons-png.flaticon.com/512/64/64096.png" width="25px" height="25px" /></a>
+
+                            </li>
+                            
+                        }
+                       
                     </ul>
                 </div>
             </div>
