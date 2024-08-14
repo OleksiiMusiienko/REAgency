@@ -5,4 +5,48 @@
 <div class="text-center">
     <h1 class="display-4">Welcome</h1>
     <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+    <div id="cookie_note">
+        <p>
+            Мы используем файлы cookies для улучшения работы сайта. Оставаясь на нашем сайте, вы соглашаетесь с условиями
+            использования файлов cookies. Чтобы ознакомиться с нашими Положениями о конфиденциальности и об использовании
+            файлов cookie, <a href="#" target="_blank">нажмите здесь</a>.
+        </p>
+        <button class="button cookie_accept btn btn-primary btn-sm">Я согласен</button>
+    </div>
 </div>
+<script>
+    function setCookie(name, value, days) {
+        let expires = "";
+        if (days) {
+            let date = new Date();
+            date.setTime(date.getTime() + (days * 24 * 60 * 60 * 20));
+            expires = "; expires=" + date.toUTCString();
+        }
+        document.cookie = name + "=" + (value || "") + expires + "; path=/";
+    }
+
+    function getCookie(name) {
+        let matches = document.cookie.match(new RegExp("(?:^|; )" + name.replace(/([\.$?*|{}\(\)\[\]\\\/\+^])/g, '\\$1') + "=([^;]*)"));
+        return matches ? decodeURIComponent(matches[1]) : undefined;
+    }
+
+
+    function checkCookies() {
+        let cookieNote = document.getElementById('cookie_note');
+        let cookieBtnAccept = cookieNote.querySelector('.cookie_accept');
+
+        // Если куки cookies_policy нет или она просрочена, то показываем уведомление
+        if (!getCookie('cookies_policy')) {
+            cookieNote.classList.add('show');
+        }
+
+        // При клике на кнопку устанавливаем куку cookies_policy на 10 дней
+        cookieBtnAccept.addEventListener('click', function () {
+            setCookie('cookies_policy', 'true', 7);
+            cookieNote.classList.remove('show');
+        });
+    }
+
+    checkCookies();
+
+</script>

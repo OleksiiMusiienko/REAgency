@@ -170,3 +170,41 @@ body {
     font-size: 18px;
     color: white;
 } /*исправить позже, когда дойдет до валидации*/
+#cookie_note {
+    display: none;
+    position: sticky;
+    top: 20px;
+    bottom: 15px;
+    left: 50%;
+    max-width: 90%;
+    transform: translateX(-50%);
+    transform: translateY(80%);
+    padding: 20px;
+    background-color: white;
+    border-radius: 4px;
+    box-shadow: 2px 3px 10px rgba(0, 0, 0, 0.4);
+}
+
+    #cookie_note p {
+        margin: 0;
+        font-size: 0.7rem;
+        text-align: left;
+        color: black;
+    }
+
+.cookie_accept {
+    width: 20%;
+}
+
+@media (min-width: 536px) {
+    #cookie_note.show {
+        display: flex;
+    }
+}
+
+@media (max-width: 535px) {
+    #cookie_note.show {
+        display: block;
+        text-align: center;
+    }
+}
