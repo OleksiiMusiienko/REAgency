@@ -172,11 +172,11 @@ body {
 } /*исправить позже, когда дойдет до валидации*/
 #cookie_note {
     display: none;
-    position: sticky;
-    top: 20px;
-    bottom: 15px;
-    left: 50%;
+    position: absolute;
+    bottom: 18%;
+    left: 30%;
     max-width: 90%;
+    max-height: 90%;
     transform: translateX(-50%);
     transform: translateY(80%);
     padding: 20px;
