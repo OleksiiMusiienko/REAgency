@@ -25,6 +25,8 @@ html {
 
 body {
     margin-bottom: 70px;
+    background-color: #F4F3F7;
+    background: linear-gradient(#F4F3F7 90%, #AFD2E9);
 }
 .main {
     margin: 0;
@@ -41,10 +43,10 @@ body {
     flex: 1;
     display: none;
     padding: 50px;
-    background-color: #261E7D;
-    border-radius: 35px;
+    background-color: #AFD2E9;
+    border-radius: 25px;
     box-sizing: content-box;
-    box-shadow: 0 0 30px -8px #0269FA;
+    box-shadow: 5px 0 20px #052B5E;
     flex-direction: column;
     margin-top: 10px
 }/*стиль для дивов в которых формы*/
@@ -62,9 +64,12 @@ body {
     width: 85%;
     background-color: transparent;
     border: none;
-    border-bottom: 3px solid white;
+    border-bottom: 3px solid #F4F3F7;
     box-sizing: border-box;
-    color: white;
+    color: #F4F3F7;
+    font-size: 18pt;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    font-weight: inherit;
 }/*стиль инпутов*/
 
     .allInput:focus {
@@ -76,18 +81,22 @@ body {
     align-items: center;
     justify-content: center;
     text-align: center;
-    font-size: 1.4rem;
-    color: white
+    font-size: 18pt;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    font-weight: inherit;
+    color: #F4F3F7;
 }
 .submitButton {
     width: 90%;
     padding: 8px;
-    background-color: #2685CC;
+    background-color: #052B5E;
     color: white;
     border: none;
     cursor: pointer;
     border-radius: 15px;
-    font-size: 1.2rem;
+    font-size: 18pt;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    font-weight: inherit;
     box-shadow: 0 0 10px -5px #2D5C29;
     transition: all 0.1s;
     display: block;
@@ -103,7 +112,6 @@ body {
     }
 
 @media (max-width: 450px) {
-
   
     .formDiv {
        
@@ -137,15 +145,13 @@ body {
     .formDiv{
         padding: 35px;
     }
-   
 
 }
 
 .container {
     display: flex;
     justify-content: center;
-    
-    margin-top: 0;
+    margin-top: 60px;
 }
 
 .tab {
@@ -170,3 +176,46 @@ body {
     font-size: 18px;
     color: white;
 } /*исправить позже, когда дойдет до валидации*/
+
+  /*стилизация header*/
+
+#animationdiv {
+    height: 12px;
+    background: linear-gradient(to right,#052B5E, #AFD2E9, #F4F3F7);
+    background-size: 200% 200%;
+    animation: gradient 4s ease infinite;
+}
+@keyframes gradient{
+    0%{
+        background-position: 0 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+    100% {
+        background-position: 0 50%;
+    }
+}
+.btn-menu {
+    padding-right: 7px;
+    margin-right: 7px;
+    font-weight: bold;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    font-weight: inherit;
+    color: #052B5E;
+    padding-left: 0;
+    font-size: 16pt;
+}
+.my-link-menu {
+    padding-right: 7px;
+    margin-right: 7px;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    font-weight: inherit;
+    color: #052B5E !important;
+    padding-left: 0;
+    font-size: 16pt;
+}
+nav {
+    background: linear-gradient(#AFD2E9, #F4F3F7 50%);
+}
+
