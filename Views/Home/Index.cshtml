@@ -36,13 +36,13 @@
         let cookieBtnAccept = cookieNote.querySelector('.cookie_accept');
 
         // Если куки cookies_policy нет или она просрочена, то показываем уведомление
-        if (!getCookie('cookies_policy')) {
+        if (!getCookie('cookies_policy_Agency')) {
             cookieNote.classList.add('show');
         }
 
         // При клике на кнопку устанавливаем куку cookies_policy на 10 дней
         cookieBtnAccept.addEventListener('click', function () {
-            setCookie('cookies_policy', 'true', 7);
+            setCookie('cookies_policy_Agency', 'true', 7);
             cookieNote.classList.remove('show');
         });
     }
