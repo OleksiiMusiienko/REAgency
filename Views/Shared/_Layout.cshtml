@@ -11,49 +11,86 @@
  
 </head>
 <body>
-    <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+    <header >
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light border-bottom box-shadow">
             <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">REAgency</a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
                         aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
+                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">
+                    <img src="~/logo.png" width="125px" height="96,9px" style="margin-bottom:-63px"/>
+                </a>               
+                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between" style="margin-top:20px;">
                     <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                    <li>
+                        <div class="btn-group myDivMenu">
+                                <button type="button" class="btn btn-menu dropdown-toggle" data-bs-toggle="dropdown" >Послуги</button>
+                                <ul class="dropdown-menu">
+                            <li class="nav-item"><a class="dropdown-item" href="#">Продаж нерухомості</a></li>
+                            <li><a class="dropdown-item" href="#">Оренда нерухомості</a></li>
+                            <li><a class="dropdown-item" href="#">Експертна оцінка</a></li>
+                            <li><a class="dropdown-item" href="#">Супровід угод</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="#">Замовити послугу</a></li>
+                        </ul>
+                    </div>
+                        </li>
+                        <li>
+                    <div class="btn-group">
+                                <button type="button" class="btn btn-menu dropdown-toggle" data-bs-toggle="dropdown">Про компанію</button>
+                        <ul class="dropdown-menu">
+                            <li class="nav-item"><a class="dropdown-item" href="#">Про нас</a></li>
+                            <li><a class="dropdown-item" href="#">Офіси</a></li>
+                            <li><a class="dropdown-item" href="#">Команда</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="#">Кар'єра</a></li>
+                        </ul>
+                    </div>
+                        </li>
+                        <li>
+                    <div class="btn-group" style="margin:0;">
+                                <button type="button" class="btn btn-menu dropdown-toggle" data-bs-toggle="dropdown">Інформація</button>
+                        <ul class="dropdown-menu">
+                            <li class="nav-item"><a class="dropdown-item" href="#">Статті</a></li>
+                            <li><a class="dropdown-item" href="#">Законодавство</a></li>
+                            <li><a class="dropdown-item" href="#">Відгуки</a></li>
+                        </ul>
+                    </div>
+                        </li>               
+                        <li class="nav-item my-li">
+                            <a class="nav-link my-link-menu" asp-area="" asp-controller="Home" asp-action="Privacy">Контакти</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+                            <a class="nav-link my-link-menu" asp-area="" asp-controller="Home" asp-action="Privacy">Кошик</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Login" asp-action="Index">Login</a>
+                            <a class="nav-link my-link-menu" asp-area="" asp-controller="Login" asp-action="Index">Вхід</a>
                         </li>
                         @if (Context.Session.GetInt32("Id") != null)
                         {
                             <li style="margin-left: auto; margin-top: 5px;">
                                 <a asp-area=""> <img src="https://cdn-icons-png.flaticon.com/512/64/64096.png" width="25px" height="25px" /></a>
-
-                            </li>
-                            
-                        }
-                       
+                            </li>                            
+                        }                       
                     </ul>
                 </div>
             </div>
         </nav>
+        <div id="animationdiv"></div>
     </header>
     <div class="container">
         <main role="main" class="pb-5">
             @RenderBody()
         </main>
     </div>
-
+    
     <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2024 - REAgency - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+        
+        <div class="container" style="margin-top:0">
+            &reg; 2024 - АН Городок - All rights reserved!<a style="margin-left:10px" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy Policy</a>
         </div>
+        <div id="animationdiv"></div>
     </footer>
    
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
