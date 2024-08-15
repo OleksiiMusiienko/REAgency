@@ -1,10 +1,64 @@
 ﻿@{
     ViewData["Title"] = "Home Page";
 }
+<div class="home-page-main-div">
+    <h1>Агенство нерухомості</h1>
+
+    <div class="search">
+        <div class="custom-select-wrapper">
+            <div class="custom-select" id="operationSelect">
+                <span></span>
+            </div>
+            <div class="custom-options" id="operationOptions">
+            </div>
+
+            <select id="operationNativeSelect" asp-items="ViewBag.OperatrionsList as SelectList" style="display:none;"></select>
+        </div>
+
+        <div class="custom-select-wrapper">
+            <div class="custom-select" id="objectSelect">
+                <span></span>
+            </div>
+            <div class="custom-options" id="objectOptions">
+            </div>
+
+            <select id="objectNativeSelect" asp-items="ViewBag.EsateTypesList as SelectList" style="display:none;"></select>
+        </div>
+        <div class="search-buttons-div">
+            <a id="toggleButton"> <img src="https://img.icons8.com/?size=100&id=LALXQcDwgx8U&format=png&color=000000" width="35px" height="35px" /></a>
+            <button class="search-button" style="margin-left: 60px">Знайти</button>
+        </div>
+
+        <div>
+            <div id="filtration">
+                <div class="filtration-container">
+                    <div class="area-for-items">
+                        <label>Площа</label>
+
+                        <div class="range">
+                            <input type="text" placeholder="Min" class="filtration-input" />
+                            <input type="text" placeholder="Max" class="filtration-input" />
+
+                        </div>
+
+                    </div>
+                    <div class="area-for-items">
+                        <label>Ціна</label>
+
+                        <div class="range">
+                            <input type="text" placeholder="Min" class="filtration-input" />
+                            <input type="text" placeholder="Max" class="filtration-input" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 
 <div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+   
     <div id="cookie_note">
         <p>
             Мы используем файлы cookies для улучшения работы сайта. Оставаясь на нашем сайте, вы соглашаетесь с условиями
