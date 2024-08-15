@@ -43,7 +43,7 @@
         objectOptions.append(customOptionDiv);
     });
 
-    
+
     if (operationSelectedText) {
         operationSelect.find('span').text(operationSelectedText);
     }
@@ -52,7 +52,7 @@
         objectSelect.find('span').text(objectSelectedText);
     }
 
-   
+
     operationSelect.on('click', function () {
         $(this).toggleClass('active');
     });
@@ -60,7 +60,7 @@
         $(this).toggleClass('active');
     });
 
-   
+
     $(document).on('click', function (event) {
         if (!operationSelect.is(event.target) && !operationSelect.has(event.target).length) {
             operationSelect.removeClass('active');

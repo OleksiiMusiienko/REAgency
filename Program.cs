@@ -15,7 +15,6 @@ builder.Services.AddUnitOfWorkService();
 builder.Services.AddTransient<IClientService, ClientService>();
 builder.Services.AddTransient<IOperationService, OperationService>();
 builder.Services.AddTransient<IEstateTypeService, EstateTypeService>();
-
 builder.Services.AddControllersWithViews();
 
 
