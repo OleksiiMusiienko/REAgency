@@ -1,5 +1,8 @@
+using Azure;
 using REAgency.BLL.Infrastructure;
+using REAgency.BLL.Interfaces;
 using REAgency.BLL.Interfaces.Persons;
+using REAgency.BLL.Services;
 using REAgency.BLL.Services.Persons;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -10,6 +13,9 @@ string? connection = builder.Configuration.GetConnectionString("DefaultConnectio
 builder.Services.AddREAgencyContext(connection);
 builder.Services.AddUnitOfWorkService(); 
 builder.Services.AddTransient<IClientService, ClientService>();
+builder.Services.AddTransient<IOperationService, OperationService>();
+builder.Services.AddTransient<IEstateTypeService, EstateTypeService>();
+
 builder.Services.AddControllersWithViews();
 
 
