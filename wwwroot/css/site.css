@@ -67,11 +67,16 @@ body {
     border: none;
     border-bottom: 3px solid #F4F3F7;
     box-sizing: border-box;
+
     color: #F4F3F7;
     font-size: 18pt;
     font-family: Verdana, Geneva, Tahoma, sans-serif;
     font-weight: inherit;
-}/*стиль инпутов*/
+}/*����� �������*/
+
+    
+/*стиль инпутов*/
+
 
     .allInput:focus {
         outline: none;
@@ -112,9 +117,11 @@ body {
         box-shadow: 0 0 20px -2px #00A2E8;
     }
 
+
+@media (max-width: 450px) {
+
 @media (max-width: 450px) { /*Изменение стилей для мобильной версии*/
 
-  
     .formDiv {
        
         background-color: transparent;
@@ -144,14 +151,17 @@ body {
     }
    
 }
+
 @media (max-width: 1050px) {
 
     .formDiv{
         padding: 35px;
     }
+
     h1 {
         font-size: 1.6em;
     }
+
 
 }
 
@@ -182,7 +192,92 @@ body {
     text-align: center;
     font-size: 18px;
     color: white;
-} /*исправить позже, когда дойдет до валидации*/
+
+} /*��������� �����, ����� ������ �� ���������*/
+
+  /*���������� header*/
+
+#animationdiv {
+    height: 12px;
+    background: linear-gradient(to right,#052B5E, #AFD2E9, #F4F3F7);
+    background-size: 200% 200%;
+    animation: gradient 4s ease infinite;
+}
+@keyframes gradient{
+    0%{
+        background-position: 0 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+    100% {
+        background-position: 0 50%;
+    }
+}
+.btn-menu {
+    padding-right: 7px;
+    margin-right: 7px;
+    font-weight: bold;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    font-weight: inherit;
+    color: #052B5E;
+    padding-left: 0;
+    font-size: 16pt;
+}
+.my-link-menu {
+    padding-right: 7px;
+    margin-right: 7px;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    font-weight: inherit;
+    color: #052B5E !important;
+    padding-left: 0;
+    font-size: 16pt;
+}
+nav {
+    background: linear-gradient(#AFD2E9, #F4F3F7 50%);
+}
+
+} /*��������� �����, ����� ������ �� ���������*/
+#cookie_note {
+    display: none;
+    position: absolute;
+    bottom: 30%;
+    left: 0%;
+    max-width: 150%;
+    max-height: 90%;
+    transform: translateX(-50%);
+    transform: translateY(80%);
+    padding: 10px;
+    background-color: white;
+    border-radius: 4px;
+    box-shadow: 2px 3px 10px rgba(0, 0, 0, 0.4);
+}
+
+    #cookie_note p {
+        margin: 0;
+        font-size: 0.7rem;
+        text-align: left;
+        color: black;
+    }
+
+.cookie_accept {
+    width: 30%;
+}
+
+@media (min-width: 536px) {
+    #cookie_note.show {
+        display: flex;
+    }
+}
+
+@media (max-width: 535px) {
+    #cookie_note.show {
+        display: block;
+        text-align: center;
+    }
+}
+
+ /*исправить позже, когда дойдет до валидации*/
 
 .body-home-page {
     background-image: url('https://sotni.ru/wp-content/uploads/2023/08/niuiork-4-1.webp');
