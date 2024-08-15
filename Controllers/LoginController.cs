@@ -54,7 +54,7 @@ namespace REAgency.Controllers
             client.Email = reg.RegisterEmail;
             client.status = true;
             client.userStatus = true;
-            client.operationId = 5;
+            client.operationId = 2;
 
             client.Phone1 = "099655244";
 
