@@ -4,8 +4,8 @@ namespace REAgency.Models
 {
     public class AuthViewModel
     {
-        public string LoginEmail { get; set; }
-        public string LoginPassword { get; set; }
+        public string ?LoginEmail { get; set; }
+        public string ?LoginPassword { get; set; }
 
         [Required(ErrorMessage = "Поле має бути встановлене")]
         public string RegisterName { get; set; }
@@ -21,6 +21,11 @@ namespace REAgency.Models
         [Required(ErrorMessage = "Поле має бути встановлене")]
         [DataType(DataType.Password)]
         public string ConfirmPassword { get; set; }
+
+        [Required(ErrorMessage = "Поле має бути встановлене")]
+        public bool confirmPersonalData { get; set; }
+
+
 
     }
 

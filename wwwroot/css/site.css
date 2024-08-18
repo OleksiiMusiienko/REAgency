@@ -49,12 +49,14 @@ body {
     box-sizing: content-box;
     box-shadow: 5px 0 20px #052B5E;
     flex-direction: column;
-    margin-top: 10px
+    margin-top: 10px;
+    margin-bottom: 35px;
 }/*стиль для дивов в которых формы*/
 .inputBlock {
     position: relative;
-    height: 105px;
+    height: 95px;
 }/*стиль для блоков в которых инпуты*/
+
 .allInput {
     display: flex;
     align-items: center;
@@ -65,10 +67,9 @@ body {
     width: 85%;
     background-color: transparent;
     border: none;
-    border-bottom: 3px solid #F4F3F7;
+    border-bottom: 3px solid #052B5E;
     box-sizing: border-box;
-
-    color: #F4F3F7;
+    color: #052B5E;
     font-size: 18pt;
     font-family: Verdana, Geneva, Tahoma, sans-serif;
     font-weight: inherit;
@@ -90,7 +91,8 @@ body {
     font-size: 18pt;
     font-family: Verdana, Geneva, Tahoma, sans-serif;
     font-weight: inherit;
-    color: #F4F3F7;
+    /* color: #F4F3F7;*/
+    color: #052B5E;
 }
 .submitButton {
     width: 90%;
@@ -118,6 +120,14 @@ body {
     }
 
 
+.confirmation-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+    justify-content: center;
+    margin: 10px;
+}
 
 @media (max-width: 450px) { /*Изменение стилей для мобильной версии*/
 

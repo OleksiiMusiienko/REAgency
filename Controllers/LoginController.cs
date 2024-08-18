@@ -49,12 +49,17 @@ namespace REAgency.Controllers
                 ModelState.AddModelError("ConfirmPassword", "Паролі не збігаються");
                 return View("Index", reg);
             }
+            if(reg.confirmPersonalData != true)
+            {
+                ModelState.AddModelError("confirmPersonalData", "Це обов'язкове поле");
+                return View("Index", reg);
+            }
 
             client.Name = reg.RegisterName;
             client.Email = reg.RegisterEmail;
-            client.status = true;
-            client.userStatus = true;
-            client.operationId = 2;
+            client.status = false; // rigth one
+            client.userStatus = true; // right one
+            
 
             client.Phone1 = "099655244";
 
