@@ -1,6 +1,7 @@
 ﻿using System.Reflection.Metadata.Ecma335;
 using System.Security.Cryptography;
 using System.Text;
+using System.Text.RegularExpressions;
 using Microsoft.AspNetCore.Mvc;
 using REAgency.BLL.DTO.Persons;
 using REAgency.BLL.Interfaces.Persons;
@@ -44,12 +45,22 @@ namespace REAgency.Controllers
                 ModelState.AddModelError("RegisterEmail", "Користувач із таким логіном існує");
                 return View("Index", reg);
             }
-            if(reg.RegisterPassword != reg.ConfirmPassword)
+            else if(reg.RegisterPassword != reg.ConfirmPassword)
             {
                 ModelState.AddModelError("ConfirmPassword", "Паролі не збігаються");
                 return View("Index", reg);
             }
-            if(reg.confirmPersonalData != true)
+            else if (!Regex.IsMatch(reg.RegisterPhone, @"^\d+$"))
+            {
+                ModelState.AddModelError("RegisterPhone", "Допустимі лише цифри");
+                return View("Index", reg);
+            }
+            else if (!Regex.IsMatch(reg.RegisterPhone, @"^0\d{9}$"))
+            {
+                ModelState.AddModelError("RegisterPhone", "Номер телефону має містити рівно 10 цифр і починатися з 0.");
+                return View("Index", reg);
+            }
+            else if (reg.confirmPersonalData != true)
             {
                 ModelState.AddModelError("confirmPersonalData", "Це обов'язкове поле");
                 return View("Index", reg);
@@ -59,9 +70,7 @@ namespace REAgency.Controllers
             client.Email = reg.RegisterEmail;
             client.status = false; // rigth one
             client.userStatus = true; // right one
-            
-
-            client.Phone1 = "099655244";
+            client.Phone1 = reg.RegisterPhone;
 
 
             byte[] saltbuf = new byte[16];

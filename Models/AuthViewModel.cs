@@ -15,6 +15,9 @@ namespace REAgency.Models
         public string RegisterEmail { get; set; }
 
         [Required(ErrorMessage = "Поле має бути встановлене")]
+        public string RegisterPhone { get; set; }
+
+        [Required(ErrorMessage = "Поле має бути встановлене")]
         [DataType(DataType.Password)]
         public string RegisterPassword { get; set; }
 
