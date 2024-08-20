@@ -69,10 +69,15 @@
                         </li>
                         @if (Context.Session.GetInt32("Id") != null)
                         {
-                            <li style="margin-left: auto; margin-top: 5px;">
-                                <a asp-area=""> <img src="https://cdn-icons-png.flaticon.com/512/64/64096.png" width="25px" height="25px" /></a>
-                            </li>                            
-                        }                       
+                            <li style="display: flex; flex-direction: column; align-items: center; margin-left: auto; margin-top: 5px;">
+                                <a asp-area="">
+                                    <img src="https://cdn-icons-png.flaticon.com/512/64/64096.png" width="25px" height="25px" />
+                                </a>
+                                <label>@Context.Session.GetString("Name")</label>
+                                
+                                
+                            </li>
+                        }
                     </ul>
                 </div>
             </div>

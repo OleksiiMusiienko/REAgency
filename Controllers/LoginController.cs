@@ -14,10 +14,13 @@ namespace REAgency.Controllers
     public class LoginController : Controller
     {
         private readonly IClientService _clientService;
+        private readonly IEmployeeService _employeeService;
 
-        public LoginController(IClientService clientService)
+        public LoginController(IClientService clientService, IEmployeeService employeeService)
         {
             _clientService = clientService;
+            _employeeService = employeeService;
+
         }
         public IActionResult Index()
         {
@@ -97,6 +100,7 @@ namespace REAgency.Controllers
             await _clientService.CreateClient(client);
 
             HttpContext.Session.SetString("Email", client.Email);
+            HttpContext.Session.SetString("Name", client.Name);
             HttpContext.Session.SetInt32("Id", client.Id);
 
             return RedirectToAction("Index", "Home");
@@ -108,38 +112,56 @@ namespace REAgency.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Login(AuthViewModel loginModel)
         {
-            if(loginModel == null)
+            if(loginModel.LoginEmail == null || loginModel.LoginPassword == null)
             {
-                ModelState.AddModelError("", "Щось пішло не так");
+                ModelState.AddModelError("", "Введіть всі поля");
                 return View("Index", loginModel);
             }
 
-            var user = await _clientService.GetClientByEmail(loginModel.LoginEmail);
-            if (user == null)
+            var client = await _clientService.GetClientByEmail(loginModel.LoginEmail);
+            var employee = await _employeeService.GetEmployeeByEmail(loginModel.LoginEmail);
+            if(employee == null)
             {
-                ModelState.AddModelError("LoginPassword", "Не правильний логін або пароль");
-                return View("Index", loginModel);
+                //Логика входа клиента
+                if (client == null)
+                {
+                    ModelState.AddModelError("LoginPassword", "Не правильний логін");
+                    return View("Index", loginModel);
+                } 
+                else
+                {
+                    if (client.Password != Decryption(client.Salt, loginModel.LoginPassword)) 
+                    {
+                        ModelState.AddModelError("LoginPassword", "Неправильний логін або пароль");
+                        return View("Index", loginModel);
+                    }
+                    else
+                    {
+                        HttpContext.Session.SetString("Login", client.Email);
+                        
+                        HttpContext.Session.SetString("Name", client.Name);
+                        HttpContext.Session.SetInt32("Id", client.Id);
+                        return RedirectToAction("Index", "Home");
+                    }
+                }
             }
-
-            string? salt = user.Salt;
-            byte[] password = Encoding.Unicode.GetBytes(salt + loginModel.LoginPassword);
-
-            byte[] byteHash = SHA256.HashData(password);
-
-            StringBuilder hash = new StringBuilder(byteHash.Length);
-            for (int i = 0; i < byteHash.Length; i++)
-                hash.Append(string.Format("{0:X2}", byteHash[i]));
-
-            if (user.Password != hash.ToString())
+            else // если не null значит программа обнаружила что входит сотрудник
             {
-                ModelState.AddModelError("LoginPassword", "Не правильний логін або пароль");
-                return View("Index", loginModel);
-            }
+                if (employee.Password != Decryption(employee.Salt, loginModel.LoginPassword)) 
+                {
+                    ModelState.AddModelError("LoginPassword", "Неправильний логін або пароль");
+                    return View("Index", loginModel);
+                }
+                else
+                {
+                    HttpContext.Session.SetString("Login", employee.Email);
+                    HttpContext.Session.SetString("Name", employee.Name);
+                    HttpContext.Session.SetInt32("Id", employee.Id);
+                    return RedirectToAction("Index", "Home");
+                }
+            } 
 
-            HttpContext.Session.SetString("Login", user.Email);
-            HttpContext.Session.SetInt32("Id", user.Id);
-
-             return RedirectToAction("Index", "Home");
+             
         }
 
         [HttpPost]
@@ -157,6 +179,19 @@ namespace REAgency.Controllers
             }
 
             
+        }
+
+        public string Decryption(string salt,  string enteredPassword) {
+           
+            byte[] password = Encoding.Unicode.GetBytes(salt + enteredPassword);
+
+            byte[] byteHash = SHA256.HashData(password);
+
+            StringBuilder hash = new StringBuilder(byteHash.Length);
+            for (int i = 0; i < byteHash.Length; i++)
+                hash.Append(string.Format("{0:X2}", byteHash[i]));
+            return hash.ToString();
+
         }
 
     }

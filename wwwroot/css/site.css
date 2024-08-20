@@ -54,7 +54,7 @@ body {
 }/*стиль для дивов в которых формы*/
 .inputBlock {
     position: relative;
-    height: 95px;
+    height: 110px;
 }/*стиль для блоков в которых инпуты*/
 
 .allInput {
@@ -200,7 +200,9 @@ body {
     justify-content: center;
     text-align: center;
     font-size: 18px;
-    color: white;
+    color: red;
+   margin: 0;
+   padding: 0;
 
 } /*��������� �����, ����� ������ �� ���������*/
 
