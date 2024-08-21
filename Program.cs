@@ -1,9 +1,11 @@
 using Azure;
 using REAgency.BLL.Infrastructure;
 using REAgency.BLL.Interfaces;
+using REAgency.BLL.Interfaces.Locations;
 using REAgency.BLL.Interfaces.Persons;
 using REAgency.BLL.Services;
 using REAgency.BLL.Services.Persons;
+using REAgency.BLL.Services.Locations;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -16,6 +18,8 @@ builder.Services.AddTransient<IClientService, ClientService>();
 builder.Services.AddTransient<IOperationService, OperationService>();
 builder.Services.AddTransient<IEstateTypeService, EstateTypeService>();
 builder.Services.AddTransient<IEmployeeService, EmployeeService>();
+builder.Services.AddTransient<ILocalityService, LocalityService>();
+
 
 builder.Services.AddControllersWithViews();
 

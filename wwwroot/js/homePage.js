@@ -7,11 +7,18 @@
     const objectOptions = $('#objectOptions');
     const objectNativeSelect = $('#objectNativeSelect');
 
+    const localitySelect = $('#localitySelect'); //here
+    const localityOptions = $('#localityOptions');
+    const localityNativeSelect = $('#localityNativeSelect');
+
     const operationSelectedValue = operationNativeSelect.val();
     const operationSelectedText = operationNativeSelect.find(`option[value="${operationSelectedValue}"]`).text();
 
     const objectSelectedValue = objectNativeSelect.val();
     const objectSelectedText = objectNativeSelect.find(`option[value="${objectSelectedValue}"]`).text();
+
+    const localitySelectedValue = localityNativeSelect.val();
+    const localitySelectedText = localityNativeSelect.find(`option[value="${localitySelectedValue}"]`).text();
 
     operationNativeSelect.find('option').each(function () {
         const optionElement = $(this);
@@ -43,6 +50,21 @@
         objectOptions.append(customOptionDiv);
     });
 
+    localityNativeSelect.find('option').each(function () {
+        const optionElement = $(this);
+        const customOptionDiv = $('<div></div>')
+            .addClass('custom-option')
+            .text(optionElement.text())
+            .attr('data-value', optionElement.val())
+            .on('click', function () {
+                localitySelect.find('span').text(optionElement.text());
+                localityNativeSelect.val(optionElement.val());
+                localitySelect.removeClass('active');
+            });
+
+        localityOptions.append(customOptionDiv);
+    });
+
 
     if (operationSelectedText) {
         operationSelect.find('span').text(operationSelectedText);
@@ -53,10 +75,19 @@
     }
 
 
+    if (localitySelectedText) {
+        localitySelect.find('span').text(localitySelectedText);
+    }
+
+
     operationSelect.on('click', function () {
         $(this).toggleClass('active');
     });
     objectSelect.on('click', function () {
+        $(this).toggleClass('active');
+    });
+
+    localitySelect.on('click', function () {
         $(this).toggleClass('active');
     });
 
@@ -71,6 +102,13 @@
             objectSelect.removeClass('active');
         }
     });
+
+    $(document).on('click', function (event) {
+        if (!localitySelect.is(event.target) && !localitySelect.has(event.target).length) {
+            localitySelect.removeClass('active');
+        }
+    });
+
 });
 
 //фильтрация
