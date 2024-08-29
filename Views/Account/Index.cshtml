@@ -1,0 +1,16 @@
+﻿@model ForgotPasswordViewModel
+@{
+    ViewBag.Title = "Index";
+}
+<form asp-action="ForgotPassword" method="post">
+
+    <div class="inputBlock">
+        <label class="label">Email</label>
+        <input class="allInput" type="email" asp-for="Email" />
+        <span class="validation" asp-validation-for="Email"></span>
+    </div>
+    <div asp-validation-summary="ModelOnly" style="color: red; text-align: center"></div>
+    <div>
+        <input type="submit" value="Email" class="submitButton" />
+    </div>
+</form>

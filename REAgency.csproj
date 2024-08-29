@@ -11,6 +11,12 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Remove="Models\ResetPasswordViewModel.cs~RF60c1330.TMP" />
+    <None Remove="Views\Account\Index.cshtml~RF1064e6.TMP" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="MailKit" Version="3.3.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.7">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
