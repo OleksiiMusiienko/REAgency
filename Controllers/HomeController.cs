@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.Logging;
 using REAgency.BLL.Interfaces;
 using REAgency.BLL.Interfaces.Locations;
+using REAgency.BLL.Interfaces.Object;
 using REAgency.Models;
 using System.Diagnostics;
 
@@ -15,12 +16,14 @@ namespace REAgency.Controllers
         private readonly IOperationService _operationService;
         private readonly IEstateTypeService _estateTypeService;
         private readonly ILocalityService _localityService;
-        public HomeController(IOperationService operationService, IEstateTypeService estateTypeService, ILocalityService localityService)
+        private readonly IFlatService _flatService;
+        public HomeController(IOperationService operationService, IEstateTypeService estateTypeService, ILocalityService localityService, IFlatService flatService)
         {
             //_logger = logger;
             _operationService = operationService;
             _estateTypeService = estateTypeService;
             _localityService = localityService;
+            _flatService = flatService;
         }
 
         public async Task<IActionResult> IndexAsync()
@@ -36,6 +39,10 @@ namespace REAgency.Controllers
         {
             return View();
         }
+        public IActionResult Objects()
+        {
+            return View();
+        }
         public IActionResult Login()
         {
             return View();
@@ -46,5 +53,15 @@ namespace REAgency.Controllers
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
-    }
+
+		public async Task <IActionResult> FindByType(SearchViewModel searchViewModel)
+		{
+            string type = searchViewModel.Type;
+            var typeOf = await _estateTypeService.GetByName(type);
+            var i = await _flatService.GetFlatsByType(typeOf.Id);
+
+
+            return View("Objects", i);
+		}
+	}
 }

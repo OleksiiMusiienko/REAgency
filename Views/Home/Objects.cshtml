@@ -1,0 +1,5 @@
+﻿@model IEnumerable<REAgency.BLL.DTO.Object.FlatDTO>
+
+@foreach(var item in Model){
+    <label>@Html.DisplayFor(modelItem => item.Floor)</label>
+}
