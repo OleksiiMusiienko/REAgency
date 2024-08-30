@@ -1,11 +1,14 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.Logging;
+using REAgency.BLL.DTO.Persons;
 using REAgency.BLL.Interfaces;
 using REAgency.BLL.Interfaces.Locations;
 using REAgency.BLL.Interfaces.Object;
+using REAgency.BLL.Interfaces.Persons;
 using REAgency.Models;
 using System.Diagnostics;
+using System.Text.RegularExpressions;
 
 
 namespace REAgency.Controllers
@@ -17,13 +20,17 @@ namespace REAgency.Controllers
         private readonly IEstateTypeService _estateTypeService;
         private readonly ILocalityService _localityService;
         private readonly IFlatService _flatService;
-        public HomeController(IOperationService operationService, IEstateTypeService estateTypeService, ILocalityService localityService, IFlatService flatService)
+        private readonly IClientService _clientService;
+       
+
+        public HomeController(IOperationService operationService, IEstateTypeService estateTypeService, ILocalityService localityService, IFlatService flatService, IClientService clientService)
         {
             //_logger = logger;
             _operationService = operationService;
             _estateTypeService = estateTypeService;
             _localityService = localityService;
             _flatService = flatService;
+            _clientService = clientService;
         }
 
         public async Task<IActionResult> IndexAsync()
@@ -54,14 +61,40 @@ namespace REAgency.Controllers
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
 
-		public async Task <IActionResult> FindByType(SearchViewModel searchViewModel)
+		public async Task <IActionResult> FindByType(HomePageViewModel homePageViewModel)
 		{
-            string type = searchViewModel.Type;
+            string type = homePageViewModel.type;
             var typeOf = await _estateTypeService.GetByName(type);
             var i = await _flatService.GetFlatsByType(typeOf.Id);
 
 
             return View("Objects", i);
 		}
-	}
+
+        public async Task<IActionResult> SendApplication(HomePageViewModel homePageViewModel)
+        {
+
+            ClientDTO client = new ClientDTO();
+            if (!Regex.IsMatch(homePageViewModel.appPhone, @"^\d+$"))
+            {
+                ModelState.AddModelError("appPhone", "Допустимі лише цифри");
+                return View("Index", homePageViewModel);
+            }
+            else if (!Regex.IsMatch(homePageViewModel.appPhone, @"^0\d{9}$"))
+            {
+                ModelState.AddModelError("appPhone", "Номер телефону має містити рівно 10 цифр і починатися з 0.");
+                return View("Index", homePageViewModel);
+            }
+            client.Name = homePageViewModel.appName;
+            client.Phone1 = homePageViewModel.appPhone;
+            client.status = false;
+            client.userStatus = false;
+
+            await _clientService.CreateClient(client);
+            TempData["SuccessMessage"] = "true";
+
+            return RedirectToAction("Index", "Home");
+        }
+
+    }
 }
