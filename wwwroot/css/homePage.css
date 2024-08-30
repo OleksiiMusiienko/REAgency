@@ -5,9 +5,9 @@
     width: 99vw;
     height: auto;
     text-align: center;
-    margin-bottom: 40%;
+    margin-bottom: 5%;
     display: flex;
-    border-radius: 15px
+    border-radius: 25px
 }
     .catalog p {
         margin: 10px 60px 0px 60px
@@ -117,4 +117,31 @@
         margin: 10px 60px 0 60px;
     }
 
+}
+
+.form-block {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    margin: 0 auto;
+    background-color: aliceblue;
+    margin-bottom: 5%;
+    width: 99vw;
+    height: auto;
+    border-radius: 25px;
+}
+    .form-block h2{
+        font-size: 1.6em;
+        margin: 15px;
+    }
+    .form-block p {
+        margin: 20px 60px 0px 60px
+    }
+.application-form {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    padding: 10px;
+    margin-top: 35px;
 }
