@@ -63,9 +63,6 @@
                         <li class="nav-item my-li">
                             <a class="nav-link my-link-menu" asp-area="" asp-controller="Home" asp-action="Privacy">Контакти</a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link my-link-menu" asp-area="" asp-controller="Home" asp-action="Privacy">Обрані</a>
-                        </li> 
                         @if (Context.Session.GetInt32("Id") != null)
                         {
                             <li class="nav-item">
