@@ -40,6 +40,16 @@ namespace REAgency.Controllers
         {
             return View();
         }
+        public ActionResult Logout()
+        {
+            HttpContext.Session.Clear();
+            
+            return RedirectToAction("Index");
+        }
+        public IActionResult Office()
+        {
+            return View();
+        }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
