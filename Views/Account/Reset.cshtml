@@ -1,0 +1,27 @@
+﻿@model ResetPasswordViewModel
+@{
+    ViewBag.Title = "Reset";
+}
+<form asp-action="Reset" method="post">
+    <input type="hidden" asp-for="id" />
+    <input type="hidden" asp-for="employee" />
+    <div class="inputBlock">
+        <label class="label">Login</label>
+        <input readonly="readonly" class="allInput" type="email" asp-for="personMail" />
+        <span class="validation" asp-validation-for="personMail"></span>
+    </div>
+    <div class="inputBlock">
+        <label class="label">Password</label>
+        <input class="allInput" asp-for="Password" type="password" />
+        <span class="validation" asp-validation-for="Password"></span>
+    </div>
+    <div class="inputBlock">
+        <label class="label">Confirm Password</label>
+        <input class="allInput" asp-for="ConfirmPassword" type="password" />
+        <span class="validation" asp-validation-for="ConfirmPassword"></span>
+    </div>
+    <div asp-validation-summary="ModelOnly" style="color: red; text-align: center"></div>
+    <div>
+        <input type="submit" value="Login" class="submitButton"  />
+    </div>
+</form>

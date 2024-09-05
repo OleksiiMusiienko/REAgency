@@ -1,9 +1,11 @@
-﻿@{
+﻿@model HomePageViewModel
+
+@{
     ViewData["Title"] = "Home Page";
 }
-<div class="home-page-main-div">
-    <h1>Агенство нерухомості</h1>
-
+<div class="home-page-main-div" style="background-color: #B4DAF5">
+    <h1 style="margin-top: 100px">Агенство нерухомості</h1>
+   
     <div class="search">
         <div class="custom-select-wrapper">
             <div class="custom-select" id="operationSelect">
@@ -38,7 +40,7 @@
 
         <div class="search-buttons-div">
             <a id="toggleButton"> <img src="https://img.icons8.com/?size=100&id=LALXQcDwgx8U&format=png&color=000000" width="35px" height="35px" /></a>
-            <button class="search-button" style="margin-left: 60px">Знайти</button>
+            <button class="search-button" style="margin-left: 60px" >Знайти</button>
         </div>
 
         <div>
@@ -66,11 +68,104 @@
             </div>
         </div>
     </div>
+
+    
+    <div class="catalog">
+        <div class ="catalog-header">
+            <h2>КАТАЛОГ ОБ'ЄКТІВ</h2>
+            <p >
+                Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s,
+                when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries,
+                but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets
+                containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.
+            </p>
+        </div>
+          
+        <div class="catalog-items">
+
+            <form asp-action="FindByType" method="post" class="catalog-item vertical">
+                <a onclick="this.closest('form').submit();" style="cursor:pointer;">
+                    <img src="~/img/flats.webp" alt="Квартири">
+                    <div class="catalog-item-text">
+                        <h3>КВАРТИРИ</h3>
+                    </div>
+                    <input type="hidden" name="Type" value="Квартира" />
+                </a>
+            </form>
+            <a class="catalog-item">
+                <img src="~/img/house.jpeg" alt="Будинки">
+                <div class="catalog-item-text">
+                    <h3>БУДИНКИ</h3>
+                </div>
+            </a>
+            <a class="catalog-item">
+                <img src="~/img/garage.jpg" alt="Гаражі">
+                <div class="catalog-item-text">
+                    <h3>ГАРАЖІ</h3>
+                </div>
+            </a>
+
+            <a class="catalog-item">
+                <img src="~/img/plot.jpeg" alt="Ділянки">
+                <div class="catalog-item-text">
+                    <h3>ДІЛЯНКИ</h3>
+                </div>
+            </a>
+
+        </div>
+    </div>
+
+    <div class="form-block">
+        <h2>Індивідуальний підбір</h2>
+        <p>
+            Надішліть заявку на індивідуальний підбір нерухомості, щоб наш менеджер якнайшвидше з вами зв'язався!
+        </p>
+        <form class="application-form" asp-action="SendApplication">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            <div class="inputBlock" style="margin-top: 20px; ">
+                
+                <input class="allInput" asp-for="appName" type="text" placeholder="Повне ім'я" />
+                <span class="validation" asp-validation-for="appName"></span>
+            </div>
+          
+            <div class="inputBlock" style="margin-top: 20px">
+                
+                <input class="allInput" asp-for="appPhone" type="text" placeholder="Телефон"/>
+                <span class="validation" asp-validation-for="appPhone" ></span>
+            </div>
+            <div class="form-group" style="margin-top: 20px">
+                <input type="submit" value="Відправити" class="submitButton"  />
+            </div>
+        </form>
+
+    </div>
+
 </div>
 
 
-<div class="text-center">
+    
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+
+        let success = '@TempData["SuccessMessage"]';
+        if (success == "true") {
+            Swal.fire({
+                position: "center",
+                icon: "success",
+                title: "Заявка успішно надіслана",
+                showConfirmButton: false,
+                timer: 1500
+            });
+        
+        }
+       
+    </script>
+}
    
+<div class="text-center">
+
     <div id="cookie_note">
         <p>
             Мы используем файлы cookies для улучшения работы сайта. Оставаясь на нашем сайте, вы соглашаетесь с условиями
