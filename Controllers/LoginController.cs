@@ -137,10 +137,10 @@ namespace REAgency.Controllers
                     }
                     else
                     {
-                        HttpContext.Session.SetString("Login", client.Email);
-                        
-                        HttpContext.Session.SetString("Name", client.Name);
+                        HttpContext.Session.SetString("Login", client.Email);                        
+                        HttpContext.Session.SetString("Name", client.Name);                       
                         HttpContext.Session.SetInt32("Id", client.Id);
+                        HttpContext.Session.SetString("User", "user");
                         return RedirectToAction("Index", "Home");
                     }
                 }
@@ -155,8 +155,9 @@ namespace REAgency.Controllers
                 else
                 {
                     HttpContext.Session.SetString("Login", employee.Email);
-                    HttpContext.Session.SetString("Name", employee.Name);
+                    HttpContext.Session.SetString("Name", employee.Name);                   
                     HttpContext.Session.SetInt32("Id", employee.Id);
+                    HttpContext.Session.SetString("User", "employee");
                     return RedirectToAction("Index", "Home");
                 }
             } 
