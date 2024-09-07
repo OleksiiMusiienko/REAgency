@@ -18,7 +18,7 @@ builder.Services.AddREAgencyContext(connection);
 builder.Services.AddUnitOfWorkService(); 
 builder.Services.AddTransient<IClientService, ClientService>();
 builder.Services.AddTransient<IOperationService, OperationService>();
-builder.Services.AddTransient<IEstateTypeService, EstateTypeService>();
+//builder.Services.AddTransient<IEstateTypeService, EstateTypeService>();
 builder.Services.AddTransient<IEmployeeService, EmployeeService>();
 builder.Services.AddTransient<ILocalityService, LocalityService>();
 builder.Services.AddTransient<IFlatService, FlatService>();
