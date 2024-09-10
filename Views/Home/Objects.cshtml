@@ -3,9 +3,14 @@
 <div class="objects-container">
     @foreach (var item in Model)
     {
+        
         <div class="item">
             <div>
+
+                <p class="item-type">@Html.DisplayFor(modelItem => item.type)</p>
+
                 <img src="~/imgOfObject/1.jpg" class="object-img" alt="Object Image" />
+               
 
                 <div class="price-style">
 
@@ -15,12 +20,12 @@
             </div>
            
 
-            <div class="info">
+         @*    <div class="info">
                 <p>Этаж: @Html.DisplayFor(modelItem => item.Floor)</p>
                 <p>Количество комнат: @Html.DisplayFor(modelItem => item.Rooms)</p>
                 <p>Площадь кухни: @Html.DisplayFor(modelItem => item.kitchenArea) м²</p>
                 <p>Жилая площадь: @Html.DisplayFor(modelItem => item.livingArea) м²</p>
-            </div>
+            </div> *@
         </div>
        
     }

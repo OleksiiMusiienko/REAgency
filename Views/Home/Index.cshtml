@@ -92,12 +92,15 @@
                     <input type="hidden" name="Type" value="Квартира" />
                 </a>
             </form>
-            <a class="catalog-item">
-                <img src="~/img/house.jpeg" alt="Будинки">
-                <div class="catalog-item-text">
-                    <h3>БУДИНКИ</h3>
-                </div>
-            </a>
+             <form asp-action="FindByType" method="post" class="catalog-item">
+                <a onclick="this.closest('form').submit();" style="cursor:pointer;">
+                    <img src="~/img/house.jpeg" alt="Будинки">
+                    <div class="catalog-item-text">
+                        <h3>БУДИНКИ</h3>
+                    </div>
+                    <input type="hidden" name="Type" value="Будинки" />
+                </a>
+            </form>
             <a class="catalog-item">
                 <img src="~/img/garage.jpg" alt="Гаражі">
                 <div class="catalog-item-text">

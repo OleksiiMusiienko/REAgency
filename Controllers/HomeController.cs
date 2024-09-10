@@ -24,10 +24,12 @@ namespace REAgency.Controllers
         private readonly ILocalityService _localityService;
         private readonly IFlatService _flatService;
         private readonly IClientService _clientService;
-       
-       
+        private readonly IHouseSevice _houseService;
 
-        public HomeController(IOperationService operationService, ILocalityService localityService, IFlatService flatService, IClientService clientService)
+
+
+
+        public HomeController(IOperationService operationService, ILocalityService localityService, IFlatService flatService, IClientService clientService, IHouseSevice houseSevice)
         {
             //_logger = logger;
             _operationService = operationService;
@@ -35,6 +37,7 @@ namespace REAgency.Controllers
             _localityService = localityService;
             _flatService = flatService;
             _clientService = clientService;
+            _houseService = houseSevice;
         }
 
         public async Task<IActionResult> IndexAsync()
@@ -80,7 +83,7 @@ namespace REAgency.Controllers
 		{
             string type = homePageViewModel.type;
 
-            if(type == "Квартира")
+            if (type == "Квартира")
             {
                 IEnumerable<FlatDTO> flats = await _flatService.GetAllFlats();
 
@@ -109,7 +112,43 @@ namespace REAgency.Controllers
                     Rooms = flat.Rooms,
                     kitchenArea = flat.kitchenArea,
                     livingArea = flat.livingArea,
-                    type = "Flat"
+                    type = "Квартира"
+
+                }).ToList();
+
+                return View("Objects", viewModel);
+            }
+            else if (type == "Будинки")
+            {
+                IEnumerable<HouseDTO> houses = await _houseService.GetAllHouses();
+
+                IEnumerable<OperationDTO> operations = await _operationService.GetAll();
+
+                var viewModel = houses.Select(house => new ObjectsViewModel
+                {
+                    Id = house.Id,
+                    countViews = house.countViews,
+                    employeeId = house.employeeId,
+                    operationId = house.operationId,
+                    operationName = operations.FirstOrDefault(op => op.Id == house.operationId)?.Name,
+                    locationId = house.locationId,
+                    Street = house.Street,
+                    numberStreet = house.numberStreet,
+                    Price = house.Price,
+                    currencyId = house.currencyId,
+                    Area = house.Area,
+                    unitAreaId = house.unitAreaId,
+                    Description = house.Description,
+                    Status = house.Status,
+                    Date = house.Date,
+                    pathPhoto = house.pathPhoto,
+                   
+                    Floors = house.Floors,
+                    Rooms = house.Rooms,
+                    kitchenArea = house.kitchenArea,
+                    livingArea = house.livingArea,
+                    steadArea = house.steadArea,
+                    type = "Будинок"
 
                 }).ToList();
 
