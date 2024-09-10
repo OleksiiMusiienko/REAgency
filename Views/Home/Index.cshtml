@@ -101,12 +101,15 @@
                     <input type="hidden" name="Type" value="Будинки" />
                 </a>
             </form>
-            <a class="catalog-item">
-                <img src="~/img/garage.jpg" alt="Гаражі">
-                <div class="catalog-item-text">
-                    <h3>ГАРАЖІ</h3>
-                </div>
-            </a>
+             <form asp-action="FindByType" method="post" class="catalog-item">
+                <a onclick="this.closest('form').submit();" style="cursor:pointer;">
+                    <img src="~/img/garage.jpg" alt="Гаражі">
+                    <div class="catalog-item-text">
+                        <h3>ГАРАЖІ</h3>
+                    </div>
+                    <input type="hidden" name="Type" value="Гаражі" />
+                </a>
+            </form>
 
             <a class="catalog-item">
                 <img src="~/img/plot.jpeg" alt="Ділянки">
@@ -119,7 +122,7 @@
                 <a onclick="this.closest('form').submit();" style="cursor:pointer;">
                     <img src="~/img/office.webp" alt="Ділянки">
                     <div class="catalog-item-text">
-                        <h3>ОФІCИ</h3>
+                        <h3>ОФІСИ</h3>
                     </div>
                     <input type="hidden" name="Type" value="Офіси" />
                 </a>

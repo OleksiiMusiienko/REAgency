@@ -26,12 +26,13 @@ namespace REAgency.Controllers
         private readonly IClientService _clientService;
         private readonly IHouseSevice _houseService;
         private readonly IOfficeService _officeService;
+        private readonly IGarageService _garageService;
 
 
 
 
         public HomeController(IOperationService operationService, ILocalityService localityService, IFlatService flatService, IClientService clientService, 
-            IHouseSevice houseSevice, IOfficeService officeService)
+            IHouseSevice houseSevice, IOfficeService officeService, IGarageService garageService)
         {
             //_logger = logger;
             _operationService = operationService;
@@ -41,6 +42,7 @@ namespace REAgency.Controllers
             _clientService = clientService;
             _houseService = houseSevice;
             _officeService = officeService;
+            _garageService = garageService;
         }
 
         public async Task<IActionResult> IndexAsync()
@@ -188,6 +190,39 @@ namespace REAgency.Controllers
 
                 return View("Objects", viewModel);
             }
+            else if (type == "Гаражі")
+            {
+                IEnumerable<GarageDTO> garages = await _garageService.GetGarages();
+
+                IEnumerable<OperationDTO> operations = await _operationService.GetAll();
+
+                var viewModel = garages.Select(garage => new ObjectsViewModel
+                {
+                    Id = garage.Id,
+                    countViews = garage.countViews,
+                    employeeId = garage.employeeId,
+                    operationId = garage.operationId,
+                    operationName = operations.FirstOrDefault(op => op.Id == garage.operationId)?.Name,
+                    locationId = garage.locationId,
+                    Street = garage.Street,
+                    numberStreet = garage.numberStreet,
+                    Price = garage.Price,
+                    currencyId = garage.currencyId,
+                    Area = garage.Area,
+                    unitAreaId = garage.unitAreaId,
+                    Description = garage.Description,
+                    Status = garage.Status,
+                    Date = garage.Date,
+                    pathPhoto = garage.pathPhoto,
+
+                    Floors = garage.Floors,
+                    type = "Гараж"
+
+                }).ToList();
+
+                return View("Objects", viewModel);
+            }
+
              return View();
 
             

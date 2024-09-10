@@ -24,6 +24,7 @@ builder.Services.AddTransient<ILocalityService, LocalityService>();
 builder.Services.AddTransient<IFlatService, FlatService>();
 builder.Services.AddTransient<IHouseSevice, HouseService>();
 builder.Services.AddTransient<IOfficeService, OfficeService>();
+builder.Services.AddTransient<IGarageService, GarageService>();
 
 
 builder.Services.AddControllersWithViews();
