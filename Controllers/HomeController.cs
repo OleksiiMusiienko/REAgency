@@ -25,11 +25,13 @@ namespace REAgency.Controllers
         private readonly IFlatService _flatService;
         private readonly IClientService _clientService;
         private readonly IHouseSevice _houseService;
+        private readonly IOfficeService _officeService;
 
 
 
 
-        public HomeController(IOperationService operationService, ILocalityService localityService, IFlatService flatService, IClientService clientService, IHouseSevice houseSevice)
+        public HomeController(IOperationService operationService, ILocalityService localityService, IFlatService flatService, IClientService clientService, 
+            IHouseSevice houseSevice, IOfficeService officeService)
         {
             //_logger = logger;
             _operationService = operationService;
@@ -38,6 +40,7 @@ namespace REAgency.Controllers
             _flatService = flatService;
             _clientService = clientService;
             _houseService = houseSevice;
+            _officeService = officeService;
         }
 
         public async Task<IActionResult> IndexAsync()
@@ -154,7 +157,38 @@ namespace REAgency.Controllers
 
                 return View("Objects", viewModel);
             }
-            return View();
+            else if (type == "Îô³ñè")
+            {
+                IEnumerable<OfficeDTO> offices = await _officeService.GetOffices();
+
+                IEnumerable<OperationDTO> operations = await _operationService.GetAll();
+
+                var viewModel = offices.Select(office => new ObjectsViewModel
+                {
+                    Id = office.Id,
+                    countViews = office.countViews,
+                    employeeId = office.employeeId,
+                    operationId = office.operationId,
+                    operationName = operations.FirstOrDefault(op => op.Id == office.operationId)?.Name,
+                    locationId = office.locationId,
+                    Street = office.Street,
+                    numberStreet = office.numberStreet,
+                    Price = office.Price,
+                    currencyId = office.currencyId,
+                    Area = office.Area,
+                    unitAreaId = office.unitAreaId,
+                    Description = office.Description,
+                    Status = office.Status,
+                    Date = office.Date,
+                    pathPhoto = office.pathPhoto,
+
+                    type = "Îô³ñ"
+
+                }).ToList();
+
+                return View("Objects", viewModel);
+            }
+             return View();
 
             
 		}

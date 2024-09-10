@@ -115,6 +115,17 @@
                 </div>
             </a>
 
+            <form asp-action="FindByType" method="post" class="catalog-item">
+                <a onclick="this.closest('form').submit();" style="cursor:pointer;">
+                    <img src="~/img/office.webp" alt="Ділянки">
+                    <div class="catalog-item-text">
+                        <h3>ОФІCИ</h3>
+                    </div>
+                    <input type="hidden" name="Type" value="Офіси" />
+                </a>
+            </form>
+
+
         </div>
     </div>
 

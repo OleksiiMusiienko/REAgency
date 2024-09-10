@@ -31,8 +31,4 @@
     <Resource Include="wwwroot\logo.png" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="wwwroot\imgOfObject\" />
-  </ItemGroup>
-
 </Project>
