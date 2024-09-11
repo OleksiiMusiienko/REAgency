@@ -19,8 +19,7 @@ namespace REAgency.Controllers
     public class HomeController : Controller
     {
         //private readonly ILogger<HomeController> _logger;
-        private readonly IOperationService _operationService;
-        
+        private readonly IOperationService _operationService;        
         private readonly ILocalityService _localityService;
         private readonly IFlatService _flatService;
         private readonly IClientService _clientService;
@@ -76,10 +75,6 @@ namespace REAgency.Controllers
             
             return RedirectToAction("Index");
         }
-        public IActionResult Office()
-        {
-            return View();
-        }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
@@ -95,7 +90,7 @@ namespace REAgency.Controllers
             IEnumerable<AreaDTO> areas = await _areaService.GetAll();
             IEnumerable<CurrencyDTO> currencies = await _currencyService.GetAll();
 
-            if (type == " вартира")
+            if(homePageViewModel.objectType == HomePageViewModel.ObjectType.Flat)
             {
                 IEnumerable<FlatDTO> flats = await _flatService.GetAllFlats();
 
@@ -231,6 +226,8 @@ namespace REAgency.Controllers
                     Floors = garage.Floors,
                     type = "√араж"
 
+                    typeObject = " вартира",
+                    objectType = ObjectsViewModel.ObjectType.Flat
                 }).ToList();
 
                 return View("Objects", viewModel);

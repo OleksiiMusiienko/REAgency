@@ -3,11 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.8.34322.80
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "REAgency", "REAgency.csproj", "{339F5250-CEDD-416F-9F84-2241BFAA4375}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "REAgency", "REAgency.csproj", "{339F5250-CEDD-416F-9F84-2241BFAA4375}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "REAgency.DAL", "..\REAgency.DAL\REAgency.DAL.csproj", "{8FDC7CA7-3F8A-4A16-BE3A-BC7C3ED5D052}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "REAgency.DAL", "..\REAgency.DAL\REAgency.DAL.csproj", "{8FDC7CA7-3F8A-4A16-BE3A-BC7C3ED5D052}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "REAgency.BLL", "..\REAgency.BLL\REAgency.BLL.csproj", "{323899CC-B1A0-4737-8782-4CEA8B2ADC91}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "REAgency.BLL", "..\REAgency.BLL\REAgency.BLL.csproj", "{323899CC-B1A0-4737-8782-4CEA8B2ADC91}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
