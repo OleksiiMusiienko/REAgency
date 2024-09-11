@@ -15,17 +15,20 @@
                 <div class="price-style">
 
                     <p> @Html.DisplayFor(modelItem => item.operationName)</p>
-                    <p> @Html.DisplayFor(modelItem => item.Price)</p>
+                    <p>@Html.DisplayFor(modelItem => item.Area) @Html.DisplayFor(modelItem => item.unitAreaName)</p>
+
+                    <p> @Html.DisplayFor(modelItem => item.Price) @Html.DisplayFor(modelItem => item.currencyName)</p>
                 </div>
             </div>
            
 
-         @*    <div class="info">
-                <p>Этаж: @Html.DisplayFor(modelItem => item.Floor)</p>
+           <div class="info">
+             @*    <p>Этаж: @Html.DisplayFor(modelItem => item.Floor)</p>
                 <p>Количество комнат: @Html.DisplayFor(modelItem => item.Rooms)</p>
                 <p>Площадь кухни: @Html.DisplayFor(modelItem => item.kitchenArea) м²</p>
-                <p>Жилая площадь: @Html.DisplayFor(modelItem => item.livingArea) м²</p>
-            </div> *@
+                <p>Жилая площадь: @Html.DisplayFor(modelItem => item.livingArea) м²</p> *@
+                @* <p>@Html.DisplayFor(modelItem => item.Area) @Html.DisplayFor(modelItem => item.unitAreaName)</p> *@
+            </div> 
         </div>
        
     }

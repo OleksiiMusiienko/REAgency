@@ -28,6 +28,7 @@ namespace REAgency.Models
         [Range(30, int.MaxValue)]
         public int Price { get; set; }
         public int currencyId { get; set; }
+        public string currencyName { get; set; }
        
 
         [Required(ErrorMessage = "Поле \"Загальга площа\" обов'язкове!")]
@@ -35,6 +36,8 @@ namespace REAgency.Models
         [Range(0.1, double.MaxValue)]
         public double Area { get; set; }
         public int unitAreaId { get; set; }
+
+        public string unitAreaName { get; set; }
       
 
         [Required(ErrorMessage = "Поле \"Опис\" обов'язкове!")]

@@ -27,12 +27,14 @@ namespace REAgency.Controllers
         private readonly IHouseSevice _houseService;
         private readonly IOfficeService _officeService;
         private readonly IGarageService _garageService;
+        private readonly IAreaService _areaService;
+        private readonly ICurrencyService _currencyService;
 
 
 
 
         public HomeController(IOperationService operationService, ILocalityService localityService, IFlatService flatService, IClientService clientService, 
-            IHouseSevice houseSevice, IOfficeService officeService, IGarageService garageService)
+            IHouseSevice houseSevice, IOfficeService officeService, IGarageService garageService, IAreaService areaService, ICurrencyService currencyService)
         {
             //_logger = logger;
             _operationService = operationService;
@@ -43,6 +45,8 @@ namespace REAgency.Controllers
             _houseService = houseSevice;
             _officeService = officeService;
             _garageService = garageService;
+            _areaService = areaService;
+            _currencyService = currencyService;
         }
 
         public async Task<IActionResult> IndexAsync()
@@ -87,12 +91,15 @@ namespace REAgency.Controllers
 		public async Task <IActionResult> FindByType(HomePageViewModel homePageViewModel)
 		{
             string type = homePageViewModel.type;
+            IEnumerable<OperationDTO> operations = await _operationService.GetAll();
+            IEnumerable<AreaDTO> areas = await _areaService.GetAll();
+            IEnumerable<CurrencyDTO> currencies = await _currencyService.GetAll();
 
             if (type == " вартира")
             {
                 IEnumerable<FlatDTO> flats = await _flatService.GetAllFlats();
 
-                IEnumerable<OperationDTO> operations = await _operationService.GetAll();
+             
 
                 var viewModel = flats.Select(flat => new ObjectsViewModel
                 {
@@ -106,8 +113,10 @@ namespace REAgency.Controllers
                     numberStreet = flat.numberStreet,
                     Price = flat.Price,
                     currencyId = flat.currencyId,
+                    currencyName = currencies.FirstOrDefault(c => c.Id == flat.currencyId)?.Name,
                     Area = flat.Area,
                     unitAreaId = flat.unitAreaId,
+                    unitAreaName = areas.FirstOrDefault(a => a.Id == flat.unitAreaId).Name,
                     Description = flat.Description,
                     Status = flat.Status,
                     Date = flat.Date,
@@ -127,8 +136,6 @@ namespace REAgency.Controllers
             {
                 IEnumerable<HouseDTO> houses = await _houseService.GetAllHouses();
 
-                IEnumerable<OperationDTO> operations = await _operationService.GetAll();
-
                 var viewModel = houses.Select(house => new ObjectsViewModel
                 {
                     Id = house.Id,
@@ -141,8 +148,10 @@ namespace REAgency.Controllers
                     numberStreet = house.numberStreet,
                     Price = house.Price,
                     currencyId = house.currencyId,
+                    currencyName = currencies.FirstOrDefault(c => c.Id == house.currencyId)?.Name,
                     Area = house.Area,
                     unitAreaId = house.unitAreaId,
+                    unitAreaName = areas.FirstOrDefault(a => a.Id == house.unitAreaId).Name,
                     Description = house.Description,
                     Status = house.Status,
                     Date = house.Date,
@@ -163,7 +172,6 @@ namespace REAgency.Controllers
             {
                 IEnumerable<OfficeDTO> offices = await _officeService.GetOffices();
 
-                IEnumerable<OperationDTO> operations = await _operationService.GetAll();
 
                 var viewModel = offices.Select(office => new ObjectsViewModel
                 {
@@ -177,8 +185,10 @@ namespace REAgency.Controllers
                     numberStreet = office.numberStreet,
                     Price = office.Price,
                     currencyId = office.currencyId,
+                    currencyName = currencies.FirstOrDefault(c => c.Id == office.currencyId)?.Name,
                     Area = office.Area,
                     unitAreaId = office.unitAreaId,
+                    unitAreaName = areas.FirstOrDefault(a => a.Id == office.unitAreaId).Name,
                     Description = office.Description,
                     Status = office.Status,
                     Date = office.Date,
@@ -194,7 +204,8 @@ namespace REAgency.Controllers
             {
                 IEnumerable<GarageDTO> garages = await _garageService.GetGarages();
 
-                IEnumerable<OperationDTO> operations = await _operationService.GetAll();
+            
+
 
                 var viewModel = garages.Select(garage => new ObjectsViewModel
                 {
@@ -208,8 +219,10 @@ namespace REAgency.Controllers
                     numberStreet = garage.numberStreet,
                     Price = garage.Price,
                     currencyId = garage.currencyId,
+                    currencyName = currencies.FirstOrDefault(c => c.Id == garage.currencyId)?.Name,
                     Area = garage.Area,
                     unitAreaId = garage.unitAreaId,
+                    unitAreaName = areas.FirstOrDefault(a => a.Id == garage.unitAreaId).Name,
                     Description = garage.Description,
                     Status = garage.Status,
                     Date = garage.Date,
