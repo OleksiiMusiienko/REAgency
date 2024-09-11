@@ -85,7 +85,7 @@ namespace REAgency.Controllers
 
 		public async Task <IActionResult> FindByType(HomePageViewModel homePageViewModel)
 		{
-            string type = homePageViewModel.type;
+            //string type = homePageViewModel.type;
             IEnumerable<OperationDTO> operations = await _operationService.GetAll();
             IEnumerable<AreaDTO> areas = await _areaService.GetAll();
             IEnumerable<CurrencyDTO> currencies = await _currencyService.GetAll();
@@ -121,13 +121,15 @@ namespace REAgency.Controllers
                     Rooms = flat.Rooms,
                     kitchenArea = flat.kitchenArea,
                     livingArea = flat.livingArea,
-                    type = " вартира"
+                    typeObject = " вартира",
+                    objectType = ObjectsViewModel.ObjectType.Flat
+
 
                 }).ToList();
 
                 return View("Objects", viewModel);
             }
-            else if (type == "Ѕудинки")
+            else if (homePageViewModel.objectType == HomePageViewModel.ObjectType.House)
             {
                 IEnumerable<HouseDTO> houses = await _houseService.GetAllHouses();
 
@@ -157,13 +159,14 @@ namespace REAgency.Controllers
                     kitchenArea = house.kitchenArea,
                     livingArea = house.livingArea,
                     steadArea = house.steadArea,
-                    type = "Ѕудинок"
+                    typeObject = "Ѕудинок",
+                    objectType = ObjectsViewModel.ObjectType.House
 
                 }).ToList();
 
                 return View("Objects", viewModel);
             }
-            else if (type == "ќф≥си")
+            else if (homePageViewModel.objectType == HomePageViewModel.ObjectType.Office)
             {
                 IEnumerable<OfficeDTO> offices = await _officeService.GetOffices();
 
@@ -188,20 +191,16 @@ namespace REAgency.Controllers
                     Status = office.Status,
                     Date = office.Date,
                     pathPhoto = office.pathPhoto,
-
-                    type = "ќф≥с"
+                    typeObject = "ќф≥с",
+                    objectType = ObjectsViewModel.ObjectType.Office
 
                 }).ToList();
 
                 return View("Objects", viewModel);
             }
-            else if (type == "√араж≥")
+            else if (homePageViewModel.objectType == HomePageViewModel.ObjectType.Garage)
             {
                 IEnumerable<GarageDTO> garages = await _garageService.GetGarages();
-
-            
-
-
                 var viewModel = garages.Select(garage => new ObjectsViewModel
                 {
                     Id = garage.Id,
@@ -214,7 +213,7 @@ namespace REAgency.Controllers
                     numberStreet = garage.numberStreet,
                     Price = garage.Price,
                     currencyId = garage.currencyId,
-                    currencyName = currencies.FirstOrDefault(c => c.Id == garage.currencyId)?.Name,
+                    currencyName = currencies.FirstOrDefault(c => c.Id == garage.currencyId)?.Name!,
                     Area = garage.Area,
                     unitAreaId = garage.unitAreaId,
                     unitAreaName = areas.FirstOrDefault(a => a.Id == garage.unitAreaId).Name,
@@ -222,12 +221,9 @@ namespace REAgency.Controllers
                     Status = garage.Status,
                     Date = garage.Date,
                     pathPhoto = garage.pathPhoto,
-
                     Floors = garage.Floors,
-                    type = "√араж"
-
-                    typeObject = " вартира",
-                    objectType = ObjectsViewModel.ObjectType.Flat
+                    typeObject = "√араж",
+                    objectType = ObjectsViewModel.ObjectType.Garage
                 }).ToList();
 
                 return View("Objects", viewModel);
