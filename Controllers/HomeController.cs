@@ -75,7 +75,7 @@ namespace REAgency.Controllers
 		{
             //string type = homePageViewModel.type;
 
-            if(homePageViewModel.type == EstateObject.ObjectType.Flat)
+            if(homePageViewModel.objectType == HomePageViewModel.ObjectType.Flat)
             {
                 IEnumerable<FlatDTO> flats = await _flatService.GetAllFlats();
 
@@ -104,7 +104,8 @@ namespace REAgency.Controllers
                     Rooms = flat.Rooms,
                     kitchenArea = flat.kitchenArea,
                     livingArea = flat.livingArea,
-                    type = flat.estateType
+                    typeObject = " вартира",
+                    objectType = ObjectsViewModel.ObjectType.Flat
                 }).ToList();
 
                 return View("Objects", viewModel);

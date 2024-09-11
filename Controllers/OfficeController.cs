@@ -77,9 +77,9 @@ namespace REAgency.Controllers
 
             if (ModelState.IsValid)
             {
-                if(ovm.type == DAL.Entities.Object.EstateObject.ObjectType.Flat)
+                if(ovm.objectType == ObjectsViewModel.ObjectType.Flat)
                 {
-                    _objectService?.CreateEstateObject(CreateFlat(ovm));                    
+                     _objectService?.CreateEstateObject(CreateFlat(ovm));                    
                 }
 
             }
@@ -89,9 +89,8 @@ namespace REAgency.Controllers
         //metods create estate object
         public EstateObjectDTO CreateFlat(ObjectsViewModel ovm)
         {
-            FlatDTO flatDTO= new FlatDTO();
-            //var mapper = new MapperConfiguration(cfg => cfg.CreateMap<ObjectsViewModel, EstateObjectDTO>()).CreateMapper(); //создаем обьект и говорим что на что мы мапим
-            //return mapper.Map(ovm, flatDTO);          
+            FlatDTO flatDTO= new FlatDTO();  
+            
 
             return flatDTO;
         }

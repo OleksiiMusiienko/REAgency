@@ -6,7 +6,10 @@ namespace REAgency.Models
     public class ObjectsViewModel
     {
         //поля из EstateObjects
-
+        public enum ObjectType
+        {
+            Flat, Garage, House, Office, Parking, Premis, Room, Stead, Storage
+        }
         #region FildsFromEstateObjects
         public int Id { get; set; } //это поле есть во всех таблицах
         public int countViews { get; set; } 
@@ -107,7 +110,8 @@ namespace REAgency.Models
 
         public string? operationName { get; set; }
 
-        public ObjectType? type { get; set; }
-
+        public string? typeObject{ get; set; }
+        public ObjectType objectType { get; set; }
+        
     }
 }
