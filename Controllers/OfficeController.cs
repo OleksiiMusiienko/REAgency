@@ -1,13 +1,10 @@
-﻿using AutoMapper;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Mvc;
 using REAgency.BLL.DTO;
 using REAgency.BLL.DTO.Object;
 using REAgency.BLL.Interfaces;
 using REAgency.BLL.Interfaces.Object;
-using REAgency.BLL.Services.Objects;
 using REAgency.Models;
+using System.Data;
 
 namespace REAgency.Controllers
 {
@@ -24,6 +21,10 @@ namespace REAgency.Controllers
         }
         public async Task<IActionResult> Index()
         {
+            if(HttpContext.Session.GetString("User") != "employee")
+            {
+                return RedirectToAction("Index", "Home");
+            }
             IEnumerable<EstateObjectDTO> objects = await _objectService.GetAllEstateObjects();
 
             IEnumerable<OperationDTO> operations = await _operationService.GetAll();
