@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using static REAgency.DAL.Entities.Object.EstateObject;
 
 namespace REAgency.Models
 {
@@ -106,7 +107,7 @@ namespace REAgency.Models
 
         public string? operationName { get; set; }
 
-        public string type { get; set; }
+        public ObjectType? type { get; set; }
 
     }
 }
