@@ -19,8 +19,7 @@ namespace REAgency.Controllers
     public class HomeController : Controller
     {
         //private readonly ILogger<HomeController> _logger;
-        private readonly IOperationService _operationService;
-        
+        private readonly IOperationService _operationService;        
         private readonly ILocalityService _localityService;
         private readonly IFlatService _flatService;
         private readonly IClientService _clientService;
@@ -64,10 +63,6 @@ namespace REAgency.Controllers
             
             return RedirectToAction("Index");
         }
-        public IActionResult Office()
-        {
-            return View();
-        }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
@@ -78,9 +73,9 @@ namespace REAgency.Controllers
 
 		public async Task <IActionResult> FindByType(HomePageViewModel homePageViewModel)
 		{
-            string type = homePageViewModel.type;
+            //string type = homePageViewModel.type;
 
-            if(type == " вартира")
+            if(homePageViewModel.type == EstateObject.ObjectType.Flat)
             {
                 IEnumerable<FlatDTO> flats = await _flatService.GetAllFlats();
 
@@ -109,8 +104,7 @@ namespace REAgency.Controllers
                     Rooms = flat.Rooms,
                     kitchenArea = flat.kitchenArea,
                     livingArea = flat.livingArea,
-                    type = "Flat"
-
+                    type = flat.estateType
                 }).ToList();
 
                 return View("Objects", viewModel);
