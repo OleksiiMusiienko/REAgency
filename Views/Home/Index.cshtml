@@ -83,31 +83,31 @@
           
         <div class="catalog-items">
 
-            <form asp-action="FindByType" method="post" class="catalog-item vertical">
+            <form asp-action="ShowObjectsByType" method="post" class="catalog-item vertical">
                 <a onclick="this.closest('form').submit();" style="cursor:pointer;">
                     <img src="~/img/flats.webp" alt="Квартири">
                     <div class="catalog-item-text">
                         <h3>КВАРТИРИ</h3>
                     </div>
-                    <input type="hidden" name="Type" value="Flat" />
+                    <input type="hidden" name="objectType" value="Flat" />
                 </a>
             </form>
-             <form asp-action="FindByType" method="post" class="catalog-item">
+             <form asp-action="ShowObjectsByType" method="post" class="catalog-item">
                 <a onclick="this.closest('form').submit();" style="cursor:pointer;">
                     <img src="~/img/house.jpeg" alt="Будинки">
                     <div class="catalog-item-text">
                         <h3>БУДИНКИ</h3>
                     </div>
-                    <input type="hidden" name="Type" value="Будинки" />
+                    <input type="hidden" name="objectType" value="House" />
                 </a>
             </form>
-             <form asp-action="FindByType" method="post" class="catalog-item">
+             <form asp-action="ShowObjectsByType" method="post" class="catalog-item">
                 <a onclick="this.closest('form').submit();" style="cursor:pointer;">
                     <img src="~/img/garage.jpg" alt="Гаражі">
                     <div class="catalog-item-text">
                         <h3>ГАРАЖІ</h3>
                     </div>
-                    <input type="hidden" name="Type" value="Гаражі" />
+                    <input type="hidden" name="objectType" value="Garage" />
                 </a>
             </form>
 
@@ -118,13 +118,13 @@
                 </div>
             </a>
 
-            <form asp-action="FindByType" method="post" class="catalog-item">
+            <form asp-action="ShowObjectsByType" method="post" class="catalog-item">
                 <a onclick="this.closest('form').submit();" style="cursor:pointer;">
                     <img src="~/img/office.webp" alt="Ділянки">
                     <div class="catalog-item-text">
                         <h3>ОФІСИ</h3>
                     </div>
-                    <input type="hidden" name="Type" value="Офіси" />
+                    <input type="hidden" name="objectType" value="Office" />
                 </a>
             </form>
 
