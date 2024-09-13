@@ -6,32 +6,50 @@
     <div class="col-md-4">
         <form asp-action="Create">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            
             <div class="form-group">
+                <select asp-for="typeObject">
+                    <option value="Flat">Квартира</option>
+                    <option value="House">Будинок</option>
+                    <option value="Room">Кімната</option>
+                    <option value="Stead">Ділянка</option>
+                    <option value="Office">Офіс</option>
+                    <option value="Garage">Гараж</option>
+                    <option value="Premis">Приміщення</option>
+                    <option value="Parking">Паркінг</option>
+                    <option value="Storage">Склад</option>
+                </select>
+            </div>
+           @*  <div class="form-group">
                 <label asp-for="Id" class="control-label"></label>
                 <input asp-for="Id" class="form-control" />
                 <span asp-validation-for="Id" class="text-danger"></span>
-            </div>
-            <div class="form-group">
+            </div> *@
+           @*  <div class="form-group">
                 <label asp-for="countViews" class="control-label"></label>
                 <input asp-for="countViews" class="form-control" />
                 <span asp-validation-for="countViews" class="text-danger"></span>
-            </div>
-            <div class="form-group">
+            </div> *@
+            @* <div class="form-group">
                 <label asp-for="clientId" class="control-label"></label>
                 <input asp-for="clientId" class="form-control" />
                 <span asp-validation-for="clientId" class="text-danger"></span>
-            </div>
-            <div class="form-group">
+            </div> *@
+           @*  <div class="form-group">
                 <label asp-for="employeeId" class="control-label"></label>
                 <input asp-for="employeeId" class="form-control" />
                 <span asp-validation-for="employeeId" class="text-danger"></span>
-            </div>
-            <div class="form-group">
+            </div> *@
+            //проконтролирровать айди сотрудника
+            //создать чекбоск под тип операции
+            //создать комбобокс под локации
+            //создать комбобокс под единицу площади
+            //комбо под валюту
+
+            @* <div class="form-group">
                 <label asp-for="operationId" class="control-label"></label>
                 <input asp-for="operationId" class="form-control" />
                 <span asp-validation-for="operationId" class="text-danger"></span>
-            </div>
+            </div> *@
             <div class="form-group">
                 <label asp-for="locationId" class="control-label"></label>
                 <input asp-for="locationId" class="form-control" />
@@ -72,16 +90,7 @@
                 <input asp-for="Description" class="form-control" />
                 <span asp-validation-for="Description" class="text-danger"></span>
             </div>
-            <div class="form-group form-check">
-                <label class="form-check-label">
-                    <input class="form-check-input" asp-for="Status" /> @Html.DisplayNameFor(model => model.Status)
-                </label>
-            </div>
-            <div class="form-group">
-                <label asp-for="Date" class="control-label"></label>
-                <input asp-for="Date" class="form-control" />
-                <span asp-validation-for="Date" class="text-danger"></span>
-            </div>
+            
             <div class="form-group">
                 <label asp-for="pathPhoto" class="control-label"></label>
                 <input asp-for="pathPhoto" class="form-control" />
@@ -112,31 +121,32 @@
                 <input asp-for="livingArea" class="form-control" />
                 <span asp-validation-for="livingArea" class="text-danger"></span>
             </div>
+            //площадь участка + радио сотки/га 
             <div class="form-group">
                 <label asp-for="steadArea" class="control-label"></label>
                 <input asp-for="steadArea" class="form-control" />
                 <span asp-validation-for="steadArea" class="text-danger"></span>
             </div>
+            // кадастровый номер
             <div class="form-group">
                 <label asp-for="Cadastr" class="control-label"></label>
                 <input asp-for="Cadastr" class="form-control" />
                 <span asp-validation-for="Cadastr" class="text-danger"></span>
-            </div>
-            <div class="form-group">
+            </div> 
+            //целевое назначение комбобокс получить в лист
+             <div class="form-group">
                 <label asp-for="Use" class="control-label"></label>
                 <input asp-for="Use" class="form-control" />
                 <span asp-validation-for="Use" class="text-danger"></span>
             </div>
+            //radio-button продажа-аренда
             <div class="form-group">
                 <label asp-for="operationName" class="control-label"></label>
                 <input asp-for="operationName" class="form-control" />
                 <span asp-validation-for="operationName" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="typeObject" class="control-label"></label>
-                <input asp-for="typeObject" class="form-control" />
-                <span asp-validation-for="typeObject" class="text-danger"></span>
-            </div>
+            //поле asp-for="typeObject" установим по методу обьекта
+           
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />
             </div>

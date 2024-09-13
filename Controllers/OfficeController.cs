@@ -5,6 +5,7 @@ using REAgency.BLL.Interfaces;
 using REAgency.BLL.Interfaces.Object;
 using REAgency.Models;
 using System.Data;
+using REAgencyEnum;
 
 namespace REAgency.Controllers
 {
@@ -12,12 +13,10 @@ namespace REAgency.Controllers
     {
         private readonly IEstateObjectService _objectService;
         private readonly IOperationService _operationService;
-        private List<ObjectsViewModel> listObjects;
         public OfficeController(IEstateObjectService objectService, IOperationService operationService)
         {
             _objectService = objectService;
             _operationService = operationService;
-            listObjects = new List<ObjectsViewModel>();
         }
         public async Task<IActionResult> Index()
         {
@@ -25,11 +24,10 @@ namespace REAgency.Controllers
             {
                 return RedirectToAction("Index", "Home");
             }
-            IEnumerable<EstateObjectDTO> objects = await _objectService.GetAllEstateObjects();
-
+            IEnumerable<EstateObjectDTO> objects = await _objectService.GetEstateObjectByEmployeeId(HttpContext.Session.GetInt32("Id")!.Value);
             IEnumerable<OperationDTO> operations = await _operationService.GetAll();
 
-            listObjects = objects.Select(estateObject => new ObjectsViewModel
+            var listObjects = objects.Select(estateObject => new ObjectsViewModel
             {
                 Id = estateObject.Id,
                 employeeId = estateObject.employeeId,
@@ -44,12 +42,12 @@ namespace REAgency.Controllers
 
             return View(listObjects);
         }
-        public async Task<IActionResult> MyObjects()
+        public async Task<IActionResult> GetAllObjects()
         {
             IEnumerable<EstateObjectDTO> objects = await _objectService.GetAllEstateObjects();
             IEnumerable<OperationDTO> operations = await _operationService.GetAll();
 
-            listObjects = objects.Select(estateObject => new ObjectsViewModel
+            var listObjects = objects.Select(estateObject => new ObjectsViewModel
             {
                 Id = estateObject.Id,
                 employeeId = estateObject.employeeId,
@@ -78,7 +76,7 @@ namespace REAgency.Controllers
 
             if (ModelState.IsValid)
             {
-                if(ovm.objectType == ObjectsViewModel.ObjectType.Flat)
+                if(ovm.objectType == ObjectType.Flat)
                 {
                      _objectService?.CreateEstateObject(CreateFlat(ovm));                    
                 }
@@ -90,6 +88,8 @@ namespace REAgency.Controllers
         //metods create estate object
         public EstateObjectDTO CreateFlat(ObjectsViewModel ovm)
         {
+            //сохранение фото в базу, формировать путь, создавать папку, проверять формат и размер, редактировать
+            //фото, загружать в папку(создавать папку с именем == iDобьекта)
             FlatDTO flatDTO= new FlatDTO();  
             
 

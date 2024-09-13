@@ -1,6 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.Extensions.Logging;
 using REAgency.BLL.DTO;
 using REAgency.BLL.DTO.Object;
 using REAgency.BLL.DTO.Persons;
@@ -8,11 +7,10 @@ using REAgency.BLL.Interfaces;
 using REAgency.BLL.Interfaces.Locations;
 using REAgency.BLL.Interfaces.Object;
 using REAgency.BLL.Interfaces.Persons;
-using REAgency.DAL.Entities.Object;
 using REAgency.Models;
+using REAgencyEnum;
 using System.Diagnostics;
 using System.Text.RegularExpressions;
-
 
 namespace REAgency.Controllers
 {
@@ -90,7 +88,7 @@ namespace REAgency.Controllers
             IEnumerable<AreaDTO> areas = await _areaService.GetAll();
             IEnumerable<CurrencyDTO> currencies = await _currencyService.GetAll();
 
-            if(homePageViewModel.objectType == HomePageViewModel.ObjectType.Flat)
+            if(homePageViewModel.objectType == ObjectType.Flat)
             {
                 IEnumerable<FlatDTO> flats = await _flatService.GetAllFlats();
 
@@ -122,14 +120,14 @@ namespace REAgency.Controllers
                     kitchenArea = flat.kitchenArea,
                     livingArea = flat.livingArea,
                     typeObject = " вартира",
-                    objectType = ObjectsViewModel.ObjectType.Flat
+                    objectType = ObjectType.Flat
 
 
                 }).ToList();
 
                 return View("Objects", viewModel);
             }
-            else if (homePageViewModel.objectType == HomePageViewModel.ObjectType.House)
+            else if (homePageViewModel.objectType == ObjectType.House)
             {
                 IEnumerable<HouseDTO> houses = await _houseService.GetAllHouses();
 
@@ -160,13 +158,13 @@ namespace REAgency.Controllers
                     livingArea = house.livingArea,
                     steadArea = house.steadArea,
                     typeObject = "Ѕудинок",
-                    objectType = ObjectsViewModel.ObjectType.House
+                    objectType = ObjectType.House
 
                 }).ToList();
 
                 return View("Objects", viewModel);
             }
-            else if (homePageViewModel.objectType == HomePageViewModel.ObjectType.Office)
+            else if (homePageViewModel.objectType == ObjectType.Office)
             {
                 IEnumerable<OfficeDTO> offices = await _officeService.GetOffices();
 
@@ -192,13 +190,13 @@ namespace REAgency.Controllers
                     Date = office.Date,
                     pathPhoto = office.pathPhoto,
                     typeObject = "ќф≥с",
-                    objectType = ObjectsViewModel.ObjectType.Office
+                    objectType = ObjectType.Office
 
                 }).ToList();
 
                 return View("Objects", viewModel);
             }
-            else if (homePageViewModel.objectType == HomePageViewModel.ObjectType.Garage)
+            else if (homePageViewModel.objectType == ObjectType.Garage)
             {
                 IEnumerable<GarageDTO> garages = await _garageService.GetGarages();
                 var viewModel = garages.Select(garage => new ObjectsViewModel
@@ -223,15 +221,12 @@ namespace REAgency.Controllers
                     pathPhoto = garage.pathPhoto,
                     Floors = garage.Floors,
                     typeObject = "√араж",
-                    objectType = ObjectsViewModel.ObjectType.Garage
+                    objectType = ObjectType.Garage
                 }).ToList();
 
                 return View("Objects", viewModel);
             }
-
-             return View();
-
-            
+            return View();            
 		}
 
         public async Task<IActionResult> SendApplication(HomePageViewModel homePageViewModel)

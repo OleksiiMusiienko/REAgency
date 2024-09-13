@@ -1,15 +1,12 @@
-﻿using System.ComponentModel.DataAnnotations;
-using static REAgency.DAL.Entities.Object.EstateObject;
+﻿using REAgencyEnum;
+using System.ComponentModel.DataAnnotations;
 
 namespace REAgency.Models
 {
     public class ObjectsViewModel
     {
         //поля из EstateObjects
-        public enum ObjectType
-        {
-            Flat, Garage, House, Office, Parking, Premis, Room, Stead, Storage
-        }
+       
         #region FildsFromEstateObjects
         public int Id { get; set; } //это поле есть во всех таблицах
         public int countViews { get; set; } 
