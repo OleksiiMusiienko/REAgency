@@ -1,6 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.Extensions.Logging;
 using REAgency.BLL.DTO;
 using REAgency.BLL.DTO.Locations;
 using REAgency.BLL.DTO.Object;
@@ -9,11 +8,10 @@ using REAgency.BLL.Interfaces;
 using REAgency.BLL.Interfaces.Locations;
 using REAgency.BLL.Interfaces.Object;
 using REAgency.BLL.Interfaces.Persons;
-using REAgency.DAL.Entities.Object;
 using REAgency.Models;
+using REAgencyEnum;
 using System.Diagnostics;
 using System.Text.RegularExpressions;
-
 
 namespace REAgency.Controllers
 {
@@ -94,7 +92,7 @@ namespace REAgency.Controllers
             IEnumerable<AreaDTO> areas = await _areaService.GetAll();
             IEnumerable<CurrencyDTO> currencies = await _currencyService.GetAll();
 
-            if (homePageViewModel.objectType == HomePageViewModel.ObjectType.Flat)
+            if(homePageViewModel.objectType == ObjectType.Flat)
             {
                 IEnumerable<FlatDTO> flats = await _flatService.GetAllFlats();
 

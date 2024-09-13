@@ -28,6 +28,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\REAgency.BLL\REAgency.BLL.csproj" />
+    <ProjectReference Include="..\REAgencyEnum\REAgencyEnum.csproj" />
   </ItemGroup>
 
   <ItemGroup>

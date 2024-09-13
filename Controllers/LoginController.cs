@@ -1,13 +1,10 @@
-﻿using System.Reflection.Metadata.Ecma335;
+﻿using Microsoft.AspNetCore.Mvc;
+using REAgency.BLL.DTO.Persons;
+using REAgency.BLL.Interfaces.Persons;
+using REAgency.Models;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
-using Microsoft.AspNetCore.Mvc;
-using REAgency.BLL.DTO.Persons;
-using REAgency.BLL.Interfaces.Persons;
-using REAgency.BLL.Services;
-using REAgency.BLL.Services.Persons;
-using REAgency.Models;
 
 namespace REAgency.Controllers
 {
