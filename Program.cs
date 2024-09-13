@@ -28,6 +28,7 @@ builder.Services.AddTransient<IOfficeService, OfficeService>();
 builder.Services.AddTransient<IGarageService, GarageService>();
 builder.Services.AddTransient<IAreaService, AreaService>();
 builder.Services.AddTransient<ICurrencyService, CurrencyService>();
+builder.Services.AddTransient<IEstateObjectService, EstateObjectService>();
 
 
 builder.Services.AddControllersWithViews();

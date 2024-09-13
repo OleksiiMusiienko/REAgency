@@ -6,15 +6,18 @@
 <div class="home-page-main-div" style="background-color: #B4DAF5">
     <h1 style="margin-top: 100px">Агенство нерухомості</h1>
    
-    <div class="search">
-        <div class="custom-select-wrapper">
+    <div >
+        <form asp-action="Search" method="post" class="search">
+             <div class="custom-select-wrapper">
             <div class="custom-select" id="operationSelect">
                 <span></span>
             </div>
             <div class="custom-options" id="operationOptions">
             </div>
 
-            <select id="operationNativeSelect" asp-items="ViewBag.OperatrionsList as SelectList" style="display:none;"></select>
+            <select id="operationNativeSelect" asp-items="ViewBag.OperatrionsList as SelectList" style="display:none;" name="operationTypeId">
+                    <option value="0">Операція</option>
+            </select>
         </div>
 
         <div class="custom-select-wrapper">
@@ -35,12 +38,14 @@
             <div class="custom-options" id="localityOptions">
             </div>
 
-            <select id="localityNativeSelect" asp-items="ViewBag.LocalitiesList as SelectList" style="display:none;"></select>
+            <select id="localityNativeSelect" asp-items="ViewBag.LocalitiesList as SelectList" style="display:none;" name="localityId">
+                <option value="0">Місто</option>
+            </select>
         </div>
 
         <div class="search-buttons-div">
             <a id="toggleButton"> <img src="https://img.icons8.com/?size=100&id=LALXQcDwgx8U&format=png&color=000000" width="35px" height="35px" /></a>
-            <button class="search-button" style="margin-left: 60px" >Знайти</button>
+            <input type="submit" class="search-button" style="margin-left: 60px" value="Знайти"></input>
         </div>
 
         <div>
@@ -67,6 +72,8 @@
                 </div>
             </div>
         </div>
+        </form>
+       
     </div>
 
     

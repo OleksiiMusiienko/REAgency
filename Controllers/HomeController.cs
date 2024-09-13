@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.Logging;
 using REAgency.BLL.DTO;
+using REAgency.BLL.DTO.Locations;
 using REAgency.BLL.DTO.Object;
 using REAgency.BLL.DTO.Persons;
 using REAgency.BLL.Interfaces;
@@ -28,13 +29,14 @@ namespace REAgency.Controllers
         private readonly IGarageService _garageService;
         private readonly IAreaService _areaService;
         private readonly ICurrencyService _currencyService;
+        private readonly IEstateObjectService _estateObjectService;
 
 
         
 
 
         public HomeController(IOperationService operationService, ILocalityService localityService, IFlatService flatService, IClientService clientService, 
-            IHouseSevice houseSevice, IOfficeService officeService, IGarageService garageService, IAreaService areaService, ICurrencyService currencyService)
+            IHouseSevice houseSevice, IOfficeService officeService, IGarageService garageService, IAreaService areaService, ICurrencyService currencyService, IEstateObjectService estateObjectService)
         {
             //_logger = logger;
             _operationService = operationService;
@@ -47,6 +49,7 @@ namespace REAgency.Controllers
             _garageService = garageService;
             _areaService = areaService;
             _currencyService = currencyService;
+            _estateObjectService = estateObjectService;
         }
 
         public async Task<IActionResult> IndexAsync()
@@ -86,7 +89,7 @@ namespace REAgency.Controllers
 
 		public async Task <IActionResult> ShowObjectsByType(HomePageViewModel homePageViewModel)
 		{
-            //string type = homePageViewModel.type;
+           
             IEnumerable<OperationDTO> operations = await _operationService.GetAll();
             IEnumerable<AreaDTO> areas = await _areaService.GetAll();
             IEnumerable<CurrencyDTO> currencies = await _currencyService.GetAll();
@@ -120,6 +123,33 @@ namespace REAgency.Controllers
 
             
 		}
+
+        public async Task<IActionResult> Search(HomePageViewModel homePageViewModel)
+        {
+            int opTypeId = homePageViewModel.operationTypeId;
+            int localityId = homePageViewModel.localityId;
+
+            IEnumerable<EstateObjectDTO> estateObjects = await _estateObjectService.GetAllEstateObjects();
+            IEnumerable<OperationDTO> operations = await _operationService.GetAll();
+            IEnumerable<AreaDTO> areas = await _areaService.GetAll();
+            IEnumerable<CurrencyDTO> currencies = await _currencyService.GetAll();
+            IEnumerable<LocalityDTO>  localities = await _localityService.GetLocalities();
+
+            if(opTypeId == 0 && localityId == 0)
+            {
+                return View("Objects" , estateObjects);
+            }
+            else if(opTypeId != 0 && localityId == 0)
+            {
+                IEnumerable<EstateObjectDTO> estateObjectsByOp = await _estateObjectService.GetEstateObjectByEmployeeId(opTypeId);
+                var selectedByOperation = SelectEstateObject(estateObjectsByOp, operations, areas, currencies);
+                return View("Objects", selectedByOperation);
+            }
+            
+            
+
+             return View();
+        }
 
         public async Task<IActionResult> SendApplication(HomePageViewModel homePageViewModel)
         {
@@ -279,5 +309,105 @@ namespace REAgency.Controllers
 
             return viewModel;
         }
+
+        public ObjectsViewModel SelectFlat(FlatDTO flat, IEnumerable<OperationDTO> operations,
+          IEnumerable<AreaDTO> areas, IEnumerable<CurrencyDTO> currencies)
+        {
+            var viewModel = new ObjectsViewModel
+            {
+                Id = flat.Id,
+                countViews = flat.countViews,
+                employeeId = flat.employeeId,
+                operationId = flat.operationId,
+                operationName = operations.FirstOrDefault(op => op.Id == flat.operationId)?.Name,
+                locationId = flat.locationId,
+                Street = flat.Street,
+                numberStreet = flat.numberStreet,
+                Price = flat.Price,
+                currencyId = flat.currencyId,
+                currencyName = currencies.FirstOrDefault(c => c.Id == flat.currencyId)?.Name,
+                Area = flat.Area,
+                unitAreaId = flat.unitAreaId,
+                unitAreaName = areas.FirstOrDefault(a => a.Id == flat.unitAreaId).Name,
+                Description = flat.Description,
+                Status = flat.Status,
+                Date = flat.Date,
+                pathPhoto = flat.pathPhoto,
+                Floor = flat.Floor,
+                Floors = flat.Floors,
+                Rooms = flat.Rooms,
+                kitchenArea = flat.kitchenArea,
+                livingArea = flat.livingArea,
+                typeObject = " вартира",
+                objectType = ObjectsViewModel.ObjectType.Flat
+
+
+            };
+            return viewModel;
+        }
+
+        public ObjectsViewModel SelectGarage(GarageDTO garage, IEnumerable<OperationDTO> operations,
+           IEnumerable<AreaDTO> areas, IEnumerable<CurrencyDTO> currencies)
+        {
+            var viewModel = new ObjectsViewModel
+            {
+                Id = garage.Id,
+                countViews = garage.countViews,
+                employeeId = garage.employeeId,
+                operationId = garage.operationId,
+                operationName = operations.FirstOrDefault(op => op.Id == garage.operationId)?.Name,
+                locationId = garage.locationId,
+                Street = garage.Street,
+                numberStreet = garage.numberStreet,
+                Price = garage.Price,
+                currencyId = garage.currencyId,
+                currencyName = currencies.FirstOrDefault(c => c.Id == garage.currencyId)?.Name!,
+                Area = garage.Area,
+                unitAreaId = garage.unitAreaId,
+                unitAreaName = areas.FirstOrDefault(a => a.Id == garage.unitAreaId).Name,
+                Description = garage.Description,
+                Status = garage.Status,
+                Date = garage.Date,
+                pathPhoto = garage.pathPhoto,
+                Floors = garage.Floors,
+                typeObject = "√араж",
+                objectType = ObjectsViewModel.ObjectType.Garage
+            };
+
+            return viewModel;
+        }
+
+        public IEnumerable<ObjectsViewModel> SelectEstateObject(IEnumerable<EstateObjectDTO> estateObjects, IEnumerable<OperationDTO> operations,
+        IEnumerable<AreaDTO> areas, IEnumerable<CurrencyDTO> currencies)
+        {
+            var viewModel = estateObjects.Select(estateObjectDTO => new ObjectsViewModel
+            {
+                Id = estateObjectDTO.Id,
+                countViews = estateObjectDTO.countViews,
+                employeeId = estateObjectDTO.employeeId,
+                operationId = estateObjectDTO.operationId,
+                operationName = operations.FirstOrDefault(op => op.Id == estateObjectDTO.operationId)?.Name,
+                locationId = estateObjectDTO.locationId,
+                Street = estateObjectDTO.Street,
+                numberStreet = estateObjectDTO.numberStreet,
+                Price = estateObjectDTO.Price,
+                currencyId = estateObjectDTO.currencyId,
+                currencyName = currencies.FirstOrDefault(c => c.Id == estateObjectDTO.currencyId)?.Name,
+                Area = estateObjectDTO.Area,
+                unitAreaId = estateObjectDTO.unitAreaId,
+                unitAreaName = areas.FirstOrDefault(a => a.Id == estateObjectDTO.unitAreaId).Name,
+                Description = estateObjectDTO.Description,
+                Status = estateObjectDTO.Status,
+                Date = estateObjectDTO.Date,
+                pathPhoto = estateObjectDTO.pathPhoto,
+               
+                //typeObject = " вартира",
+                //objectType = ObjectsViewModel.ObjectType.Flat
+
+
+            }).ToList();
+            return viewModel;
+        }
+
     }
 }
