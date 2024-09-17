@@ -419,7 +419,7 @@ h1 {
     width: 20%;
     font-family: Arial, sans-serif;
     text-align: center;
-    margin: 0 40px;
+    margin: 0 10px;
 }
 
 
@@ -430,12 +430,15 @@ h1 {
     /* border: 1px solid #dcdcdc;*/
     /* border-radius: 5px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);*/
-    padding: 2px 20px 10px 10px;
+    padding: 2px 25px 0px 10px;
     text-align: center;
     font-size: 1em;
     color: #333333;
     height: 30px;
+   
+    width: 10vw;
     top: 0;
+    margin: 0;
 }
 
     .custom-select::after {

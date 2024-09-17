@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using REAgency.BLL.DTO;
 using REAgency.BLL.DTO.Locations;
 using REAgency.BLL.DTO.Object;
@@ -98,19 +99,19 @@ namespace REAgency.Controllers
 
                 return View("Objects", SelectFlats(flats, operations, areas, currencies));
             }
-            else if (homePageViewModel.objectType == HomePageViewModel.ObjectType.House)
+            else if (homePageViewModel.objectType == ObjectType.House)
             {
                 IEnumerable<HouseDTO> houses = await _houseService.GetAllHouses();
 
                 return View("Objects", SelectHouses(houses,operations,areas,currencies));
             }
-            else if (homePageViewModel.objectType == HomePageViewModel.ObjectType.Office)
+            else if (homePageViewModel.objectType == ObjectType.Office)
             {
                 IEnumerable<OfficeDTO> offices = await _officeService.GetOffices();
 
                 return View("Objects", SelectOffices(offices,operations,areas,currencies));
             }
-            else if (homePageViewModel.objectType == HomePageViewModel.ObjectType.Garage)
+            else if (homePageViewModel.objectType == ObjectType.Garage)
             {
                 IEnumerable<GarageDTO> garages = await _garageService.GetGarages();
 
@@ -126,27 +127,63 @@ namespace REAgency.Controllers
         {
             int opTypeId = homePageViewModel.operationTypeId;
             int localityId = homePageViewModel.localityId;
+            int estateTypeId = homePageViewModel.estateTypeId;
+            int minPrice = homePageViewModel.minPrice;
+            int maxPrice = homePageViewModel.maxPrice;
+            double minArea = homePageViewModel.minArea;
+            double maxArea = homePageViewModel.maxArea;
 
             IEnumerable<EstateObjectDTO> estateObjects = await _estateObjectService.GetAllEstateObjects();
+
             IEnumerable<OperationDTO> operations = await _operationService.GetAll();
             IEnumerable<AreaDTO> areas = await _areaService.GetAll();
             IEnumerable<CurrencyDTO> currencies = await _currencyService.GetAll();
-            IEnumerable<LocalityDTO>  localities = await _localityService.GetLocalities();
 
-            if(opTypeId == 0 && localityId == 0)
-            {
-                return View("Objects" , estateObjects);
-            }
-            else if(opTypeId != 0 && localityId == 0)
-            {
-                IEnumerable<EstateObjectDTO> estateObjectsByOp = await _estateObjectService.GetEstateObjectByEmployeeId(opTypeId);
-                var selectedByOperation = SelectEstateObject(estateObjectsByOp, operations, areas, currencies);
-                return View("Objects", selectedByOperation);
-            }
-            
-            
 
-             return View();
+
+            //if (opTypeId == 0 && localityId == 0 && estateTypeId == 0)
+            //{
+            //    var allEstateObjects = SelectEstateObject(estateObjects, operations, areas, currencies);
+            //    return View("Objects", allEstateObjects);
+            //}
+            //else if (opTypeId != 0 && localityId == 0)
+            //{
+            //    IEnumerable<EstateObjectDTO> estateObjectsByOp = await _estateObjectService.GetEstateObjectByOperationId(opTypeId);
+
+            //    var selectedByOperation = SelectEstateObject(estateObjectsByOp, operations, areas, currencies);
+            //    return View("Objects", selectedByOperation);
+            //}
+            //else if (localityId != 0 && opTypeId == 0)
+            //{
+            //    IEnumerable<EstateObjectDTO> estateObjectsByLocality
+            //        = await _estateObjectService.GetEstateObjectByLocalityId(localityId);
+            //    var selectedByLocality = SelectEstateObject(estateObjectsByLocality, operations, areas, currencies);
+            //    return View("Objects", selectedByLocality);
+            //}
+            //else if(estateTypeId != 0 && localityId == 0 && opTypeId == 0)
+            //{
+            //    IEnumerable<EstateObjectDTO> estateObjectsByEstateType= await _estateObjectService.GetEstateObjectByEstateTypeId(estateTypeId);
+            //    var selectedEstateObjects = SelectEstateObject(estateObjectsByEstateType, operations, areas, currencies);
+            //    return View("Objects", selectedEstateObjects);
+            //}
+            //else if(opTypeId != 0 && localityId != 0 && estateTypeId == 0)
+            //{
+            //    IEnumerable<EstateObjectDTO> estateObjectsByOperationAndLocality = await _estateObjectService.GetEstateObjectByOperationAndLocalityId(opTypeId, localityId);
+            //    var selectedByLocalityAndOperation = SelectEstateObject(estateObjectsByOperationAndLocality, operations, areas, currencies);
+            //    return View("Objects", selectedByLocalityAndOperation);
+            //}
+            //else if(estateTypeId != 0 && localityId != 0 && opTypeId != 0)
+            //{
+            //    IEnumerable<EstateObjectDTO> estateObjectsByAll = await _estateObjectService.GetEstateObjectsByAllParameters(opTypeId, localityId,estateTypeId);
+            //    var selectedByAll = SelectEstateObject(estateObjectsByAll, operations, areas, currencies);
+            //    return View("Objects", selectedByAll);
+            //}
+
+            var estateObjects1 = await _estateObjectService.GetFilteredEstateObjects(
+        estateTypeId, opTypeId, localityId, minPrice, maxPrice, minArea, maxArea);
+
+
+            return View("Objects", SelectEstateObject(estateObjects1, operations, areas, currencies));
         }
 
         public async Task<IActionResult> SendApplication(HomePageViewModel homePageViewModel)
@@ -203,7 +240,7 @@ namespace REAgency.Controllers
                 kitchenArea = flat.kitchenArea,
                 livingArea = flat.livingArea,
                 typeObject = " вартира",
-                objectType = ObjectsViewModel.ObjectType.Flat
+                objectType = ObjectType.Flat
 
 
             }).ToList();
@@ -240,7 +277,7 @@ namespace REAgency.Controllers
                 livingArea = house.livingArea,
                 steadArea = house.steadArea,
                 typeObject = "Ѕудинок",
-                objectType = ObjectsViewModel.ObjectType.House
+                objectType = ObjectType.House
 
             }).ToList();
             return viewModel;
@@ -271,7 +308,7 @@ namespace REAgency.Controllers
                 pathPhoto = garage.pathPhoto,
                 Floors = garage.Floors,
                 typeObject = "√араж",
-                objectType = ObjectsViewModel.ObjectType.Garage
+                objectType = ObjectType.Garage
             }).ToList();
 
             return viewModel;
@@ -301,7 +338,7 @@ namespace REAgency.Controllers
                 Date = office.Date,
                 pathPhoto = office.pathPhoto,
                 typeObject = "ќф≥с",
-                objectType = ObjectsViewModel.ObjectType.Office
+                objectType = ObjectType.Office
 
             }).ToList();
 
@@ -337,7 +374,7 @@ namespace REAgency.Controllers
                 kitchenArea = flat.kitchenArea,
                 livingArea = flat.livingArea,
                 typeObject = " вартира",
-                objectType = ObjectsViewModel.ObjectType.Flat
+                objectType = ObjectType.Flat
 
 
             };
@@ -369,7 +406,7 @@ namespace REAgency.Controllers
                 pathPhoto = garage.pathPhoto,
                 Floors = garage.Floors,
                 typeObject = "√араж",
-                objectType = ObjectsViewModel.ObjectType.Garage
+                objectType = ObjectType.Garage
             };
 
             return viewModel;

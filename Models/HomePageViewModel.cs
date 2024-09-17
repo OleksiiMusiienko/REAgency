@@ -14,5 +14,15 @@ namespace REAgency.Models
         public int operationTypeId {  get; set; }
 
         public int localityId { get; set; }
+
+        public int estateTypeId { get; set; }
+
+        public int minPrice { get; set; }
+        public int maxPrice { get; set; }
+
+        public double minArea { get; set; }
+        public double maxArea { get; set; }
+
+
     }
 }

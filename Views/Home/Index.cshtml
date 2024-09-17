@@ -27,7 +27,10 @@
             <div class="custom-options" id="objectOptions">
             </div>
 
-            <select id="objectNativeSelect" asp-items="ViewBag.EsateTypesList as SelectList" style="display:none;"></select>
+            <select id="objectNativeSelect" asp-items="ViewBag.EsateTypesList as SelectList" style="display:none;" name="estateTypeId">
+                    <option value="0">Всі об'єкти</option>
+                    <option value="1">Квартира</option>
+            </select>
         </div>
 
 
@@ -55,8 +58,8 @@
                         <label>Площа</label>
 
                         <div class="range">
-                            <input type="text" placeholder="Min" class="filtration-input" />
-                            <input type="text" placeholder="Max" class="filtration-input" />
+                            <input type="text" placeholder="Min" class="filtration-input" name="minArea"/>
+                            <input type="text" placeholder="Max" class="filtration-input" name="maxArea"/>
 
                         </div>
 
@@ -65,8 +68,8 @@
                         <label>Ціна</label>
 
                         <div class="range">
-                            <input type="text" placeholder="Min" class="filtration-input" />
-                            <input type="text" placeholder="Max" class="filtration-input" />
+                            <input type="text" placeholder="Min" class="filtration-input" name="minPrice"/>
+                            <input type="text" placeholder="Max" class="filtration-input" name="maxPrice"/>
                         </div>
                     </div>
                 </div>
