@@ -1,35 +1,153 @@
-﻿@model IEnumerable<REAgency.Models.ObjectsViewModel>
+﻿@using REAgencyEnum
+@model IEnumerable<REAgency.Models.ObjectsViewModel>
 
-<div class="objects-container">
-    @foreach (var item in Model)
-    {
-        
-        <div class="item">
+<div class="main-div" style="margin-top: -40px;">
+    <div>
+        <form asp-action="Search" method="post" class="search" style="margin-bottom: 60px;">
+            <div class="custom-select-wrapper">
+                <div class="custom-select" id="operationSelect">
+                    <span></span>
+                </div>
+                <div class="custom-options" id="operationOptions">
+                </div>
+
+                <select id="operationNativeSelect" asp-items="ViewBag.OperatrionsList as SelectList" style="display:none;" name="operationTypeId">
+                    <option value="0">Операція</option>
+                </select>
+            </div>
+
+            <div class="custom-select-wrapper">
+                <div class="custom-select" id="objectSelect">
+                    <span></span>
+                </div>
+                <div class="custom-options" id="objectOptions">
+                </div>
+
+                <select id="objectNativeSelect" asp-items="ViewBag.EsateTypesList as SelectList" style="display:none;" name="estateTypeId">
+                    <option value="0">Всі об'єкти</option>
+                    <option value="1">Квартира</option>
+                </select>
+            </div>
+
+
+            <div class="custom-select-wrapper">
+                <div class="custom-select" id="localitySelect">
+                    <span></span>
+                </div>
+                <div class="custom-options" id="localityOptions">
+                </div>
+
+                <select id="localityNativeSelect" asp-items="ViewBag.LocalitiesList as SelectList" style="display:none;" name="localityId">
+                    <option value="0">Місто</option>
+                </select>
+            </div>
+
+            <div class="search-buttons-div">
+                <a id="toggleButton"> <img src="https://img.icons8.com/?size=100&id=LALXQcDwgx8U&format=png&color=000000" width="35px" height="35px" /></a>
+                <input type="submit" class="search-button" style="margin-left: 60px" value="Знайти"></input>
+            </div>
+
             <div>
+                <div id="filtration">
+                    <div class="filtration-container">
+                        <div class="area-for-items">
+                            <label>Площа</label>
 
-                <p class="item-type">@Html.DisplayFor(modelItem => item.typeObject)</p>
+                            <div class="range">
+                                <input type="text" placeholder="Min" class="filtration-input" name="minArea" />
+                                <input type="text" placeholder="Max" class="filtration-input" name="maxArea" />
 
-                <img src="@Html.DisplayFor(modelItem => item.pathPhoto)" class="object-img" alt="Object Image" />
-               
+                            </div>
 
-                <div class="price-style">
+                        </div>
+                        <div class="area-for-items">
+                            <label>Ціна</label>
 
-                    <p> @Html.DisplayFor(modelItem => item.operationName)</p>
-                    <p>@Html.DisplayFor(modelItem => item.Area) @Html.DisplayFor(modelItem => item.unitAreaName)</p>
-
-                    <p> @Html.DisplayFor(modelItem => item.Price) @Html.DisplayFor(modelItem => item.currencyName)</p>
+                            <div class="range">
+                                <input type="text" placeholder="Min" class="filtration-input" name="minPrice" />
+                                <input type="text" placeholder="Max" class="filtration-input" name="maxPrice" />
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
-           
+        </form>
 
-           <div class="info">
-             @*    <p>Этаж: @Html.DisplayFor(modelItem => item.Floor)</p>
-                <p>Количество комнат: @Html.DisplayFor(modelItem => item.Rooms)</p>
-                <p>Площадь кухни: @Html.DisplayFor(modelItem => item.kitchenArea) м²</p>
-                <p>Жилая площадь: @Html.DisplayFor(modelItem => item.livingArea) м²</p> *@
-                @* <p>@Html.DisplayFor(modelItem => item.Area) @Html.DisplayFor(modelItem => item.unitAreaName)</p> *@
-            </div> 
-        </div>
-       
-    }
+      
+    </div>
+
+    <div class="objects-container">
+        @if (Model.Any())
+        {
+            @foreach (var item in Model)
+            {
+                <div class="item">
+                    <div>
+                        @if (item.typeObject == ObjectType.Flat.ToString())
+                        {
+                            <p class="item-type">Квартира</p>
+                        }
+                        else if (item.typeObject == ObjectType.Office.ToString())
+                        {
+                            <p class="item-type">Офіс</p>
+                        }
+                        else if (item.typeObject == ObjectType.Garage.ToString())
+                        {
+                            <p class="item-type">Гараж</p>
+                        }
+                        else if (item.typeObject == ObjectType.House.ToString())
+                        {
+                            <p class="item-type">Дім</p>
+                        }
+                        else if (item.typeObject == ObjectType.Stead.ToString())
+                        {
+                            <p class="item-type">Ділянка</p>
+                        }
+                        else if (item.typeObject == ObjectType.Room.ToString())
+                        {
+                            <p class="item-type">Кімната</p>
+                        }
+                        else if (item.typeObject == ObjectType.Parking.ToString())
+                        {
+                            <p class="item-type">Парко-місце</p>
+                        }
+                        else if (item.typeObject == ObjectType.Storage.ToString())
+                        {
+                            <p class="item-type">Склад</p>
+                        }
+                        else
+                        {
+                            <p class="item-type">@Html.DisplayFor(modelItem => item.typeObject)</p>
+                        }
+
+                        <img src="@Html.DisplayFor(modelItem => item.pathPhoto)" class="object-img" alt="Object Image" />
+
+
+                        <div class="price-style">
+
+                            <p> @Html.DisplayFor(modelItem => item.operationName)</p>
+                            <p>@Html.DisplayFor(modelItem => item.Area) @Html.DisplayFor(modelItem => item.unitAreaName)</p>
+
+                            <p> @Html.DisplayFor(modelItem => item.Price) @Html.DisplayFor(modelItem => item.currencyName)</p>
+                        </div>
+                    </div>
+
+
+                    <div class="info" style=" display: none;">
+                        <p>Місцевість: @Html.DisplayFor(modelItem => item.localityName)</p>
+                       
+                    </div>
+                </div>
+
+
+            }
+            
+        
+        }
+        else
+        {
+            <h2>На жаль за Вашим запитом нічого не знайдено</h2>
+        }
+    </div>
+
 </div>

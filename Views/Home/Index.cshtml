@@ -3,7 +3,7 @@
 @{
     ViewData["Title"] = "Home Page";
 }
-<div class="home-page-main-div" style="background-color: #B4DAF5">
+<div class="main-div" style="background-color: #B4DAF5">
     <h1 style="margin-top: 100px">Агенство нерухомості</h1>
    
     <div >
@@ -121,13 +121,15 @@
                 </a>
             </form>
 
-            <a class="catalog-item">
-                <img src="~/img/plot.jpeg" alt="Ділянки">
-                <div class="catalog-item-text">
-                    <h3>ДІЛЯНКИ</h3>
-                </div>
-            </a>
-
+             <form asp-action="ShowObjectsByType" method="post" class="catalog-item">
+                <a onclick="this.closest('form').submit();" style="cursor:pointer;">
+                    <img src="~/img/plot.jpeg" alt="Ділянки">
+                    <div class="catalog-item-text">
+                        <h3>ДІЛЯНКИ</h3>
+                    </div>
+                    <input type="hidden" name="objectType" value="Stead" />
+                </a>
+            </form>
             <form asp-action="ShowObjectsByType" method="post" class="catalog-item">
                 <a onclick="this.closest('form').submit();" style="cursor:pointer;">
                     <img src="~/img/office.webp" alt="Ділянки">

@@ -99,12 +99,7 @@ namespace REAgency.Models
         [Required(ErrorMessage = "Поле \"Кадастр\" обов'язкове!")]
         public string Cadastr { get; set; }
         [Required(ErrorMessage = "Поле \"Землекористування\" обов'язкове!")]
-        public LandUse Use { get; set; }
-
-        public enum LandUse
-        {
-            // here would be a allowed items for field "use"
-        }
+        public string Use { get; set; }
 
         #endregion
 
@@ -112,6 +107,10 @@ namespace REAgency.Models
 
         public string? typeObject{ get; set; }
         public ObjectType objectType { get; set; }
+
+        public int localityId { get; set; }
+
+        public string? localityName {  get; set; }
         
     }
 }
