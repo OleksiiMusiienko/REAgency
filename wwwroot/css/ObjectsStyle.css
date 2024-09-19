@@ -78,3 +78,35 @@ label, p {
     border-radius: 5px;
     font-size: 0.9em;
 }
+
+.page-link {
+    text-decoration: none;
+    background-color: transparent;
+    border: 3px solid #052a5e;
+    display: inline-block;
+    padding: 5px 10px;
+    text-align: center;
+    margin: 20px auto;
+    color: #052a5e
+}
+    .page-link:hover {
+        color: white;
+        background-color: #0b5dd0;
+        border-color: #0b5dd0
+    }
+
+ul.pagination {
+    display: flex;
+    justify-content: center; 
+    list-style: none; 
+    padding: 0px;
+    
+    
+}
+  
+
+.page-item.active .page-link {
+    background-color: #052a5e; 
+    color: white; 
+    border-color: transparent;
+}

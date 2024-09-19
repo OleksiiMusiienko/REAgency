@@ -111,6 +111,8 @@ namespace REAgency.Models
         public int localityId { get; set; }
 
         public string? localityName {  get; set; }
+
+        
         
     }
 }

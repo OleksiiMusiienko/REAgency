@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -11,6 +12,8 @@ using REAgency.BLL.Interfaces.Object;
 using REAgency.BLL.Interfaces.Persons;
 using REAgency.DAL.Entities.Locations;
 using REAgency.DAL.Entities.Object;
+using REAgency.DAL.Entities.Person;
+using REAgency.DAL.Interfaces;
 using REAgency.Models;
 using REAgencyEnum;
 using System.Diagnostics;
@@ -35,9 +38,9 @@ namespace REAgency.Controllers
         private readonly ISteadService _steadService;
         private readonly ILocationService _locationService;
 
+        int pageSize = 9;
 
 
-        
 
 
         public HomeController(IOperationService operationService, ILocalityService localityService, IFlatService flatService, IClientService clientService, 
@@ -95,50 +98,102 @@ namespace REAgency.Controllers
         }
 
 
-		public async Task <IActionResult> ShowObjectsByType(HomePageViewModel homePageViewModel)
+		public async Task <IActionResult> ShowObjectsByType(HomePageViewModel homePageViewModel, int page = 1)
 		{
-           
+            
+
             IEnumerable<OperationDTO> operations = await _operationService.GetAll();
             IEnumerable<AreaDTO> areas = await _areaService.GetAll();
             IEnumerable<CurrencyDTO> currencies = await _currencyService.GetAll();
+            var objectTypeSession = HttpContext.Session.GetString("objectType");
 
-            if(homePageViewModel.objectType == ObjectType.Flat)
+            if (homePageViewModel.objectType != null)
+            {
+                HttpContext.Session.SetString("objectType", homePageViewModel.objectType.ToString());
+            }
+           
+
+
+            if (homePageViewModel.objectType == ObjectType.Flat || objectTypeSession == "Flat")
             {
                 IEnumerable<FlatDTO> flats = await _flatService.GetAllFlats();
 
-                return View("Objects", SelectFlats(flats, operations, areas, currencies));
+                var selectedFlats = SelectFlats(flats, operations, areas, currencies);
+                var count = selectedFlats.Count();
+                var items = selectedFlats.Skip((page - 1) * pageSize).Take(pageSize).ToList();
+
+                PageViewModel pageViewModel = new PageViewModel(count, page, pageSize);
+                
+                pageViewModel.typeOfAction = "ShowObjectsByType";
+                ObjectPageViewModel objectPageViewModel = new ObjectPageViewModel(items, pageViewModel);
+
+                return View("Objects", objectPageViewModel);
             }
-            else if (homePageViewModel.objectType == ObjectType.House)
+            else if (homePageViewModel.objectType == ObjectType.House || objectTypeSession == "House")
             {
                 IEnumerable<HouseDTO> houses = await _houseService.GetAllHouses();
 
-                return View("Objects", SelectHouses(houses,operations,areas,currencies));
+                var selectedHouses = SelectHouses(houses, operations, areas, currencies);
+                var count = selectedHouses.Count();
+                var items = selectedHouses.Skip((page - 1) * pageSize).Take(pageSize).ToList();
+
+                PageViewModel pageViewModel = new PageViewModel(count, page, pageSize);
+
+                pageViewModel.typeOfAction = "ShowObjectsByType";
+                ObjectPageViewModel objectPageViewModel = new ObjectPageViewModel(items, pageViewModel);
+
+
+                return View("Objects", objectPageViewModel);
             }
-            else if (homePageViewModel.objectType == ObjectType.Office)
+            else if (homePageViewModel.objectType == ObjectType.Office || objectTypeSession == "Office")
             {
                 IEnumerable<OfficeDTO> offices = await _officeService.GetOffices();
 
-                return View("Objects", SelectOffices(offices,operations,areas,currencies));
+                var selectedOffices = SelectOffices(offices, operations, areas, currencies);
+                var count = selectedOffices.Count();
+                var items = selectedOffices.Skip((page - 1) * pageSize).Take(pageSize).ToList();
+
+                PageViewModel pageViewModel = new PageViewModel(count, page, pageSize);
+
+                pageViewModel.typeOfAction = "ShowObjectsByType";
+                ObjectPageViewModel objectPageViewModel = new ObjectPageViewModel(items, pageViewModel);
+                return View("Objects", objectPageViewModel);
             }
-            else if (homePageViewModel.objectType == ObjectType.Garage)
+            else if (homePageViewModel.objectType == ObjectType.Garage || objectTypeSession == "Garage")
             {
                 IEnumerable<GarageDTO> garages = await _garageService.GetGarages();
 
-                return View("Objects", SelectGarages(garages,operations,areas,currencies));
+                var selectedGarages = SelectGarages(garages, operations, areas, currencies);
+                var count = selectedGarages.Count();
+                var items = selectedGarages.Skip((page - 1) * pageSize).Take(pageSize).ToList();
+
+                PageViewModel pageViewModel = new PageViewModel(count, page, pageSize);
+
+                pageViewModel.typeOfAction = "ShowObjectsByType";
+                ObjectPageViewModel objectPageViewModel = new ObjectPageViewModel(items, pageViewModel);
+                return View("Objects", objectPageViewModel);
             }
-            else if(homePageViewModel.objectType == ObjectType.Stead)
+            else if(homePageViewModel.objectType == ObjectType.Stead || objectTypeSession == "Stead")
             {
                 IEnumerable<SteadDTO> steads = await _steadService.GetSteads();
+                var selectedSteads = SelectSteads(steads, operations, areas, currencies);
+                var count = selectedSteads.Count();
+                var items = selectedSteads.Skip((page - 1) * pageSize).Take(pageSize).ToList();
 
-                return View("Objects", SelectSteads(steads, operations, areas, currencies));
+                PageViewModel pageViewModel = new PageViewModel(count, page, pageSize);
+
+                pageViewModel.typeOfAction = "ShowObjectsByType";
+                ObjectPageViewModel objectPageViewModel = new ObjectPageViewModel(items, pageViewModel);
+                return View("Objects", objectPageViewModel);
             }
+
 
              return View();
 
             
 		}
 
-        public async Task<IActionResult> Search(HomePageViewModel homePageViewModel)
+        public async Task<IActionResult> Search(HomePageViewModel homePageViewModel, int page = 1)
         {
             int opTypeId = homePageViewModel.operationTypeId;
             int localityId = homePageViewModel.localityId;
@@ -148,7 +203,34 @@ namespace REAgency.Controllers
             double minArea = homePageViewModel.minArea;
             double maxArea = homePageViewModel.maxArea;
 
-           
+            if(opTypeId != 0 || localityId != 0 || estateTypeId != 0 ||
+                minPrice != 0 || maxPrice != 0 || minArea != 0 || maxArea != 0)
+            {
+                HttpContext.Session.SetInt32("opTypeId", opTypeId);
+                HttpContext.Session.SetInt32("localityId", localityId);
+                HttpContext.Session.SetInt32("estateTypeId", estateTypeId);
+                HttpContext.Session.SetInt32("minPrice", minPrice);
+                HttpContext.Session.SetInt32("maxPrice", maxPrice);
+                HttpContext.Session.SetString("minArea", minArea.ToString("R"));
+                HttpContext.Session.SetString("maxArea", maxArea.ToString("R"));
+            }
+            
+
+
+            var opTypeIdSession = HttpContext.Session.GetInt32("opTypeId");
+            var localityIdSession = HttpContext.Session.GetInt32("localityId");
+            var estateTypeIdSession = HttpContext.Session.GetInt32("estateTypeId");
+            var minPriceSession = HttpContext.Session.GetInt32("minPrice");
+            var maxPriceSession = HttpContext.Session.GetInt32("maxPrice");
+
+            
+            var minAreaSessionStr = HttpContext.Session.GetString("minArea");
+            var maxAreaSessionStr = HttpContext.Session.GetString("maxArea");
+
+            double? minAreaSession = double.TryParse(minAreaSessionStr, out _) ? minArea : (double?)null;
+            double? maxAreaSession = double.TryParse(maxAreaSessionStr, out _) ? maxArea : (double?)null;
+
+
 
             IEnumerable<OperationDTO> operations = await _operationService.GetAll();
             IEnumerable<AreaDTO> areas = await _areaService.GetAll();
@@ -156,14 +238,64 @@ namespace REAgency.Controllers
             IEnumerable<LocationDTO> locations = await _locationService.GetLocations();
             IEnumerable<LocalityDTO> localities = await _localityService.GetLocalities();
 
-
             var filtredEstateObjects = await _estateObjectService.GetFilteredEstateObjects(
-            estateTypeId, opTypeId, localityId, minPrice, maxPrice, minArea, maxArea);
+           estateTypeId, opTypeId, localityId, minPrice, maxPrice, minArea, maxArea);
+
+          
 
             ViewBag.OperatrionsList = new SelectList(await _operationService.GetAll(), "Id", "Name");
             ViewBag.LocalitiesList = new SelectList(await _localityService.GetLocalities(), "Id", "Name");
 
-            return View("Objects", SelectEstateObject(filtredEstateObjects, operations, areas, currencies, locations, localities));
+            if (opTypeId != 0 || localityId != 0 || estateTypeId != 0 ||
+                minPrice != 0 || maxPrice != 0 || minArea != 0 || maxArea != 0 )
+            {
+                
+
+                var estateObjects = SelectEstateObject(filtredEstateObjects, operations, areas, currencies, locations, localities);
+                var count = estateObjects.Count();
+                var items = estateObjects.Skip((page - 1) * pageSize).Take(pageSize).ToList();
+
+                PageViewModel pageViewModel = new PageViewModel(count, page, pageSize);
+                pageViewModel.typeOfAction = "Search";
+                ObjectPageViewModel objectPageViewModel = new ObjectPageViewModel(items, pageViewModel);
+
+                return View("Objects", objectPageViewModel);
+            }
+            else
+            {
+                if(opTypeIdSession == null && localityIdSession == null &&
+                    estateTypeIdSession == null && minPriceSession == null &&
+                    maxPriceSession == null && minAreaSession == null && maxAreaSession == null)
+                {
+                    var estateObjects = SelectEstateObject(filtredEstateObjects, operations, areas, currencies, locations, localities);
+                    var count = estateObjects.Count();
+                    var items = estateObjects.Skip((page - 1) * pageSize).Take(pageSize).ToList();
+
+                    PageViewModel pageViewModel = new PageViewModel(count, page, pageSize);
+                    pageViewModel.typeOfAction = "Search";
+                    ObjectPageViewModel objectPageViewModel = new ObjectPageViewModel(items, pageViewModel);
+
+                    return View("Objects", objectPageViewModel);
+                }
+                else
+                {
+                    var filtredEstateObjectsFromSession = await _estateObjectService.GetFilteredEstateObjects(
+         estateTypeIdSession, opTypeIdSession, localityIdSession, minPriceSession, maxPriceSession, minAreaSession, maxAreaSession);
+                    var estateObjects = SelectEstateObject(filtredEstateObjectsFromSession, operations, areas, currencies, locations, localities);
+                    var count = estateObjects.Count();
+                    var items = estateObjects.Skip((page - 1) * pageSize).Take(pageSize).ToList();
+
+                    PageViewModel pageViewModel = new PageViewModel(count, page, pageSize);
+                    pageViewModel.typeOfAction = "Search";
+                    ObjectPageViewModel objectPageViewModel = new ObjectPageViewModel(items, pageViewModel);
+
+                    return View("Objects", objectPageViewModel);
+                }
+                
+
+              
+            }
+           
         }
 
         public async Task<IActionResult> SendApplication(HomePageViewModel homePageViewModel)
@@ -221,6 +353,7 @@ namespace REAgency.Controllers
                 livingArea = flat.livingArea,
                 typeObject = " вартира",
                 objectType = ObjectType.Flat
+               
 
 
             }).ToList();
