@@ -13,7 +13,7 @@ namespace REAgency.Models
 
         public int clientId { get; set; }
     
-        public int employeeId { get; set; }
+        public int? employeeId { get; set; }
     
 
         public int operationId { get; set; }
