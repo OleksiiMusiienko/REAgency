@@ -3,18 +3,21 @@
 @{
     ViewData["Title"] = "Home Page";
 }
-<div class="home-page-main-div" style="background-color: #B4DAF5">
+<div class="main-div" style="background-color: #B4DAF5">
     <h1 style="margin-top: 100px">Агенство нерухомості</h1>
    
-    <div class="search">
-        <div class="custom-select-wrapper">
+    <div >
+        <form asp-action="Search" method="post" class="search">
+             <div class="custom-select-wrapper">
             <div class="custom-select" id="operationSelect">
                 <span></span>
             </div>
             <div class="custom-options" id="operationOptions">
             </div>
 
-            <select id="operationNativeSelect" asp-items="ViewBag.OperatrionsList as SelectList" style="display:none;"></select>
+            <select id="operationNativeSelect" asp-items="ViewBag.OperatrionsList as SelectList" style="display:none;" name="operationTypeId">
+                    <option value="0">Операція</option>
+            </select>
         </div>
 
         <div class="custom-select-wrapper">
@@ -24,7 +27,18 @@
             <div class="custom-options" id="objectOptions">
             </div>
 
-            <select id="objectNativeSelect" asp-items="ViewBag.EsateTypesList as SelectList" style="display:none;"></select>
+            <select id="objectNativeSelect" asp-items="ViewBag.EsateTypesList as SelectList" style="display:none;" name="estateTypeId">
+                    <option value="0">Всі об'єкти</option>
+                    <option value="1">Квартира</option>
+                    <option value="2">Гараж</option>
+                    <option value="3">Дім</option>
+                    <option value="4">Офіс</option>
+                    <option value="5">Парко-місце</option>
+                    <option value="6">Приміщення</option>
+                    <option value="7">Кімната</option>
+                    <option value="8">Ділянка</option>
+                    <option value="9">Склад</option>
+            </select>
         </div>
 
 
@@ -35,12 +49,14 @@
             <div class="custom-options" id="localityOptions">
             </div>
 
-            <select id="localityNativeSelect" asp-items="ViewBag.LocalitiesList as SelectList" style="display:none;"></select>
+            <select id="localityNativeSelect" asp-items="ViewBag.LocalitiesList as SelectList" style="display:none;" name="localityId">
+                <option value="0">Місто</option>
+            </select>
         </div>
 
         <div class="search-buttons-div">
             <a id="toggleButton"> <img src="https://img.icons8.com/?size=100&id=LALXQcDwgx8U&format=png&color=000000" width="35px" height="35px" /></a>
-            <button class="search-button" style="margin-left: 60px" >Знайти</button>
+            <input type="submit" class="search-button" style="margin-left: 60px" value="Знайти"></input>
         </div>
 
         <div>
@@ -50,8 +66,8 @@
                         <label>Площа</label>
 
                         <div class="range">
-                            <input type="text" placeholder="Min" class="filtration-input" />
-                            <input type="text" placeholder="Max" class="filtration-input" />
+                            <input type="text" placeholder="Min" class="filtration-input" name="minArea"/>
+                            <input type="text" placeholder="Max" class="filtration-input" name="maxArea"/>
 
                         </div>
 
@@ -60,13 +76,15 @@
                         <label>Ціна</label>
 
                         <div class="range">
-                            <input type="text" placeholder="Min" class="filtration-input" />
-                            <input type="text" placeholder="Max" class="filtration-input" />
+                            <input type="text" placeholder="Min" class="filtration-input" name="minPrice"/>
+                            <input type="text" placeholder="Max" class="filtration-input" name="maxPrice"/>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
+        </form>
+       
     </div>
 
     
@@ -83,48 +101,50 @@
           
         <div class="catalog-items">
 
-            <form asp-action="FindByType" method="post" class="catalog-item vertical">
+            <form asp-action="ShowObjectsByType" method="post" class="catalog-item vertical">
                 <a onclick="this.closest('form').submit();" style="cursor:pointer;">
                     <img src="~/img/flats.webp" alt="Квартири">
                     <div class="catalog-item-text">
                         <h3>КВАРТИРИ</h3>
                     </div>
-                    <input type="hidden" name="Type" value="Flat" />
+                    <input type="hidden" name="objectType" value="Flat" />
                 </a>
             </form>
-             <form asp-action="FindByType" method="post" class="catalog-item">
+             <form asp-action="ShowObjectsByType" method="post" class="catalog-item">
                 <a onclick="this.closest('form').submit();" style="cursor:pointer;">
                     <img src="~/img/house.jpeg" alt="Будинки">
                     <div class="catalog-item-text">
                         <h3>БУДИНКИ</h3>
                     </div>
-                    <input type="hidden" name="Type" value="Будинки" />
+                    <input type="hidden" name="objectType" value="House" />
                 </a>
             </form>
-             <form asp-action="FindByType" method="post" class="catalog-item">
+             <form asp-action="ShowObjectsByType" method="post" class="catalog-item">
                 <a onclick="this.closest('form').submit();" style="cursor:pointer;">
                     <img src="~/img/garage.jpg" alt="Гаражі">
                     <div class="catalog-item-text">
                         <h3>ГАРАЖІ</h3>
                     </div>
-                    <input type="hidden" name="Type" value="Гаражі" />
+                    <input type="hidden" name="objectType" value="Garage" />
                 </a>
             </form>
 
-            <a class="catalog-item">
-                <img src="~/img/plot.jpeg" alt="Ділянки">
-                <div class="catalog-item-text">
-                    <h3>ДІЛЯНКИ</h3>
-                </div>
-            </a>
-
-            <form asp-action="FindByType" method="post" class="catalog-item">
+             <form asp-action="ShowObjectsByType" method="post" class="catalog-item">
+                <a onclick="this.closest('form').submit();" style="cursor:pointer;">
+                    <img src="~/img/plot.jpeg" alt="Ділянки">
+                    <div class="catalog-item-text">
+                        <h3>ДІЛЯНКИ</h3>
+                    </div>
+                    <input type="hidden" name="objectType" value="Stead" />
+                </a>
+            </form>
+            <form asp-action="ShowObjectsByType" method="post" class="catalog-item">
                 <a onclick="this.closest('form').submit();" style="cursor:pointer;">
                     <img src="~/img/office.webp" alt="Ділянки">
                     <div class="catalog-item-text">
                         <h3>ОФІСИ</h3>
                     </div>
-                    <input type="hidden" name="Type" value="Офіси" />
+                    <input type="hidden" name="objectType" value="Office" />
                 </a>
             </form>
 
