@@ -29,6 +29,9 @@ builder.Services.AddTransient<IGarageService, GarageService>();
 builder.Services.AddTransient<IAreaService, AreaService>();
 builder.Services.AddTransient<ICurrencyService, CurrencyService>();
 builder.Services.AddTransient<IOrderService, OrderService>();
+builder.Services.AddTransient<IRegionService, RegionService>();
+builder.Services.AddTransient<IDistrictService, DistrictService>();
+
 
 
 builder.Services.AddControllersWithViews();
