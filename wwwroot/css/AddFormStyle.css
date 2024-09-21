@@ -1,0 +1,14 @@
+﻿#btnForm {
+    padding-left: 5px;
+    font-size: 16px;
+    border: 2px solid #AFD2E9;
+    background: #F4F3F7;
+    color: #052B5E;
+    margin-top: 5px;
+    border-radius: 5px;
+}
+
+    #btnForm:hover {
+        background: #052B5E;
+        color: #F4F3F7;
+    }

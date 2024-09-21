@@ -2,8 +2,26 @@
 @{
     ViewData["Title"] = "Office";
 }
+
 <div>
-    <a asp-action="GetAllObjects" asp-controller="Office">Усі об'єкти</a>
-    <a asp-action="Create" asp-controller="Office">Додати об'єкт</a>
+    <form name="selectedForm" >
+        <a asp-action="GetAllObjects">Усі об'єкти</a>
+        <select name="selEstate">
+                <option value="Flat" name="type">Квартира</option>
+                <option value="House" name="type">Будинок</option>
+                <option value="Room" name="type">Кімната</option>
+                <option value="Stead" name="type">Ділянка</option>
+                <option value="Office" name="type">Офіс</option>
+                <option value="Garage" name="type">Гараж</option>
+                <option value="Premis" name="type">Приміщення</option>
+                <option value="Parking" name="type">Паркінг</option>
+                <option value="Storage" name="type">Склад</option>
+            </select>      
+        <div class="form-group">
+            <input type="submit" name="send" value="Отправить" asp-controller="Office" asp-action="Create" />
+        </div>        
+        </form>
+    
 </div>
-<p>@Context.Session.GetString("Name")</p>
+
+
