@@ -6,6 +6,11 @@ using REAgency.BLL.Interfaces.Object;
 using REAgency.Models;
 using System.Data;
 using REAgencyEnum;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using REAgency.BLL.Interfaces.Locations;
+using REAgency.BLL.Interfaces.Persons;
+using REAgency.BLL.DTO.Persons;
+using Org.BouncyCastle.Utilities;
 
 namespace REAgency.Controllers
 {
@@ -13,11 +18,26 @@ namespace REAgency.Controllers
     {
         private readonly IEstateObjectService _objectService;
         private readonly IOperationService _operationService;
-        public OfficeController(IEstateObjectService objectService, IOperationService operationService)
+        private readonly IRegionService _regionService;
+        private readonly IDistrictService _districtService;
+        private readonly ILocalityService _localityService;
+        private readonly ICurrencyService _currencyService;
+        private readonly IClientService _clientService;
+        private readonly IEmployeeService _employeeService;
+        public OfficeController(IEstateObjectService objectService, IOperationService operationService, IRegionService regionService, 
+            IDistrictService districtService, ILocalityService localityService, ICurrencyService currencyService, IClientService clientService,
+            IEmployeeService employeeService)
         {
             _objectService = objectService;
             _operationService = operationService;
+            _regionService = regionService;
+            _districtService = districtService;
+            _localityService = localityService;
+            _currencyService = currencyService; 
+            _clientService = clientService;
+            _employeeService = employeeService;
         }
+
         public async Task<IActionResult> Index()
         {
             if(HttpContext.Session.GetString("User") != "employee")
@@ -63,37 +83,108 @@ namespace REAgency.Controllers
             return View("Index", listObjects);
 
         }
-        public async Task<IActionResult> Create()
+        public async Task<IActionResult> Create(string selEstate)
         {
+            if (selEstate != null)
+            {
+                ViewBag.Operations = new SelectList(await _operationService.GetAll(), "Id", "Name");
+                ViewBag.Regions = new SelectList(await _regionService.GetRegions(), "Id", "Name", "CountryId");
+                ViewBag.Districts = new SelectList(await _districtService.GetDistrict(), "Id", "Name", "RegionId");
+                ViewBag.Localities = new SelectList(await _localityService.GetLocalities(), "Id", "Name", "DistrictId");
+                ViewBag.Currencies = new SelectList(await _currencyService.GetAll(), "Id", "Name");
+            }
+            switch (selEstate)
+            {
+                case "Flat":
+                    return View("AddFlatView");
+                //case "House":
+                //    return View(AddHouseView);
+                //case "Room":
+                //    return View(AddRoomView);
+                //case "Stead":
+                //    return View(AddSteadView);
+                //case "Office":
+                //    return View(AddOfficeView);
+                //case "Garage":
+                //    return View(AddGarageView);
+                //case "Premis":
+                //    return View(AddPremisView);
+                //case "Parking":
+                //    return View(AddParkingView);
+                //case "Storage":
+                //    return View(AddStorageView);
+
+            }
             return View();
         }
 
+        //public async Task<IActionResult> AddFoto(IFormFile[] uploadedFiles)
+        //{
+        //    if (uploadedFiles != null)
+        //    {
+
+        //    }
+        //}
+
         // POST: estateObject/Create
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(ObjectsViewModel ovm)
-        {
+        //[HttpPost]
+        //[ValidateAntiForgeryToken]
+        //public async Task<IActionResult> Create(ObjectsViewModel ovm)
+        //{
 
-            if (ModelState.IsValid)
-            {
-                if(ovm.objectType == ObjectType.Flat)
-                {
-                     _objectService?.CreateEstateObject(CreateFlat(ovm));                    
-                }
+        //    if (ModelState.IsValid)
+        //    {
+        //        if(ovm.objectType == ObjectType.Flat)
+        //        {
+        //             _objectService?.CreateEstateObject(CreateFlat(ovm));                    
+        //        }
 
-            }
-            return RedirectToAction("Index");
-        }
+        //    }
+        //    return RedirectToAction("Index");
+        //}
 
         //metods create estate object
-        public EstateObjectDTO CreateFlat(ObjectsViewModel ovm)
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task CreateFlat(AddFlatViewModel flatViewModel, IFormFileCollection formFiles)
         {
             //сохранение фото в базу, формировать путь, создавать папку, проверять формат и размер, редактировать
             //фото, загружать в папку(создавать папку с именем == iDобьекта)
-            FlatDTO flatDTO= new FlatDTO();  
-            
 
-            return flatDTO;
+            //Последовательность подачи обьекта
+            //1.Создать клиента
+            //2.Создать локацию
+            //3.
+
+            if (ModelState.IsValid && formFiles!=null)
+            {               
+                EstateObjectDTO estateObjectDTO = new EstateObjectDTO();            
+
+                ClientDTO clientDTO = await CreateClient(flatViewModel.Name, flatViewModel.Phone1);                
+
+                estateObjectDTO.clientId = clientDTO.Id;
+
+                estateObjectDTO.employeeId = (int)HttpContext.Session.GetInt32("Id"); 
+
+                estateObjectDTO.operationId = flatViewModel.OperationId;                
+
+              FlatDTO flatDTO= new FlatDTO(); 
+            }
+        }
+        private async Task<ClientDTO> CreateClient(string clientName, string clientPhone)
+        {
+                ClientDTO clientDTO = new ClientDTO();
+                clientDTO.Phone1 = clientPhone;
+                clientDTO.Name = clientName;
+                clientDTO.employeeId = HttpContext.Session.GetInt32("Id");
+                OperationDTO operationDTO = await _operationService.GetByName("Продаж");
+                clientDTO.operationId = operationDTO.Id;
+                clientDTO.status = true;
+                await _clientService.CreateClient(clientDTO);
+                clientDTO = await _clientService.GetByPhone(clientPhone);
+            return clientDTO;
+           
         }
 
 
