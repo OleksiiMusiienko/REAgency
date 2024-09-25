@@ -11,12 +11,16 @@ using REAgency.BLL.Interfaces.Locations;
 using REAgency.BLL.Interfaces.Persons;
 using REAgency.BLL.DTO.Persons;
 using Org.BouncyCastle.Utilities;
+using System.IO;
+using static System.Net.WebRequestMethods;
 
 namespace REAgency.Controllers
 {
     public class OfficeController : Controller
     {
-        private readonly IEstateObjectService _objectService;
+		// IWebHostEnvironment предоставляет информацию об окружении, в котором запущено приложение
+		IWebHostEnvironment _appEnvironment;
+		private readonly IEstateObjectService _objectService;
         private readonly IOperationService _operationService;
         private readonly IRegionService _regionService;
         private readonly IDistrictService _districtService;
@@ -26,7 +30,7 @@ namespace REAgency.Controllers
         private readonly IEmployeeService _employeeService;
         public OfficeController(IEstateObjectService objectService, IOperationService operationService, IRegionService regionService, 
             IDistrictService districtService, ILocalityService localityService, ICurrencyService currencyService, IClientService clientService,
-            IEmployeeService employeeService)
+            IEmployeeService employeeService, IWebHostEnvironment appEnvironment)
         {
             _objectService = objectService;
             _operationService = operationService;
@@ -36,7 +40,8 @@ namespace REAgency.Controllers
             _currencyService = currencyService; 
             _clientService = clientService;
             _employeeService = employeeService;
-        }
+			_appEnvironment = appEnvironment;
+		}
 
         public async Task<IActionResult> Index()
         {
@@ -118,14 +123,39 @@ namespace REAgency.Controllers
             return View();
         }
 
-        //public async Task<IActionResult> AddFoto(IFormFile[] uploadedFiles)
-        //{
-        //    if (uploadedFiles != null)
-        //    {
+        public async Task<string> AddFoto(EstateObjectDTO estateObjectDTO, IFormFileCollection formFiles)
+        {
+            if (formFiles != null)
+            {
+                string id = estateObjectDTO.Id.ToString();
+                //string id = "1";
 
-        //    }
-        //}
+				string path = @"wwwroot\images\";
+                string subpath = id;
+                DirectoryInfo dirInfo = new DirectoryInfo(path);
+                if (!dirInfo.Exists)
+                {
+                    dirInfo.Create();
+                }
+                dirInfo.CreateSubdirectory(subpath);
 
+                string[] array = new string[formFiles.Count];
+                for (int i = 0; i < formFiles.Count; i++)
+                {
+
+                    array[i] = @"\images\" + id + "\\" + formFiles[i].FileName;
+                    // Для получения полного пути к каталогу wwwroot
+                    // применяется свойство WebRootPath объекта IWebHostEnvironment
+                    using (var fileStream = new FileStream(_appEnvironment.WebRootPath + array[i], FileMode.Create))
+                    {
+                        await formFiles[i].CopyToAsync(fileStream); // копируем файл в поток
+                    }
+                }
+                string pathdirectory = @"\images\" + id;
+				return pathdirectory;
+			}
+            return null;
+		}
         // POST: estateObject/Create
         //[HttpPost]
         //[ValidateAntiForgeryToken]
@@ -167,7 +197,12 @@ namespace REAgency.Controllers
 
                 estateObjectDTO.employeeId = (int)HttpContext.Session.GetInt32("Id"); 
 
-                estateObjectDTO.operationId = flatViewModel.OperationId;                
+                estateObjectDTO.operationId = flatViewModel.OperationId;
+
+				if(await AddFoto(estateObjectDTO, formFiles))
+                {
+
+                }
 
               FlatDTO flatDTO= new FlatDTO(); 
             }
@@ -182,14 +217,15 @@ namespace REAgency.Controllers
                 clientDTO.operationId = operationDTO.Id;
                 clientDTO.status = true;
                 await _clientService.CreateClient(clientDTO);
-                clientDTO = await _clientService.GetByPhone(clientPhone);
+                //clientDTO = await _clientService.GetByPhone(clientPhone);
             return clientDTO;
            
         }
+		
 
 
 
 
 
-    }
+	}
 }

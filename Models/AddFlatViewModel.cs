@@ -70,7 +70,7 @@ namespace REAgency.Models
         [Range(1, int.MaxValue)]
         public int Floors { get; set; }         //этажность не может быть меньше этажа
 
-        public string Path { get; set; }
+        //public string Path { get; set; }
 
         //описание
         [Required(ErrorMessage = "\"Опис\" обов'язкове!")]
