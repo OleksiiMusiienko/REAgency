@@ -44,7 +44,7 @@ namespace REAgency.Controllers
 
 
         public HomeController(IOperationService operationService, ILocalityService localityService, IFlatService flatService, IClientService clientService, 
-            IHouseSevice houseSevice, IOfficeService officeService, IGarageService garageService, IAreaService areaService, ICurrencyService currencyService, 
+            IHouseSevice houseService, IOfficeService officeService, IGarageService garageService, IAreaService areaService, ICurrencyService currencyService, 
             IEstateObjectService estateObjectService, ISteadService steadService, ILocationService locationService)
         {
             //_logger = logger;
@@ -53,7 +53,7 @@ namespace REAgency.Controllers
             _localityService = localityService;
             _flatService = flatService;
             _clientService = clientService;
-            _houseService = houseSevice;
+            _houseService = houseService;
             _officeService = officeService;
             _garageService = garageService;
             _areaService = areaService;
@@ -67,7 +67,7 @@ namespace REAgency.Controllers
         {
             ViewBag.OperatrionsList = new SelectList(await _operationService.GetAll(), "Id", "Name");
 
-            //ViewBag.EsateTypesList = new SelectList(await _estateTypeService.GetAll(), "Id", "Name");
+            //ViewBag.EstateTypesList = new SelectList(await _estateTypeService.GetAll(), "Id", "Name");
             ViewBag.LocalitiesList = new SelectList(await _localityService.GetLocalities(), "Id", "Name");
             return View();
         }
@@ -238,8 +238,7 @@ namespace REAgency.Controllers
             IEnumerable<LocationDTO> locations = await _locationService.GetLocations();
             IEnumerable<LocalityDTO> localities = await _localityService.GetLocalities();
 
-            var filtredEstateObjects = await _estateObjectService.GetFilteredEstateObjects(
-           estateTypeId, opTypeId, localityId, minPrice, maxPrice, minArea, maxArea);
+            var filtredEstateObjects = await _estateObjectService.GetFilteredEstateObjects(estateTypeId, opTypeId, localityId, minPrice, maxPrice, minArea, maxArea);
 
           
 
@@ -279,8 +278,7 @@ namespace REAgency.Controllers
                 }
                 else
                 {
-                    var filtredEstateObjectsFromSession = await _estateObjectService.GetFilteredEstateObjects(
-         estateTypeIdSession, opTypeIdSession, localityIdSession, minPriceSession, maxPriceSession, minAreaSession, maxAreaSession);
+                    var filtredEstateObjectsFromSession = await _estateObjectService.GetFilteredEstateObjects(estateTypeIdSession, opTypeIdSession, localityIdSession, minPriceSession, maxPriceSession, minAreaSession, maxAreaSession);
                     var estateObjects = SelectEstateObject(filtredEstateObjectsFromSession, operations, areas, currencies, locations, localities);
                     var count = estateObjects.Count();
                     var items = estateObjects.Skip((page - 1) * pageSize).Take(pageSize).ToList();
@@ -569,7 +567,7 @@ namespace REAgency.Controllers
                 operationId = estateObjectDTO.operationId,
                 operationName = operations.FirstOrDefault(op => op.Id == estateObjectDTO.operationId)?.Name,
                 locationId = estateObjectDTO.locationId,
-                localityId = locations.FirstOrDefault(l => l.Id == estateObjectDTO.locationId).LocalityId,
+                localityId = (int)locations.FirstOrDefault(l => l.Id == estateObjectDTO.locationId).LocalityId,
 
                 localityName = localities.FirstOrDefault(l => l.Id == locations.FirstOrDefault(l => l.Id == estateObjectDTO.locationId).LocalityId)?.Name,
                 Street = estateObjectDTO.Street,
