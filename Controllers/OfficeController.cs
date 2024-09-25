@@ -11,6 +11,9 @@ using REAgency.BLL.Interfaces.Locations;
 using REAgency.BLL.Interfaces.Persons;
 using REAgency.BLL.DTO.Persons;
 using Org.BouncyCastle.Utilities;
+using REAgency.BLL.DTO.Locations;
+using REAgency.BLL.Services.Locations;
+using REAgency.Models.Flat;
 
 namespace REAgency.Controllers
 {
@@ -24,9 +27,15 @@ namespace REAgency.Controllers
         private readonly ICurrencyService _currencyService;
         private readonly IClientService _clientService;
         private readonly IEmployeeService _employeeService;
+        private readonly IFlatService _flatService;
+        private readonly IEstateObjectService _estateObjectService;
+        private readonly ILocationService _locationService;
+        private readonly IAreaService _areaService;
+        
         public OfficeController(IEstateObjectService objectService, IOperationService operationService, IRegionService regionService, 
             IDistrictService districtService, ILocalityService localityService, ICurrencyService currencyService, IClientService clientService,
-            IEmployeeService employeeService)
+            IEmployeeService employeeService, IFlatService flatService, IEstateObjectService estateObjectService, ILocationService locationService,
+            IAreaService areaService)
         {
             _objectService = objectService;
             _operationService = operationService;
@@ -36,6 +45,10 @@ namespace REAgency.Controllers
             _currencyService = currencyService; 
             _clientService = clientService;
             _employeeService = employeeService;
+            _flatService = flatService;
+            _estateObjectService = estateObjectService;
+            _locationService = locationService;
+            _areaService = areaService;
         }
 
         public async Task<IActionResult> Index()
@@ -187,8 +200,126 @@ namespace REAgency.Controllers
            
         }
 
+        public async Task<IActionResult> ShowFlatForUpdate(int id, string typeObject)
+        {
+            try
+            {
+                if (id == null)
+                {
+                    return NotFound();
+                }
+                
+                FlatDTO flat = await _flatService.GetFlatByEstateObjectId((int)id);
+                ViewBag.Operations = new SelectList(await _operationService.GetAll(), "Id", "Name");
+                ViewBag.Regions = new SelectList(await _regionService.GetRegions(), "Id", "Name");
+                ViewBag.Districts = new SelectList(await _districtService.GetDistrict(), "Id", "Name");
+                ViewBag.Localities = new SelectList(await _localityService.GetLocalities(), "Id", "Name");
+                ViewBag.Currencies = new SelectList(await _currencyService.GetAll(), "Id", "Name");
+                ViewBag.Employees = new SelectList(await _employeeService.GetEmployees(), "Id", "Name");
+                ViewBag.Areas = new SelectList(await _areaService.GetAll(), "Id", "Name");
+                return View("UpdateFlat", SelectFlat(flat));
+            }
+            catch
+            {
+                return NotFound();
+            }
+           
+        }
+
+        public async Task<IActionResult> UpdateFlat(UpdateFlatViewModel model)
+        {
+            try
+            {
+                LocationDTO locationDTO = new LocationDTO();
+                locationDTO.Id = model.locationId;
+                locationDTO.CountryId = model.countryId;
+                locationDTO.LocalityId = model.LocalityId;
+                locationDTO.RegionId = model.RegionId;
+                locationDTO.DistrictId = model.DistrictId;
+                await _locationService.UpdateLocation(locationDTO);
 
 
+                FlatDTO flatDTO = new FlatDTO();
+                flatDTO.Id = model.flatId;
+                flatDTO.Floor = model.Floor;
+                flatDTO.Floors = model.Floors;
+                flatDTO.Rooms = model.Rooms;
+                flatDTO.livingArea = model.livingArea;
+                flatDTO.kitchenArea = model.kitchenArea;
+                flatDTO.estateObjectId = model.estateObjectId;
+                await _flatService.UpdateFlat(flatDTO);
+
+
+                EstateObjectDTO objectDTO = new EstateObjectDTO();
+                objectDTO.Id = model.estateObjectId;
+                objectDTO.Street = model.Street;
+                objectDTO.numberStreet = model.numberStreet;
+                objectDTO.Price = model.Price;
+                objectDTO.currencyId = model.currencyId;
+                objectDTO.countViews = model.countViews;
+                objectDTO.employeeId = model.employeeId;
+                objectDTO.clientId = model.clientId;
+                objectDTO.locationId = model.locationId;
+                objectDTO.operationId = model.OperationId;
+                objectDTO.Area = model.Area;
+                objectDTO.unitAreaId = model.unitAreaId;
+                objectDTO.Description = model.Description;
+                objectDTO.Date= model.Date;
+                objectDTO.clientId = model.clientId;
+                objectDTO.estateType = ObjectType.Flat;
+                objectDTO.pathPhoto = model.Path;
+                objectDTO.Status = model.status;
+
+
+                await _estateObjectService.UpdateEstateObject(objectDTO);
+                return RedirectToAction("Index", "Home");
+
+            }
+            catch (Exception ex) 
+            {
+                
+            }
+            
+            return View(model);
+        }
+
+        public UpdateFlatViewModel SelectFlat(FlatDTO flat)
+        {
+            var viewModel = new UpdateFlatViewModel
+            {
+              
+                flatId = flat.Id,
+                employeeId = flat.employeeId,
+                OperationId = flat.operationId,
+                Street = flat.Street,
+                numberStreet = (int)flat.numberStreet,
+                Price = flat.Price,
+                currencyId = flat.currencyId,
+                Area = flat.Area,
+                Description = flat.Description,
+                Path = flat.pathPhoto,
+                Floor = flat.Floor,
+                Floors = flat.Floors,
+                Rooms = flat.Rooms,
+                kitchenArea = flat.kitchenArea,
+                livingArea = flat.livingArea,
+                status = flat.Status,
+                estateObjectId = flat.estateObjectId,
+                locationId = flat.locationId,
+                LocalityId = flat.LocalityId,
+                RegionId = flat.RegionId,
+                countryId = flat.countryId,
+                DistrictId = flat.DistrictId,
+                clientId = flat.clientId,
+                Date = flat.Date,
+                countViews = flat.countViews
+               
+
+
+
+            };
+            return viewModel;
+        }
 
 
     }
