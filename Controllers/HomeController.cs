@@ -216,7 +216,6 @@ namespace REAgency.Controllers
             }
             
 
-
             var opTypeIdSession = HttpContext.Session.GetInt32("opTypeId");
             var localityIdSession = HttpContext.Session.GetInt32("localityId");
             var estateTypeIdSession = HttpContext.Session.GetInt32("estateTypeId");
@@ -240,7 +239,6 @@ namespace REAgency.Controllers
 
             var filtredEstateObjects = await _estateObjectService.GetFilteredEstateObjects(estateTypeId, opTypeId, localityId, minPrice, maxPrice, minArea, maxArea);
 
-          
 
             ViewBag.OperatrionsList = new SelectList(await _operationService.GetAll(), "Id", "Name");
             ViewBag.LocalitiesList = new SelectList(await _localityService.GetLocalities(), "Id", "Name");
@@ -248,17 +246,8 @@ namespace REAgency.Controllers
             if (opTypeId != 0 || localityId != 0 || estateTypeId != 0 ||
                 minPrice != 0 || maxPrice != 0 || minArea != 0 || maxArea != 0 )
             {
-                
 
-                var estateObjects = SelectEstateObject(filtredEstateObjects, operations, areas, currencies, locations, localities);
-                var count = estateObjects.Count();
-                var items = estateObjects.Skip((page - 1) * pageSize).Take(pageSize).ToList();
-
-                PageViewModel pageViewModel = new PageViewModel(count, page, pageSize);
-                pageViewModel.typeOfAction = "Search";
-                ObjectPageViewModel objectPageViewModel = new ObjectPageViewModel(items, pageViewModel);
-
-                return View("Objects", objectPageViewModel);
+                return View("Objects", ShowObjectsWithPagination(filtredEstateObjects, operations, areas, currencies, localities, locations, page));
             }
             else
             {
@@ -266,34 +255,33 @@ namespace REAgency.Controllers
                     estateTypeIdSession == null && minPriceSession == null &&
                     maxPriceSession == null && minAreaSession == null && maxAreaSession == null)
                 {
-                    var estateObjects = SelectEstateObject(filtredEstateObjects, operations, areas, currencies, locations, localities);
-                    var count = estateObjects.Count();
-                    var items = estateObjects.Skip((page - 1) * pageSize).Take(pageSize).ToList();
+                    return View("Objects", ShowObjectsWithPagination(filtredEstateObjects, operations, areas, currencies, localities, locations, page));
 
-                    PageViewModel pageViewModel = new PageViewModel(count, page, pageSize);
-                    pageViewModel.typeOfAction = "Search";
-                    ObjectPageViewModel objectPageViewModel = new ObjectPageViewModel(items, pageViewModel);
-
-                    return View("Objects", objectPageViewModel);
                 }
                 else
                 {
-                    var filtredEstateObjectsFromSession = await _estateObjectService.GetFilteredEstateObjects(estateTypeIdSession, opTypeIdSession, localityIdSession, minPriceSession, maxPriceSession, minAreaSession, maxAreaSession);
-                    var estateObjects = SelectEstateObject(filtredEstateObjectsFromSession, operations, areas, currencies, locations, localities);
-                    var count = estateObjects.Count();
-                    var items = estateObjects.Skip((page - 1) * pageSize).Take(pageSize).ToList();
+                    var filtredEstateObjectsFromSession = await _estateObjectService.GetFilteredEstateObjects(
+                    estateTypeIdSession, opTypeIdSession, localityIdSession, minPriceSession, maxPriceSession, minAreaSession, maxAreaSession);
 
-                    PageViewModel pageViewModel = new PageViewModel(count, page, pageSize);
-                    pageViewModel.typeOfAction = "Search";
-                    ObjectPageViewModel objectPageViewModel = new ObjectPageViewModel(items, pageViewModel);
-
-                    return View("Objects", objectPageViewModel);
+                    return View("Objects", ShowObjectsWithPagination(filtredEstateObjectsFromSession, operations, areas, currencies, localities, locations, page));
                 }
                 
-
               
             }
            
+        }
+
+        public ObjectPageViewModel ShowObjectsWithPagination(IEnumerable<EstateObjectDTO> filtredEstateObjects, IEnumerable<OperationDTO> operations,
+            IEnumerable<AreaDTO> areas, IEnumerable<CurrencyDTO> currencies, IEnumerable<LocalityDTO> localities, IEnumerable<LocationDTO> locations, int page = 1)
+        {
+            var estateObjects = SelectEstateObject(filtredEstateObjects, operations, areas, currencies, locations, localities);
+            var count = estateObjects.Count();
+            var items = estateObjects.Skip((page - 1) * pageSize).Take(pageSize).ToList();
+
+            PageViewModel pageViewModel = new PageViewModel(count, page, pageSize);
+            pageViewModel.typeOfAction = "Search";
+            ObjectPageViewModel objectPageViewModel = new ObjectPageViewModel(items, pageViewModel);
+            return objectPageViewModel;
         }
 
         public async Task<IActionResult> SendApplication(HomePageViewModel homePageViewModel)

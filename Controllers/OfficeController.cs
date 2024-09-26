@@ -257,6 +257,156 @@ namespace REAgency.Controllers
                 clientDTO.status = true;
                 await _clientService.CreateClient(clientDTO);
                 clientDTO = await _clientService.GetByPhone(clientPhone);
+            return clientDTO;
+           
+        }
+
+        public async Task<IActionResult> ShowFlatForUpdate(int id, string typeObject)
+        {
+            try
+            {
+                if (id == null)
+                {
+                    return NotFound();
+                }
+
+                ViewBag.Operations = new SelectList(await _operationService.GetAll(), "Id", "Name");
+                ViewBag.Regions = new SelectList(await _regionService.GetRegions(), "Id", "Name");
+                ViewBag.Districts = new SelectList(await _districtService.GetDistrict(), "Id", "Name");
+                ViewBag.Localities = new SelectList(await _localityService.GetLocalities(), "Id", "Name");
+                ViewBag.Currencies = new SelectList(await _currencyService.GetAll(), "Id", "Name");
+                ViewBag.Employees = new SelectList(await _employeeService.GetEmployees(), "Id", "Name");
+                ViewBag.Areas = new SelectList(await _areaService.GetAll(), "Id", "Name");
+
+                switch (typeObject)
+                {
+                    case "Flat":
+                        FlatDTO flat = await _flatService.GetFlatByEstateObjectId((int)id);
+                        return View("UpdateFlat", SelectFlat(flat));
+                        //case "House":
+                        //    return View(AddHouseView);
+                        //case "Room":
+                        //    return View(AddRoomView);
+                        //case "Stead":
+                        //    return View(AddSteadView);
+                        //case "Office":
+                        //    return View(AddOfficeView);
+                        //case "Garage":
+                        //    return View(AddGarageView);
+                        //case "Premis":
+                        //    return View(AddPremisView);
+                        //case "Parking":
+                        //    return View(AddParkingView);
+                        //case "Storage":
+                        //    return View(AddStorageView);
+
+                }
+               
+            }
+            catch
+            {
+                return NotFound();
+            }
+            return NotFound();
+        }
+
+        public async Task<IActionResult> UpdateFlat(UpdateFlatViewModel model)
+        {
+            try
+            {
+                LocationDTO locationDTO = new LocationDTO();
+                locationDTO.Id = model.locationId;
+                locationDTO.CountryId = model.countryId;
+                locationDTO.LocalityId = model.LocalityId;
+                locationDTO.RegionId = model.RegionId;
+                locationDTO.DistrictId = model.DistrictId;
+                await _locationService.UpdateLocation(locationDTO);
+
+
+                FlatDTO flatDTO = new FlatDTO();
+                flatDTO.Id = model.flatId;
+                flatDTO.Floor = model.Floor;
+                flatDTO.Floors = model.Floors;
+                flatDTO.Rooms = model.Rooms;
+                flatDTO.livingArea = model.livingArea;
+                flatDTO.kitchenArea = model.kitchenArea;
+                flatDTO.estateObjectId = model.estateObjectId;
+                await _flatService.UpdateFlat(flatDTO);
+
+
+                EstateObjectDTO objectDTO = new EstateObjectDTO();
+                objectDTO.Id = model.estateObjectId;
+                objectDTO.Street = model.Street;
+                objectDTO.numberStreet = model.numberStreet;
+                objectDTO.Price = model.Price;
+                objectDTO.currencyId = model.currencyId;
+                objectDTO.countViews = model.countViews;
+                objectDTO.employeeId = model.employeeId;
+                objectDTO.clientId = model.clientId;
+                objectDTO.locationId = model.locationId;
+                objectDTO.operationId = model.OperationId;
+                objectDTO.Area = model.Area;
+                objectDTO.unitAreaId = model.unitAreaId;
+                objectDTO.Description = model.Description;
+                objectDTO.Date= model.Date;
+                objectDTO.clientId = model.clientId;
+                objectDTO.estateType = ObjectType.Flat;
+                objectDTO.pathPhoto = model.Path;
+                objectDTO.Status = model.status;
+
+
+                await _estateObjectService.UpdateEstateObject(objectDTO);
+                return RedirectToAction("Index", "Home");
+
+            }
+            catch 
+            {
+                return View(model);
+            }
+            
+          
+        }
+
+        public UpdateFlatViewModel SelectFlat(FlatDTO flat)
+        {
+            var viewModel = new UpdateFlatViewModel
+            {
+              
+                flatId = flat.Id,
+                employeeId = flat.employeeId,
+                OperationId = flat.operationId,
+                Street = flat.Street,
+                numberStreet = (int)flat.numberStreet,
+                Price = flat.Price,
+                currencyId = flat.currencyId,
+                Area = flat.Area,
+                Description = flat.Description,
+                Path = flat.pathPhoto,
+                Floor = flat.Floor,
+                Floors = flat.Floors,
+                Rooms = flat.Rooms,
+                kitchenArea = flat.kitchenArea,
+                livingArea = flat.livingArea,
+                status = flat.Status,
+                estateObjectId = flat.estateObjectId,
+                locationId = flat.locationId,
+                LocalityId = flat.LocalityId,
+                RegionId = flat.RegionId,
+                countryId = flat.countryId,
+                DistrictId = flat.DistrictId,
+                clientId = flat.clientId,
+                Date = flat.Date,
+                countViews = flat.countViews
+               
+
+
+
+            };
+            return viewModel;
+        }
+
+
+    }
             }
             return clientDTO;           
         }

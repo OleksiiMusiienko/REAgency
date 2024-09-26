@@ -112,6 +112,7 @@ namespace REAgency.Models
 
         public string? localityName {  get; set; }
 
+        public int estateObjectId { get; set; }
         
         
     }
