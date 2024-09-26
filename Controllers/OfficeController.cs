@@ -1,18 +1,16 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using REAgency.BLL.DTO;
-using REAgency.BLL.DTO.Object;
-using REAgency.BLL.Interfaces;
-using REAgency.BLL.Interfaces.Object;
-using REAgency.Models;
-using System.Data;
-using REAgencyEnum;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using REAgency.BLL.Interfaces.Locations;
-using REAgency.BLL.Interfaces.Persons;
+using REAgency.BLL.DTO;
+using REAgency.BLL.DTO.Locations;
+using REAgency.BLL.DTO.Object;
 using REAgency.BLL.DTO.Persons;
-using Org.BouncyCastle.Utilities;
-using System.IO;
-using static System.Net.WebRequestMethods;
+using REAgency.BLL.Interfaces;
+using REAgency.BLL.Interfaces.Locations;
+using REAgency.BLL.Interfaces.Object;
+using REAgency.BLL.Interfaces.Persons;
+using REAgency.Models;
+using REAgencyEnum;
+using System.Data;
 
 namespace REAgency.Controllers
 {
@@ -28,9 +26,13 @@ namespace REAgency.Controllers
         private readonly ICurrencyService _currencyService;
         private readonly IClientService _clientService;
         private readonly IEmployeeService _employeeService;
+        private readonly ILocationService _locationService;
+        private readonly IAreaService _areaService;
+        private readonly IFlatService _flatService;
         public OfficeController(IEstateObjectService objectService, IOperationService operationService, IRegionService regionService, 
             IDistrictService districtService, ILocalityService localityService, ICurrencyService currencyService, IClientService clientService,
-            IEmployeeService employeeService, IWebHostEnvironment appEnvironment)
+            IEmployeeService employeeService, IWebHostEnvironment appEnvironment, ILocationService locationService,
+            IAreaService areaService, IFlatService flatService)
         {
             _objectService = objectService;
             _operationService = operationService;
@@ -41,6 +43,9 @@ namespace REAgency.Controllers
             _clientService = clientService;
             _employeeService = employeeService;
 			_appEnvironment = appEnvironment;
+            _locationService = locationService;
+            _areaService = areaService;
+            _flatService= flatService;
 		}
 
         public async Task<IActionResult> Index()
@@ -177,39 +182,67 @@ namespace REAgency.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task CreateFlat(AddFlatViewModel flatViewModel, IFormFileCollection formFiles)
+        public async Task<IActionResult> CreateFlat(AddFlatViewModel flatViewModel/*, IFormFileCollection formFiles*/)
         {
             //сохранение фото в базу, формировать путь, создавать папку, проверять формат и размер, редактировать
             //фото, загружать в папку(создавать папку с именем == iDобьекта)
+            //    1.Создать estateObject
+            //    2. Добавить его в базу что бы получить Id и сформировать путь к папке с фотографиями
+            //    3. Добавить фото
+            //    4. Создать flatDTO
+            //    5. Подать его в базу
 
-            //Последовательность подачи обьекта
-            //1.Создать клиента
-            //2.Создать локацию
-            //3.
-
-            if (ModelState.IsValid && formFiles!=null)
+            if (ModelState.IsValid/* && formFiles!=null*/)
             {               
-                EstateObjectDTO estateObjectDTO = new EstateObjectDTO();            
-
-                ClientDTO clientDTO = await CreateClient(flatViewModel.Name, flatViewModel.Phone1);                
+                EstateObjectDTO estateObjectDTO = new EstateObjectDTO();        
+                ClientDTO clientDTO = await CreateClient(flatViewModel.Name, flatViewModel.Phone1);
+                
 
                 estateObjectDTO.clientId = clientDTO.Id;
+                estateObjectDTO.employeeId = (int)HttpContext.Session.GetInt32("Id");
+                estateObjectDTO.operationId = flatViewModel.OperationId;                
+                
+                estateObjectDTO.localityId = flatViewModel.LocalityId;
+                estateObjectDTO.Street = flatViewModel.Street;
+                estateObjectDTO.numberStreet = flatViewModel.numberStreet;
+                estateObjectDTO.Price = flatViewModel.Price;
+                estateObjectDTO.currencyId = flatViewModel.currencyId;
+                estateObjectDTO.Area = flatViewModel.Area;
+                estateObjectDTO.unitAreaId = 1;             //нет смысла тянуть Id там 3 шт в базе
+                estateObjectDTO.Description = flatViewModel.Description;
+                estateObjectDTO.Status = false;
+                estateObjectDTO.Date = DateTime.Now;
 
-                estateObjectDTO.employeeId = (int)HttpContext.Session.GetInt32("Id"); 
+                LocationDTO locationDTO = await CreateLocation(flatViewModel, estateObjectDTO.Date); 
+                estateObjectDTO.locationId = locationDTO.Id;
 
-                estateObjectDTO.operationId = flatViewModel.OperationId;
+                estateObjectDTO.estateType = ObjectType.Flat;
+                
+                await _objectService.CreateEstateObject(estateObjectDTO); 
 
-				if(await AddFoto(estateObjectDTO, formFiles))
-                {
+                estateObjectDTO = await _objectService.GetByDateTime(estateObjectDTO.Date);
 
+                FlatDTO flatDTO = new FlatDTO(); 
+                if (estateObjectDTO != null)
+                {                 
+                    flatDTO.estateObjectId = estateObjectDTO.Id;
+                    flatDTO.Floor = flatViewModel.Floor;
+                    flatDTO.Floors = flatViewModel.Floors;
+                    flatDTO.Rooms = flatViewModel.Rooms;
+                    flatDTO.kitchenArea = flatViewModel.kitchenArea;
+                    flatDTO.livingArea = flatViewModel.livingArea;
                 }
-
-              FlatDTO flatDTO= new FlatDTO(); 
+                await _flatService.CreateFlat(flatDTO);  
+                
             }
+            return RedirectToAction("Index");
         }
         private async Task<ClientDTO> CreateClient(string clientName, string clientPhone)
         {
-                ClientDTO clientDTO = new ClientDTO();
+            ClientDTO clientDTO = await _clientService.GetByPhone(clientPhone);
+            if (clientDTO.Phone1 == null)
+            {
+                clientDTO = new ClientDTO();
                 clientDTO.Phone1 = clientPhone;
                 clientDTO.Name = clientName;
                 clientDTO.employeeId = HttpContext.Session.GetInt32("Id");
@@ -217,15 +250,22 @@ namespace REAgency.Controllers
                 clientDTO.operationId = operationDTO.Id;
                 clientDTO.status = true;
                 await _clientService.CreateClient(clientDTO);
-                //clientDTO = await _clientService.GetByPhone(clientPhone);
-            return clientDTO;
-           
+                clientDTO = await _clientService.GetByPhone(clientPhone);
+            }
+            return clientDTO;           
         }
-		
+        private async Task<LocationDTO> CreateLocation(AddFlatViewModel addFlatViewModel, DateTime dateTime)
+        {
+            LocationDTO locationDTO = new LocationDTO();
+            locationDTO.CountryId = 1; //в базе одна страна
+            locationDTO.RegionId = addFlatViewModel.RegionId;
+            locationDTO.DistrictId = addFlatViewModel.DistrictId;
+            locationDTO.LocalityId = addFlatViewModel.LocalityId;
+            locationDTO.Date = dateTime;
+            await _locationService.CreateLocation(locationDTO);
+            locationDTO = await _locationService.GetByDateTime(dateTime);
+            return locationDTO;
 
-
-
-
-
+        }
 	}
 }
