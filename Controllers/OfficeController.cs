@@ -9,6 +9,7 @@ using REAgency.BLL.Interfaces.Locations;
 using REAgency.BLL.Interfaces.Object;
 using REAgency.BLL.Interfaces.Persons;
 using REAgency.Models;
+using REAgency.Models.Flat;
 using REAgencyEnum;
 using System.Data;
 
@@ -200,7 +201,7 @@ namespace REAgency.Controllers
                 estateObjectDTO.employeeId = (int)HttpContext.Session.GetInt32("Id");
                 estateObjectDTO.operationId = flatViewModel.OperationId;                
                 
-                estateObjectDTO.localityId = flatViewModel.LocalityId;
+                estateObjectDTO.LocalityId = flatViewModel.LocalityId;
                 estateObjectDTO.Street = flatViewModel.Street;
                 estateObjectDTO.numberStreet = flatViewModel.numberStreet;
                 estateObjectDTO.Price = flatViewModel.Price;
@@ -257,6 +258,7 @@ namespace REAgency.Controllers
                 clientDTO.status = true;
                 await _clientService.CreateClient(clientDTO);
                 clientDTO = await _clientService.GetByPhone(clientPhone);
+            }
             return clientDTO;
            
         }
@@ -355,7 +357,7 @@ namespace REAgency.Controllers
                 objectDTO.Status = model.status;
 
 
-                await _estateObjectService.UpdateEstateObject(objectDTO);
+                await _objectService.UpdateEstateObject(objectDTO);
                 return RedirectToAction("Index", "Home");
 
             }
@@ -405,11 +407,6 @@ namespace REAgency.Controllers
             return viewModel;
         }
 
-
-    }
-            }
-            return clientDTO;           
-        }
         private async Task<LocationDTO> CreateLocation(AddFlatViewModel addFlatViewModel, DateTime dateTime)
         {
             LocationDTO locationDTO = new LocationDTO();
