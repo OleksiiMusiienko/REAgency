@@ -208,8 +208,7 @@ namespace REAgency.Controllers
                 {
                     return NotFound();
                 }
-                
-                FlatDTO flat = await _flatService.GetFlatByEstateObjectId((int)id);
+
                 ViewBag.Operations = new SelectList(await _operationService.GetAll(), "Id", "Name");
                 ViewBag.Regions = new SelectList(await _regionService.GetRegions(), "Id", "Name");
                 ViewBag.Districts = new SelectList(await _districtService.GetDistrict(), "Id", "Name");
@@ -217,13 +216,37 @@ namespace REAgency.Controllers
                 ViewBag.Currencies = new SelectList(await _currencyService.GetAll(), "Id", "Name");
                 ViewBag.Employees = new SelectList(await _employeeService.GetEmployees(), "Id", "Name");
                 ViewBag.Areas = new SelectList(await _areaService.GetAll(), "Id", "Name");
-                return View("UpdateFlat", SelectFlat(flat));
+
+                switch (typeObject)
+                {
+                    case "Flat":
+                        FlatDTO flat = await _flatService.GetFlatByEstateObjectId((int)id);
+                        return View("UpdateFlat", SelectFlat(flat));
+                        //case "House":
+                        //    return View(AddHouseView);
+                        //case "Room":
+                        //    return View(AddRoomView);
+                        //case "Stead":
+                        //    return View(AddSteadView);
+                        //case "Office":
+                        //    return View(AddOfficeView);
+                        //case "Garage":
+                        //    return View(AddGarageView);
+                        //case "Premis":
+                        //    return View(AddPremisView);
+                        //case "Parking":
+                        //    return View(AddParkingView);
+                        //case "Storage":
+                        //    return View(AddStorageView);
+
+                }
+               
             }
             catch
             {
                 return NotFound();
             }
-           
+            return NotFound();
         }
 
         public async Task<IActionResult> UpdateFlat(UpdateFlatViewModel model)
@@ -275,12 +298,12 @@ namespace REAgency.Controllers
                 return RedirectToAction("Index", "Home");
 
             }
-            catch (Exception ex) 
+            catch 
             {
-                
+                return View(model);
             }
             
-            return View(model);
+          
         }
 
         public UpdateFlatViewModel SelectFlat(FlatDTO flat)
