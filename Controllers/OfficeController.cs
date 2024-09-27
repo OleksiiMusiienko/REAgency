@@ -310,7 +310,7 @@ namespace REAgency.Controllers
             {
                 LocationDTO locationDTO = new LocationDTO();
                 locationDTO.Id = model.locationId;
-                locationDTO.CountryId = model.countryId;
+                locationDTO.CountryId = 1;
                 locationDTO.LocalityId = model.LocalityId;
                 locationDTO.RegionId = model.RegionId;
                 locationDTO.DistrictId = model.DistrictId;
@@ -384,10 +384,10 @@ namespace REAgency.Controllers
                 status = flat.Status,
                 estateObjectId = flat.estateObjectId,
                 locationId = flat.locationId,
-                LocalityId = flat.LocalityId,
-                RegionId = flat.RegionId,
+                LocalityId = (int)flat.LocalityId,
+                RegionId = (int)flat.RegionId,
                 countryId = flat.countryId,
-                DistrictId = flat.DistrictId,
+                DistrictId = (int)flat.DistrictId,
                 clientId = flat.clientId,
                 Date = flat.Date,
                 countViews = flat.countViews
