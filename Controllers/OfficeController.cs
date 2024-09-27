@@ -128,7 +128,7 @@ namespace REAgency.Controllers
             return View();
         }
 
-        public async Task<string> AddFoto(EstateObjectDTO estateObjectDTO, IFormFileCollection formFiles)
+        public async Task AddFoto(EstateObjectDTO estateObjectDTO, IFormFileCollection formFiles)
         {
             if (formFiles != null)
             {
@@ -157,9 +157,9 @@ namespace REAgency.Controllers
                     }
                 }
                 string pathdirectory = @"\images\" + id;
-				return pathdirectory;
+                estateObjectDTO.pathPhoto = pathdirectory; //добавляем путь в обьект
+                await _objectService.UpdateEstateObjectPath(estateObjectDTO); //обновляем обьект               
 			}
-            return null;
 		}
         // POST: estateObject/Create
         //[HttpPost]
@@ -193,13 +193,11 @@ namespace REAgency.Controllers
             if (ModelState.IsValid && formFiles != null)
             {               
                 EstateObjectDTO estateObjectDTO = new EstateObjectDTO();        
-                ClientDTO clientDTO = await CreateClient(flatViewModel.Name, flatViewModel.Phone1);
-                
+                ClientDTO clientDTO = await CreateClient(flatViewModel.Name, flatViewModel.Phone1);               
 
                 estateObjectDTO.clientId = clientDTO.Id;
                 estateObjectDTO.employeeId = (int)HttpContext.Session.GetInt32("Id");
-                estateObjectDTO.operationId = flatViewModel.OperationId;                
-                
+                estateObjectDTO.operationId = flatViewModel.OperationId;               
                 estateObjectDTO.localityId = flatViewModel.LocalityId;
                 estateObjectDTO.Street = flatViewModel.Street;
                 estateObjectDTO.numberStreet = flatViewModel.numberStreet;
@@ -210,23 +208,16 @@ namespace REAgency.Controllers
                 estateObjectDTO.Description = flatViewModel.Description;
                 estateObjectDTO.Status = false;
                 estateObjectDTO.estateType = ObjectType.Flat;
-
                 estateObjectDTO.Date = DateTime.Now;
                 LocationDTO locationDTO = await CreateLocation(flatViewModel, estateObjectDTO.Date); 
-                estateObjectDTO.locationId = locationDTO.Id;
-                
+                estateObjectDTO.locationId = locationDTO.Id;                
                 
                 await _objectService.CreateEstateObject(estateObjectDTO); //создаем обьект
 
                 estateObjectDTO = await _objectService.GetByDateTime(estateObjectDTO.Date); //получаем его из базы уже с id
 
-                string pathFoto = AddFoto(estateObjectDTO, formFiles).Result; //добавляем фото и получаем путь
-
-                estateObjectDTO.pathPhoto = pathFoto; //добавляем путь в обьект
-
-                await _objectService.UpdateEstateObject(estateObjectDTO); //обновляем обьект
-                
-                //и дальше создаем Flat
+                await AddFoto(estateObjectDTO, formFiles); //добавляем фото и получаем путь
+        
 
                 FlatDTO flatDTO = new FlatDTO(); 
                 if (estateObjectDTO != null)
