@@ -103,7 +103,7 @@ namespace REAgency.Models.Flat
 
         public int clientId { get; set; }
         public int locationId { get; set; }
-        public DateTime Date { get; set; }
+        public DateTime Date { get; set; } 
         public ObjectType estateType { get; set; }
 
         public int unitAreaId { get; set; }
