@@ -9,13 +9,14 @@
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/homePage.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/ObjectsStyle.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/officeStyle.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/REAgency.styles.css" asp-append-version="true" />
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
  
 </head>
 <body>
     <header >
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light border-bottom box-shadow">
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light border-bottom box-shadow nav-gradient">
             <div class="container-fluid">
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
                         aria-expanded="false" aria-label="Toggle navigation">
@@ -66,7 +67,8 @@
                         </li>
                         <li class="nav-item">
                             <a class="nav-link my-link-menu" asp-area="" asp-controller="Home" asp-action="Privacy">Обрані</a>
-                        </li> 
+                        </li>
+                      
                         @if (Context.Session.GetInt32("Id") != null)
                         {
                             <li class="nav-item">
@@ -86,6 +88,7 @@
                             </li>
 
                         }
+                      
                         else
                         {
                             <li class="nav-item">
@@ -104,7 +107,7 @@
         </main>
     </div>
     
-    <footer class="border-top footer text-muted">
+    <footer class="footer text-muted" >
         
         <div class="container" style="margin-top:0">
             &reg; 2024 - АН Городок - All rights reserved!<a style="margin-left:10px" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy Policy</a>

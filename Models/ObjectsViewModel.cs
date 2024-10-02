@@ -113,6 +113,9 @@ namespace REAgency.Models
         public string? localityName {  get; set; }
 
         public int estateObjectId { get; set; }
+
+        public string clientName { get; set; }
+        public string clientPhone { get; set; }
         
         
     }

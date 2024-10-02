@@ -244,7 +244,7 @@ body {
     padding-left: 0;
     font-size: 16pt;
 }
-nav {
+.nav-gradient {
     background: linear-gradient(#AFD2E9, #F4F3F7 50%);
 }
 

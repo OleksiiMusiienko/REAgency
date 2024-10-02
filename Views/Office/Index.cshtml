@@ -1,27 +1,282 @@
-﻿@model IEnumerable<REAgency.Models.ObjectsViewModel>
+﻿@model REAgency.Models.ObjectPageViewModel
+@using REAgencyEnum
 @{
     ViewData["Title"] = "Office";
 }
+<div class="containerForOffice">
+  
 
-<div>
-    <form name="selectedForm" >
-        <a asp-action="GetAllObjects">Усі об'єкти</a>
-        <select name="selEstate">
-                <option value="Flat" name="type">Квартира</option>
-                <option value="House" name="type">Будинок</option>
-                <option value="Room" name="type">Кімната</option>
-                <option value="Stead" name="type">Ділянка</option>
-                <option value="Office" name="type">Офіс</option>
-                <option value="Garage" name="type">Гараж</option>
-                <option value="Premis" name="type">Приміщення</option>
-                <option value="Parking" name="type">Паркінг</option>
-                <option value="Storage" name="type">Склад</option>
-            </select>      
-        <div class="form-group">
-            <input type="submit" name="send" value="Отправить" asp-controller="Office" asp-action="Create" />
-        </div>        
-        </form>
-    
+    <div class="panel-column">
+
+        <nav style="width: 100%; margin-top: 200px; padding-left:20px;">
+            <ul class="custom-ul">
+                
+                <li class="custom-li">
+                    <a class="custom-a" href="#">Додати...</a>
+                   
+                    <ul class="dropdown">
+                        <li><a class="custom-a" href="#">Квартиру</a></li>
+                        <li><a class="custom-a" href="#">Дім</a></li>
+                        <li><a class="custom-a" href="#">Гараж</a></li>
+                        <li><a class="custom-a" href="#">Ділянку</a></li>
+                        <li><a class="custom-a" href="#">Офіс</a></li>
+                        <li><a class="custom-a" href="#">Парко-місце</a></li>
+                        <li><a class="custom-a" href="#">Приміщення</a></li>
+                        <li><a class="custom-a" href="#">Кімната</a></li>
+                        <li><a class="custom-a" href="#">Склад</a></li>
+                       
+                    </ul>
+                </li>
+                <li class="custom-li">
+                    <a class="custom-a" href="#">Клієнти...</a>
+                    <ul class="dropdown">
+                        <li><a class="custom-a" href="#">Додати клієнта</a></li>
+                        <li><a class="custom-a" href="#">Переглянути всіх клієнтів</a></li>
+                       
+                    </ul>
+                </li>
+                @if (Context.Session.GetString("IsAdmin") == "True")
+                {
+                    <li class="custom-li">
+                        <a class="custom-a" href="#">Співробітники...</a>
+                        <ul class="dropdown">
+                            <li><a class="custom-a" href="#">Додати співробітника</a></li>
+                            <li><a class="custom-a" href="#">Переглянути всіх співробітників</a></li>
+
+                        </ul>
+                    </li>
+                    <li class="custom-li">
+                        <a class="custom-a" href="#">Типи об'єктів...</a>
+                        <ul class="dropdown">
+                            <li><a class="custom-a" href="#">Додати тип</a></li>
+                            <li><a class="custom-a" href="#">Переглянути всіх типи</a></li>
+
+                        </ul>
+                    </li>
+                    <li class="custom-li">
+                        <a class="custom-a" href="#">Валюта...</a>
+                        <ul class="dropdown">
+                            <li><a class="custom-a" href="#">Додати валюту</a></li>
+                            <li><a class="custom-a" href="#">Переглянути всі валюти</a></li>
+
+                        </ul>
+                    </li>
+                    <li class="custom-li">
+                        <a class="custom-a" href="#">Область...</a>
+                        <ul class="dropdown">
+                            <li><a class="custom-a" href="#">Додати область</a></li>
+                            <li><a class="custom-a" href="#">Переглянути всі області</a></li>
+
+                        </ul>
+                    </li>
+                    <li class="custom-li">
+                        <a class="custom-a" href="#">Регіон...</a>
+                        <ul class="dropdown">
+                            <li><a class="custom-a" href="#">Додати регіон</a></li>
+                            <li><a class="custom-a" href="#">Переглянути всі регіони</a></li>
+
+                        </ul>
+                    </li>
+                    <li class="custom-li">
+                        <a class="custom-a" href="#">Населений пункт...</a>
+                        <ul class="dropdown">
+                            <li><a class="custom-a" href="#">Додати населений пункт</a></li>
+                            <li><a class="custom-a" href="#">Переглянути всі населений пункти</a></li>
+
+                        </ul>
+                    </li>
+                    
+                }
+
+            </ul>
+        </nav>
+
+
+       
+         
+    </div>
+
+    <div class="objects">
+        <div style="margin-top: -40px;flex-direction: column;align-items: center;justify-content: center;">
+            <div class="container">
+                <form asp-action="Search" asp-controller="Home" method="post" class="search" style="margin-bottom: 60px;">
+                    <div class="custom-select-wrapper">
+                        <div class="custom-select" id="operationSelect">
+                            <span></span>
+                        </div>
+                        <div class="custom-options" id="operationOptions">
+                        </div>
+
+                        <select id="operationNativeSelect" asp-items="ViewBag.OperatrionsList as SelectList" style="display:none;" name="operationTypeId">
+                            <option value="0">Операція</option>
+
+                        </select>
+                    </div>
+
+                    <div class="custom-select-wrapper">
+                        <div class="custom-select" id="objectSelect">
+                            <span></span>
+                        </div>
+                        <div class="custom-options" id="objectOptions">
+                        </div>
+
+                        <select id="objectNativeSelect" asp-items="ViewBag.EsateTypesList as SelectList" style="display:none;" name="estateTypeId">
+                            <option value="0">Всі об'єкти</option>
+                            <option value="1">Квартира</option>
+                            <option value="2">Гараж</option>
+                            <option value="3">Дім</option>
+                            <option value="4">Офіс</option>
+                            <option value="5">Парко-місце</option>
+                            <option value="6">Приміщення</option>
+                            <option value="7">Кімната</option>
+                            <option value="8">Ділянка</option>
+                            <option value="9">Склад</option>
+                        </select>
+                    </div>
+
+
+                    <div class="custom-select-wrapper">
+                        <div class="custom-select" id="localitySelect">
+                            <span></span>
+                        </div>
+                        <div class="custom-options" id="localityOptions">
+                        </div>
+
+                        <select id="localityNativeSelect" asp-items="ViewBag.LocalitiesList as SelectList" style="display:none;" name="localityId">
+                            <option value="0">Місто</option>
+                        </select>
+                    </div>
+
+                    <div class="search-buttons-div">
+                        <a id="toggleButton"> <img src="https://img.icons8.com/?size=100&id=LALXQcDwgx8U&format=png&color=000000" width="35px" height="35px" /></a>
+                        <input type="submit" class="search-button" style="margin-left: 60px" value="Знайти"></input>
+                    </div>
+
+                    <div>
+                        <div id="filtration">
+                            <div class="filtration-container">
+                                <div class="area-for-items">
+                                    <label>Площа</label>
+
+                                    <div class="range">
+                                        <input type="text" placeholder="Min" class="filtration-input" name="minArea" />
+                                        <input type="text" placeholder="Max" class="filtration-input" name="maxArea" />
+
+                                    </div>
+
+                                </div>
+                                <div class="area-for-items">
+                                    <label>Ціна</label>
+
+                                    <div class="range">
+                                        <input type="text" placeholder="Min" class="filtration-input" name="minPrice" />
+                                        <input type="text" placeholder="Max" class="filtration-input" name="maxPrice" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+           
+
+            <div >
+                @if (Model.Objects.Any())
+                {
+                    @foreach (var item in Model.Objects)
+                    {
+                        <div class="item">
+                            <div>
+                                <div class="price-style">
+
+                                    <p> @Html.DisplayFor(modelItem => item.operationName)</p>
+                                    @if (item.typeObject == ObjectType.Flat.ToString())
+                                    {
+                                        <p>Квартира</p>
+                                    }
+                                    else if (item.typeObject == ObjectType.Office.ToString())
+                                    {
+                                        <p>Офіс</p>
+                                    }
+                                    else if (item.typeObject == ObjectType.Garage.ToString())
+                                    {
+                                        <p>Гараж</p>
+                                    }
+                                    else if (item.typeObject == ObjectType.House.ToString())
+                                    {
+                                        <p>Дім</p>
+                                    }
+                                    else if (item.typeObject == ObjectType.Stead.ToString())
+                                    {
+                                        <p>Ділянка</p>
+                                    }
+                                    else if (item.typeObject == ObjectType.Room.ToString())
+                                    {
+                                        <p>Кімната</p>
+                                    }
+                                    else if (item.typeObject == ObjectType.Parking.ToString())
+                                    {
+                                        <p>Парко-місце</p>
+                                    }
+                                    else if (item.typeObject == ObjectType.Storage.ToString())
+                                    {
+                                        <p>Склад</p>
+                                    }
+                                    else
+                                    {
+                                        <p>@Html.DisplayFor(modelItem => item.typeObject)</p>
+                                    }
+                                    <p>@Html.DisplayFor(modelItem => item.Area) @Html.DisplayFor(modelItem => item.unitAreaName)</p>
+                                    <p>@Html.DisplayFor(modelItem => item.Price) @Html.DisplayFor(modelItem => item.currencyName)</p>
+                                    <p>@Html.DisplayFor(modelItem => item.localityName)</p>
+
+                                    <a asp-controller="Office" asp-action="ShowFlatForUpdate" asp-route-id="@item.Id" asp-route-typeObject="@item.typeObject" class="update-button">Редагувати</a>
+                                    <a asp-controller="Office" asp-action="ShowFlatForUpdate" asp-route-id="@item.Id" asp-route-typeObject="@item.typeObject" class="delete-button">Видалити</a>
+                                    
+
+                                </div>
+                            </div>
+
+
+                            <div class="info-for-employee" style=" display: none;">@* всплывающая платформа *@
+
+                                <p>Ім'я клієнта: @Html.DisplayFor(modelItem => item.clientName)</p>
+                                <p>Телефон клієнта: @Html.DisplayFor(modelItem => item.clientPhone)</p>
+                                <p>Кількість переглядів: @Html.DisplayFor(modelItem => item.countViews)</p>
+
+
+                            </div>
+                        </div>
+
+                        @* @if (Context.Session.GetString("User") == "employee")
+                { *@
+                        
+
+                        //}
+
+                    }
+
+
+                }
+                else
+                {
+                    <h2>На жаль за Вашим запитом нічого не знайдено</h2>
+                }
+            </div>
+
+            @if (Model.PageViewModel.typeOfAction == "ShowObjectsByType") @* под вопросом, исправить под office controller *@
+            {
+                <page-link page-model="Model.PageViewModel" page-action="ShowObjectsByType"></page-link>
+            }
+            else
+            {
+                <page-link page-model="Model.PageViewModel" page-action="Search"></page-link>
+            }
+
+        </div>
+
+    </div>
 </div>
+
 
 

@@ -30,6 +30,8 @@ namespace REAgency.Controllers
         private readonly ILocationService _locationService;
         private readonly IAreaService _areaService;
         private readonly IFlatService _flatService;
+        public int pageSize = 9;
+
         public OfficeController(IEstateObjectService objectService, IOperationService operationService, IRegionService regionService, 
             IDistrictService districtService, ILocalityService localityService, ICurrencyService currencyService, IClientService clientService,
             IEmployeeService employeeService, IWebHostEnvironment appEnvironment, ILocationService locationService,
@@ -49,29 +51,30 @@ namespace REAgency.Controllers
             _flatService= flatService;
 		}
 
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int page = 1)
         {
-            if(HttpContext.Session.GetString("User") != "employee")
-            {
-                return RedirectToAction("Index", "Home");
-            }
-            IEnumerable<EstateObjectDTO> objects = await _objectService.GetEstateObjectByEmployeeId(HttpContext.Session.GetInt32("Id")!.Value);
+            //if(HttpContext.Session.GetString("User") != "employee")
+            //{
+            //    return RedirectToAction("Index", "Home");
+            //}
+            //IEnumerable<EstateObjectDTO> objects = await _objectService.GetEstateObjectByEmployeeId(HttpContext.Session.GetInt32("Id")!.Value);
+            IEnumerable<EstateObjectDTO> objects = await _objectService.GetAllEstateObjects(); //↑
+
             IEnumerable<OperationDTO> operations = await _operationService.GetAll();
+            IEnumerable<AreaDTO> areas = await _areaService.GetAll();
+            IEnumerable<CurrencyDTO> currencies = await _currencyService.GetAll();
+            IEnumerable<LocationDTO> locations = await _locationService.GetLocations();
+            IEnumerable<LocalityDTO> localities = await _localityService.GetLocalities();
 
-            var listObjects = objects.Select(estateObject => new ObjectsViewModel
-            {
-                Id = estateObject.Id,
-                employeeId = estateObject.employeeId,
-                operationName = operations.FirstOrDefault(op => op.Id == estateObject.operationId)?.Name,
-                locationId = estateObject.locationId,
-                Price = estateObject.Price,
-                currencyId = estateObject.currencyId,
-                Area = estateObject.Area,
-                unitAreaId = estateObject.unitAreaId,
-                pathPhoto = estateObject.pathPhoto
-            }).ToList();
+            var estateObjects = SelectEstateObject(objects, operations, areas, currencies, locations, localities);
+            var count = estateObjects.Count();
+            var items = estateObjects.Skip((page - 1) * pageSize).Take(pageSize).ToList();
 
-            return View(listObjects);
+            PageViewModel pageViewModel = new PageViewModel(count, page, pageSize);
+            pageViewModel.typeOfAction = "Search";
+            ObjectPageViewModel objectPageViewModel = new ObjectPageViewModel(items, pageViewModel);
+            return View(objectPageViewModel);
+
         }
         public async Task<IActionResult> GetAllObjects()
         {
@@ -420,5 +423,43 @@ namespace REAgency.Controllers
             return locationDTO;
 
         }
-	}
+
+        public IEnumerable<ObjectsViewModel> SelectEstateObject(IEnumerable<EstateObjectDTO> estateObjects, IEnumerable<OperationDTO> operations,
+        IEnumerable<AreaDTO> areas, IEnumerable<CurrencyDTO> currencies, IEnumerable<LocationDTO> locations, IEnumerable<LocalityDTO> localities)
+        {
+            var viewModel = estateObjects.Select(estateObjectDTO => new ObjectsViewModel
+            {
+                Id = estateObjectDTO.Id,
+                countViews = estateObjectDTO.countViews,
+                employeeId = estateObjectDTO.employeeId,
+                operationId = estateObjectDTO.operationId,
+                operationName = operations.FirstOrDefault(op => op.Id == estateObjectDTO.operationId)?.Name,
+                locationId = estateObjectDTO.locationId,
+                localityId = (int)locations.FirstOrDefault(l => l.Id == estateObjectDTO.locationId).LocalityId,
+
+                localityName = localities.FirstOrDefault(l => l.Id == locations.FirstOrDefault(l => l.Id == estateObjectDTO.locationId).LocalityId)?.Name,
+                Street = estateObjectDTO.Street,
+                numberStreet = estateObjectDTO.numberStreet,
+                Price = estateObjectDTO.Price,
+                currencyId = estateObjectDTO.currencyId,
+                currencyName = currencies.FirstOrDefault(c => c.Id == estateObjectDTO.currencyId)?.Name,
+                Area = estateObjectDTO.Area,
+                unitAreaId = estateObjectDTO.unitAreaId,
+                unitAreaName = areas.FirstOrDefault(a => a.Id == estateObjectDTO.unitAreaId).Name,
+                Description = estateObjectDTO.Description,
+                Status = estateObjectDTO.Status,
+                Date = estateObjectDTO.Date,
+                pathPhoto = estateObjectDTO.pathPhoto,
+                clientId = estateObjectDTO.clientId,
+                clientName = estateObjectDTO.clientName,
+                clientPhone = estateObjectDTO.clientPhone,
+                typeObject = estateObjectDTO.estateType.ToString(),
+
+                //objectType = ObjectsViewModel.ObjectType.Flat
+
+
+            }).ToList();
+            return viewModel;
+        }
+    }
 }

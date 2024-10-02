@@ -151,10 +151,15 @@ namespace REAgency.Controllers
                 }
                 else
                 {
+
                     HttpContext.Session.SetString("Login", employee.Email);
                     HttpContext.Session.SetString("Name", employee.Name);                   
                     HttpContext.Session.SetInt32("Id", employee.Id);
                     HttpContext.Session.SetString("User", "employee");
+                    if(employee.userStatus == true)
+                    {
+                        HttpContext.Session.SetString("IsAdmin", "True");
+                    }
                     return RedirectToAction("Index", "Home");
                 }
             } 
