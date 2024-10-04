@@ -7,9 +7,17 @@
     const objectOptions = $('#objectOptions');
     const objectNativeSelect = $('#objectNativeSelect');
 
-    const localitySelect = $('#localitySelect'); //here
+    const localitySelect = $('#localitySelect'); 
     const localityOptions = $('#localityOptions');
     const localityNativeSelect = $('#localityNativeSelect');
+
+    const employeeSelect = $('#employeeSelect');
+    const employeeOptions = $('#employeeOptions');
+    const employeeNativeSelect = $('#employeeNativeSelect');
+
+    const statusSelect = $('#statusSelect');
+    const statusOptions = $('#statusOptions');
+    const statusNativeSelect = $('#statusNativeSelect');
 
     const operationSelectedValue = operationNativeSelect.val();
     const operationSelectedText = operationNativeSelect.find(`option[value="${operationSelectedValue}"]`).text();
@@ -19,6 +27,12 @@
 
     const localitySelectedValue = localityNativeSelect.val();
     const localitySelectedText = localityNativeSelect.find(`option[value="${localitySelectedValue}"]`).text();
+
+    const employeeSelectedValue = employeeNativeSelect.val();
+    const employeeSelectedText = employeeNativeSelect.find(`option[value="${employeeSelectedValue}"]`).text();
+
+    const statusSelectedValue = statusNativeSelect.val();
+    const statusSelectedText = statusNativeSelect.find(`option[value="${statusSelectedValue}"]`).text();
 
     operationNativeSelect.find('option').each(function () {
         const optionElement = $(this);
@@ -65,6 +79,36 @@
         localityOptions.append(customOptionDiv);
     });
 
+    employeeNativeSelect.find('option').each(function () {
+        const optionElement = $(this);
+        const customOptionDiv = $('<div></div>')
+            .addClass('custom-option')
+            .text(optionElement.text())
+            .attr('data-value', optionElement.val())
+            .on('click', function () {
+                employeeSelect.find('span').text(optionElement.text());
+                employeeNativeSelect.val(optionElement.val());
+                employeeSelect.removeClass('active');
+            });
+
+        employeeOptions.append(customOptionDiv);
+    });
+
+    statusNativeSelect.find('option').each(function () {
+        const optionElement = $(this);
+        const customOptionDiv = $('<div></div>')
+            .addClass('custom-option')
+            .text(optionElement.text())
+            .attr('data-value', optionElement.val())
+            .on('click', function () {
+                statusSelect.find('span').text(optionElement.text());
+                statusNativeSelect.val(optionElement.val());
+                statusSelect.removeClass('active');
+            });
+
+        statusOptions.append(customOptionDiv);
+    });
+
 
     if (operationSelectedText) {
         operationSelect.find('span').text(operationSelectedText);
@@ -80,6 +124,15 @@
     }
 
 
+    if (employeeSelectedText) {
+        employeeSelect.find('span').text(employeeSelectedText);
+    }
+
+    if (statusSelectedText) {
+        statusSelect.find('span').text(statusSelectedText);
+    }
+
+
     operationSelect.on('click', function () {
         $(this).toggleClass('active');
     });
@@ -88,6 +141,14 @@
     });
 
     localitySelect.on('click', function () {
+        $(this).toggleClass('active');
+    });
+
+    employeeSelect.on('click', function () {
+        $(this).toggleClass('active');
+    });
+
+    statusSelect.on('click', function () {
         $(this).toggleClass('active');
     });
 
@@ -106,6 +167,18 @@
     $(document).on('click', function (event) {
         if (!localitySelect.is(event.target) && !localitySelect.has(event.target).length) {
             localitySelect.removeClass('active');
+        }
+    });
+
+    $(document).on('click', function (event) {
+        if (!employeeSelect.is(event.target) && !employeeSelect.has(event.target).length) {
+            employeeSelect.removeClass('active');
+        }
+    });
+
+    $(document).on('click', function (event) {
+        if (!statusSelect.is(event.target) && !statusSelect.has(event.target).length) {
+            statusSelect.removeClass('active');
         }
     });
 

@@ -8,6 +8,7 @@ using REAgency.BLL.Interfaces;
 using REAgency.BLL.Interfaces.Locations;
 using REAgency.BLL.Interfaces.Object;
 using REAgency.BLL.Interfaces.Persons;
+using REAgency.BLL.Services.Objects;
 using REAgency.Models;
 using REAgency.Models.Flat;
 using REAgencyEnum;
@@ -53,26 +54,39 @@ namespace REAgency.Controllers
 
         public async Task<IActionResult> Index(int page = 1)
         {
-            //if(HttpContext.Session.GetString("User") != "employee")
-            //{
-            //    return RedirectToAction("Index", "Home");
-            //}
-            //IEnumerable<EstateObjectDTO> objects = await _objectService.GetEstateObjectByEmployeeId(HttpContext.Session.GetInt32("Id")!.Value);
-            IEnumerable<EstateObjectDTO> objects = await _objectService.GetAllEstateObjects(); //↑
+            if (HttpContext.Session.GetString("User") != "employee")
+            {
+                return RedirectToAction("Index", "Home");
+            }
+            IEnumerable<ObjectsViewModel> estateObjects;
 
+            IEnumerable<EstateObjectDTO> objects = await _objectService.GetEstateObjectByEmployeeId(HttpContext.Session.GetInt32("Id")!.Value);
             IEnumerable<OperationDTO> operations = await _operationService.GetAll();
             IEnumerable<AreaDTO> areas = await _areaService.GetAll();
             IEnumerable<CurrencyDTO> currencies = await _currencyService.GetAll();
             IEnumerable<LocationDTO> locations = await _locationService.GetLocations();
             IEnumerable<LocalityDTO> localities = await _localityService.GetLocalities();
-
-            var estateObjects = SelectEstateObject(objects, operations, areas, currencies, locations, localities);
+            
+            if (HttpContext.Session.GetString("IsAdmin") == "True")
+            {
+                IEnumerable<EstateObjectDTO> allObjects = await _objectService.GetAllEstateObjects(); //↑
+                estateObjects = SelectEstateObject(allObjects, operations, areas, currencies, locations, localities);
+            }
+            else
+            {
+                 estateObjects = SelectEstateObject(objects, operations, areas, currencies, locations, localities);
+            }
+           
             var count = estateObjects.Count();
             var items = estateObjects.Skip((page - 1) * pageSize).Take(pageSize).ToList();
 
             PageViewModel pageViewModel = new PageViewModel(count, page, pageSize);
-            pageViewModel.typeOfAction = "Search";
+          
             ObjectPageViewModel objectPageViewModel = new ObjectPageViewModel(items, pageViewModel);
+
+            ViewBag.OperatrionsList = new SelectList(await _operationService.GetAll(), "Id", "Name");
+            ViewBag.LocalitiesList = new SelectList(await _localityService.GetLocalities(), "Id", "Name");
+            ViewBag.EmployeesList = new SelectList(await _employeeService.GetEmployees(), "Id", "Name");
             return View(objectPageViewModel);
 
         }
@@ -453,5 +467,176 @@ namespace REAgency.Controllers
             }).ToList();
             return viewModel;
         }
+
+        public async Task<IActionResult> Search(HomePageViewModel homePageViewModel, int page = 1)
+        {
+            int employeeId = (int)HttpContext.Session.GetInt32("Id");
+            int opTypeId = homePageViewModel.operationTypeId;
+            int localityId = homePageViewModel.localityId;
+            int estateTypeId = homePageViewModel.estateTypeId;
+            int minPrice = homePageViewModel.minPrice;
+            int maxPrice = homePageViewModel.maxPrice;
+            double minArea = homePageViewModel.minArea;
+            double maxArea = homePageViewModel.maxArea;
+
+            if (opTypeId != 0 || localityId != 0 || estateTypeId != 0 ||
+                minPrice != 0 || maxPrice != 0 || minArea != 0 || maxArea != 0)
+            {
+                HttpContext.Session.SetInt32("opTypeId", opTypeId);
+                HttpContext.Session.SetInt32("localityId", localityId);
+                HttpContext.Session.SetInt32("estateTypeId", estateTypeId);
+                HttpContext.Session.SetInt32("minPrice", minPrice);
+                HttpContext.Session.SetInt32("maxPrice", maxPrice);
+                HttpContext.Session.SetString("minArea", minArea.ToString("R"));
+                HttpContext.Session.SetString("maxArea", maxArea.ToString("R"));
+            }
+
+
+            var opTypeIdSession = HttpContext.Session.GetInt32("opTypeId");
+            var localityIdSession = HttpContext.Session.GetInt32("localityId");
+            var estateTypeIdSession = HttpContext.Session.GetInt32("estateTypeId");
+            var minPriceSession = HttpContext.Session.GetInt32("minPrice");
+            var maxPriceSession = HttpContext.Session.GetInt32("maxPrice");
+
+
+            var minAreaSessionStr = HttpContext.Session.GetString("minArea");
+            var maxAreaSessionStr = HttpContext.Session.GetString("maxArea");
+
+            double? minAreaSession = double.TryParse(minAreaSessionStr, out _) ? minArea : (double?)null;
+            double? maxAreaSession = double.TryParse(maxAreaSessionStr, out _) ? maxArea : (double?)null;
+
+
+
+            IEnumerable<OperationDTO> operations = await _operationService.GetAll();
+            IEnumerable<AreaDTO> areas = await _areaService.GetAll();
+            IEnumerable<CurrencyDTO> currencies = await _currencyService.GetAll();
+            IEnumerable<LocationDTO> locations = await _locationService.GetLocations();
+            IEnumerable<LocalityDTO> localities = await _localityService.GetLocalities();
+
+            var filtredEstateObjects = await _objectService.GetFilteredEstateObjects(estateTypeId, opTypeId, localityId, minPrice, maxPrice, minArea, maxArea);
+            filtredEstateObjects = filtredEstateObjects.Where(e => e.employeeId == employeeId).ToList();
+
+            ViewBag.OperatrionsList = new SelectList(await _operationService.GetAll(), "Id", "Name");
+            ViewBag.LocalitiesList = new SelectList(await _localityService.GetLocalities(), "Id", "Name");
+
+            if (opTypeId != 0 || localityId != 0 || estateTypeId != 0 ||
+                minPrice != 0 || maxPrice != 0 || minArea != 0 || maxArea != 0)
+            {
+
+                return View("Index", ShowObjectsWithPagination(filtredEstateObjects, operations, areas, currencies, localities, locations, page));
+            }
+            else
+            {
+                if (opTypeIdSession == null && localityIdSession == null &&
+                    estateTypeIdSession == null && minPriceSession == null &&
+                    maxPriceSession == null && minAreaSession == null && maxAreaSession == null)
+                {
+                    return View("Index", ShowObjectsWithPagination(filtredEstateObjects, operations, areas, currencies, localities, locations, page));
+
+                }
+                else
+                {
+                    var filtredEstateObjectsFromSession = await _objectService.GetFilteredEstateObjects(
+                    estateTypeIdSession, opTypeIdSession, localityIdSession, minPriceSession, maxPriceSession, minAreaSession, maxAreaSession);
+
+                    return View("Index", ShowObjectsWithPagination(filtredEstateObjectsFromSession, operations, areas, currencies, localities, locations, page));
+                }
+
+
+            }
+
+        }
+
+        public async Task<IActionResult> SearchForAdmin(HomePageViewModel homePageViewModel, int page = 1)
+        {
+            int employeeId = (int)HttpContext.Session.GetInt32("Id");
+            int opTypeId = homePageViewModel.operationTypeId;
+            int localityId = homePageViewModel.localityId;
+            int estateTypeId = homePageViewModel.estateTypeId;
+            int minPrice = homePageViewModel.minPrice;
+            int maxPrice = homePageViewModel.maxPrice;
+            double minArea = homePageViewModel.minArea;
+            double maxArea = homePageViewModel.maxArea;
+
+            if (opTypeId != 0 || localityId != 0 || estateTypeId != 0 ||
+                minPrice != 0 || maxPrice != 0 || minArea != 0 || maxArea != 0)
+            {
+                HttpContext.Session.SetInt32("opTypeId", opTypeId);
+                HttpContext.Session.SetInt32("localityId", localityId);
+                HttpContext.Session.SetInt32("estateTypeId", estateTypeId);
+                HttpContext.Session.SetInt32("minPrice", minPrice);
+                HttpContext.Session.SetInt32("maxPrice", maxPrice);
+                HttpContext.Session.SetString("minArea", minArea.ToString("R"));
+                HttpContext.Session.SetString("maxArea", maxArea.ToString("R"));
+            }
+
+
+            var opTypeIdSession = HttpContext.Session.GetInt32("opTypeId");
+            var localityIdSession = HttpContext.Session.GetInt32("localityId");
+            var estateTypeIdSession = HttpContext.Session.GetInt32("estateTypeId");
+            var minPriceSession = HttpContext.Session.GetInt32("minPrice");
+            var maxPriceSession = HttpContext.Session.GetInt32("maxPrice");
+
+
+            var minAreaSessionStr = HttpContext.Session.GetString("minArea");
+            var maxAreaSessionStr = HttpContext.Session.GetString("maxArea");
+
+            double? minAreaSession = double.TryParse(minAreaSessionStr, out _) ? minArea : (double?)null;
+            double? maxAreaSession = double.TryParse(maxAreaSessionStr, out _) ? maxArea : (double?)null;
+
+
+
+            IEnumerable<OperationDTO> operations = await _operationService.GetAll();
+            IEnumerable<AreaDTO> areas = await _areaService.GetAll();
+            IEnumerable<CurrencyDTO> currencies = await _currencyService.GetAll();
+            IEnumerable<LocationDTO> locations = await _locationService.GetLocations();
+            IEnumerable<LocalityDTO> localities = await _localityService.GetLocalities();
+
+            var filtredEstateObjects = await _objectService.GetFilteredEstateObjects(estateTypeId, opTypeId, localityId, minPrice, maxPrice, minArea, maxArea);
+            filtredEstateObjects = filtredEstateObjects.Where(e => e.employeeId == employeeId).ToList();
+
+            ViewBag.OperatrionsList = new SelectList(await _operationService.GetAll(), "Id", "Name");
+            ViewBag.LocalitiesList = new SelectList(await _localityService.GetLocalities(), "Id", "Name");
+
+            if (opTypeId != 0 || localityId != 0 || estateTypeId != 0 ||
+                minPrice != 0 || maxPrice != 0 || minArea != 0 || maxArea != 0)
+            {
+
+                return View("Index", ShowObjectsWithPagination(filtredEstateObjects, operations, areas, currencies, localities, locations, page));
+            }
+            else
+            {
+                if (opTypeIdSession == null && localityIdSession == null &&
+                    estateTypeIdSession == null && minPriceSession == null &&
+                    maxPriceSession == null && minAreaSession == null && maxAreaSession == null)
+                {
+                    return View("Index", ShowObjectsWithPagination(filtredEstateObjects, operations, areas, currencies, localities, locations, page));
+
+                }
+                else
+                {
+                    var filtredEstateObjectsFromSession = await _objectService.GetFilteredEstateObjects(
+                    estateTypeIdSession, opTypeIdSession, localityIdSession, minPriceSession, maxPriceSession, minAreaSession, maxAreaSession);
+
+                    return View("Index", ShowObjectsWithPagination(filtredEstateObjectsFromSession, operations, areas, currencies, localities, locations, page));
+                }
+
+
+            }
+
+        }
+
+        public ObjectPageViewModel ShowObjectsWithPagination(IEnumerable<EstateObjectDTO> filtredEstateObjects, IEnumerable<OperationDTO> operations,
+         IEnumerable<AreaDTO> areas, IEnumerable<CurrencyDTO> currencies, IEnumerable<LocalityDTO> localities, IEnumerable<LocationDTO> locations, int page = 1)
+        {
+            var estateObjects = SelectEstateObject(filtredEstateObjects, operations, areas, currencies, locations, localities);
+            var count = estateObjects.Count();
+            var items = estateObjects.Skip((page - 1) * pageSize).Take(pageSize).ToList();
+
+            PageViewModel pageViewModel = new PageViewModel(count, page, pageSize);
+            ObjectPageViewModel objectPageViewModel = new ObjectPageViewModel(items, pageViewModel);
+            return objectPageViewModel;
+        }
+
     }
 }
