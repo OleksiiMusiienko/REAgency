@@ -11,6 +11,7 @@ using REAgency.BLL.Interfaces.Persons;
 using REAgency.BLL.Services.Objects;
 using REAgency.Models;
 using REAgency.Models.Flat;
+using REAgency.Models.House;
 using REAgencyEnum;
 using System.Data;
 
@@ -31,12 +32,13 @@ namespace REAgency.Controllers
         private readonly ILocationService _locationService;
         private readonly IAreaService _areaService;
         private readonly IFlatService _flatService;
+        private readonly IHouseSevice _houseSevice;
         public int pageSize = 9;
 
         public OfficeController(IEstateObjectService objectService, IOperationService operationService, IRegionService regionService, 
             IDistrictService districtService, ILocalityService localityService, ICurrencyService currencyService, IClientService clientService,
             IEmployeeService employeeService, IWebHostEnvironment appEnvironment, ILocationService locationService,
-            IAreaService areaService, IFlatService flatService)
+            IAreaService areaService, IFlatService flatService, IHouseSevice houseSevice)
         {
             _objectService = objectService;
             _operationService = operationService;
@@ -50,6 +52,7 @@ namespace REAgency.Controllers
             _locationService = locationService;
             _areaService = areaService;
             _flatService= flatService;
+            _houseSevice= houseSevice;
 		}
 
         public async Task<IActionResult> Index(int page = 1)
@@ -125,22 +128,22 @@ namespace REAgency.Controllers
             {
                 case "Flat":
                     return View("AddFlatView");
-                //case "House":
-                //    return View(AddHouseView);
-                //case "Room":
-                //    return View(AddRoomView);
-                //case "Stead":
-                //    return View(AddSteadView);
-                //case "Office":
-                //    return View(AddOfficeView);
-                //case "Garage":
-                //    return View(AddGarageView);
-                //case "Premis":
-                //    return View(AddPremisView);
-                //case "Parking":
-                //    return View(AddParkingView);
-                //case "Storage":
-                //    return View(AddStorageView);
+                case "House":
+                    return View("AddHouseView");
+                    //case "Room":
+                    //    return View(AddRoomView);
+                    //case "Stead":
+                    //    return View(AddSteadView);
+                    //case "Office":
+                    //    return View(AddOfficeView);
+                    //case "Garage":
+                    //    return View(AddGarageView);
+                    //case "Premis":
+                    //    return View(AddPremisView);
+                    //case "Parking":
+                    //    return View(AddParkingView);
+                    //case "Storage":
+                    //    return View(AddStorageView);
 
             }
             return View();
@@ -228,7 +231,7 @@ namespace REAgency.Controllers
                 estateObjectDTO.Status = false;
                 estateObjectDTO.estateType = ObjectType.Flat;
                 estateObjectDTO.Date = DateTime.Now;
-                LocationDTO locationDTO = await CreateLocation(flatViewModel, estateObjectDTO.Date); 
+                LocationDTO locationDTO = await CreateLocation(flatViewModel.RegionId, flatViewModel.DistrictId, flatViewModel.LocalityId, estateObjectDTO.Date); 
                 estateObjectDTO.locationId = locationDTO.Id;                
                 
                 await _objectService.CreateEstateObject(estateObjectDTO); //создаем обьект
@@ -250,6 +253,59 @@ namespace REAgency.Controllers
                 }
                 await _flatService.CreateFlat(flatDTO); //сохраняем Flat в базу 
                 
+            }
+            return RedirectToAction("Index");
+        }
+        public async Task<IActionResult> CreateHouse(AddHouseViewModel houseViewModel, IFormFileCollection formFiles)
+        {
+            //    1.Создать estateObject
+            //    2. Добавить его в базу что бы получить Id и сформировать путь к папке с фотографиями
+            //    3. Добавить фото
+            //    4. Создать flatDTO
+            //    5. Подать его в базу
+
+            if (ModelState.IsValid && formFiles != null)
+            {
+                EstateObjectDTO estateObjectDTO = new EstateObjectDTO();
+                ClientDTO clientDTO = await CreateClient(houseViewModel.Name, houseViewModel.Phone1);
+
+                estateObjectDTO.clientId = clientDTO.Id;
+                estateObjectDTO.employeeId = (int)HttpContext.Session.GetInt32("Id");
+                estateObjectDTO.operationId = houseViewModel.OperationId;
+
+                estateObjectDTO.LocalityId = houseViewModel.LocalityId;
+                estateObjectDTO.Street = houseViewModel.Street;
+                estateObjectDTO.numberStreet = houseViewModel.numberStreet;
+                estateObjectDTO.Price = houseViewModel.Price;
+                estateObjectDTO.currencyId = houseViewModel.currencyId;
+                estateObjectDTO.Area = houseViewModel.Area;
+                estateObjectDTO.unitAreaId = 1;             //нет смысла тянуть Id там 3 шт в базе
+                estateObjectDTO.Description = houseViewModel.Description;
+                estateObjectDTO.Status = false;
+                estateObjectDTO.estateType = ObjectType.House;
+                estateObjectDTO.Date = DateTime.Now;
+                LocationDTO locationDTO = await CreateLocation(houseViewModel.RegionId, houseViewModel.DistrictId, houseViewModel.LocalityId, estateObjectDTO.Date);
+                estateObjectDTO.locationId = locationDTO.Id;
+
+                await _objectService.CreateEstateObject(estateObjectDTO); //создаем обьект
+
+                estateObjectDTO = await _objectService.GetByDateTime(estateObjectDTO.Date); //получаем его из базы уже с id
+
+                await AddFoto(estateObjectDTO, formFiles); //добавляем фото и получаем путь
+
+
+                HouseDTO houseDTO = new HouseDTO();
+                if (estateObjectDTO != null)
+                {
+                    houseDTO.estateObjectId = estateObjectDTO.Id;
+                    houseDTO.Floors = houseViewModel.Floors;
+                    houseDTO.Rooms = houseViewModel.Rooms;
+                    houseDTO.kitchenArea = houseViewModel.kitchenArea;
+                    houseDTO.livingArea = houseViewModel.livingArea;
+                    houseDTO.steadArea = houseViewModel.steadArea;
+                }
+                await _houseSevice.CreateHouse(houseDTO); //сохраняем House в базу 
+
             }
             return RedirectToAction("Index");
         }
@@ -416,18 +472,17 @@ namespace REAgency.Controllers
             return viewModel;
         }
 
-        private async Task<LocationDTO> CreateLocation(AddFlatViewModel addFlatViewModel, DateTime dateTime)
+        private async Task<LocationDTO> CreateLocation(int regionId, int districtId,int localityId, DateTime dateTime)
         {
             LocationDTO locationDTO = new LocationDTO();
             locationDTO.CountryId = 1; //в базе одна страна
-            locationDTO.RegionId = addFlatViewModel.RegionId;
-            locationDTO.DistrictId = addFlatViewModel.DistrictId;
-            locationDTO.LocalityId = addFlatViewModel.LocalityId;
+            locationDTO.RegionId = regionId;
+            locationDTO.DistrictId = districtId;
+            locationDTO.LocalityId = localityId;
             locationDTO.Date = dateTime;
             await _locationService.CreateLocation(locationDTO);
             locationDTO = await _locationService.GetByDateTime(dateTime);
             return locationDTO;
-
         }
 
         public IEnumerable<ObjectsViewModel> SelectEstateObject(IEnumerable<EstateObjectDTO> estateObjects, IEnumerable<OperationDTO> operations,
