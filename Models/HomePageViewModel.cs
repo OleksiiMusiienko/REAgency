@@ -17,7 +17,7 @@ namespace REAgency.Models
 
         public int estateTypeId { get; set; }
 
-        public bool status {  get; set; }
+        public string ?status {  get; set; }
         public int employeeId { get; set; }
 
         public int minPrice { get; set; }
