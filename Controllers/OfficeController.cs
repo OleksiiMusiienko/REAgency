@@ -97,27 +97,7 @@ namespace REAgency.Controllers
             return View(objectPageViewModel);
 
         }
-        public async Task<IActionResult> GetAllObjects()
-        {
-            IEnumerable<EstateObjectDTO> objects = await _objectService.GetAllEstateObjects();
-            IEnumerable<OperationDTO> operations = await _operationService.GetAll();
-
-            var listObjects = objects.Select(estateObject => new ObjectsViewModel
-            {
-                Id = estateObject.Id,
-                employeeId = estateObject.employeeId,
-                operationName = operations.FirstOrDefault(op => op.Id == estateObject.operationId)?.Name,
-                locationId = estateObject.locationId,
-                Price = estateObject.Price,
-                currencyId = estateObject.currencyId,
-                Area = estateObject.Area,
-                unitAreaId = estateObject.unitAreaId,
-                pathPhoto = estateObject.pathPhoto
-            }).Where(p => p.employeeId == HttpContext.Session.GetInt32("Id")).ToList();
-
-            return View("Index", listObjects);
-
-        }
+       
         public async Task<IActionResult> Create(string selEstate)
         {
             if (selEstate != null)
@@ -223,7 +203,7 @@ namespace REAgency.Controllers
                 estateObjectDTO.clientId = clientDTO.Id;
                 estateObjectDTO.employeeId = (int)HttpContext.Session.GetInt32("Id");
                 estateObjectDTO.operationId = flatViewModel.OperationId;                
-                
+               
                 estateObjectDTO.LocalityId = flatViewModel.LocalityId;
                 estateObjectDTO.Street = flatViewModel.Street;
                 estateObjectDTO.numberStreet = flatViewModel.numberStreet;
@@ -381,10 +361,12 @@ namespace REAgency.Controllers
             return NotFound();
         }
 
-        public async Task<IActionResult> UpdateFlat(UpdateFlatViewModel model)
+        public async Task<IActionResult> UpdateFlat(UpdateFlatViewModel model, IFormFileCollection formFiles)
         {
             try
             {
+                await _clientService.UpdateClientNameAndPhone(model.clientId, model.Name, model.Phone1);
+
                 LocationDTO locationDTO = new LocationDTO();
                 locationDTO.Id = model.locationId;
                 locationDTO.CountryId = 1;
@@ -424,10 +406,31 @@ namespace REAgency.Controllers
                 objectDTO.estateType = ObjectType.Flat;
                 objectDTO.pathPhoto = model.Path;
                 objectDTO.Status = model.status;
-
-
                 await _objectService.UpdateEstateObject(objectDTO);
-                return RedirectToAction("Index", "Home");
+
+                //update photos
+                if (formFiles != null)
+                {
+                    try
+                    {
+                        string folder = Path.Combine(_env.WebRootPath);
+                        folder = folder + model.Path;
+                        Directory.Delete(folder, true);
+                        var estateObject = await _objectService.GetEstateObjectById(model.estateObjectId);
+                        await AddFoto(estateObject, formFiles);
+                    }
+                    catch (Exception ex) 
+                    {
+                        Console.WriteLine(ex.Message);
+                    }
+                   
+
+                  
+                }
+              
+
+             
+                return RedirectToAction("Index", "Office");
 
             }
             catch 
@@ -443,7 +446,7 @@ namespace REAgency.Controllers
             string rootFolder = Path.Combine(_env.WebRootPath);
             rootFolder = rootFolder  + flat.pathPhoto;
             
-            List<string> imagePaths = GetImagePaths(rootFolder, flat.Id);
+            List<string> imagePaths = GetImagePaths(rootFolder, flat.estateObjectId);
 
             var viewModel = new UpdateFlatViewModel
             {
@@ -473,7 +476,9 @@ namespace REAgency.Controllers
                 clientId = flat.clientId,
                 Date = flat.Date,
                 countViews = flat.countViews,
-                photos = imagePaths
+                photos = imagePaths,
+                Name = flat.clientName,
+                Phone1 = flat.clientPhone
 
 
 
@@ -482,7 +487,7 @@ namespace REAgency.Controllers
             };
             return viewModel;
         }
-        public static List<string> GetImagePaths(string rootFolder, int flatId)
+        public static List<string> GetImagePaths(string rootFolder, int objectId)
         {
            
             string[] imageExtensions = { "*.jpg", "*.jpeg", "*.png", "*.gif", "*.bmp" };
@@ -499,7 +504,7 @@ namespace REAgency.Controllers
                     {
 
                         string fileName = Path.GetFileName(file);
-                        string finalPath = $"/images/{flatId}/{fileName}";
+                        string finalPath = $"/images/{objectId}/{fileName}";
 
                         imagePaths.Add(finalPath);
                     }

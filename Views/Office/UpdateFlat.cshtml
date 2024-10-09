@@ -89,6 +89,16 @@
         <select asp-for="employeeId" class="form-control" asp-items="ViewBag.Employees as SelectList"></select>
         <span asp-validation-for="employeeId" class="text-danger"></span>
     </div>
+    <div class="form-group">
+        <label asp-for="Name" class="control-label"></label>
+        <input asp-for="Name" class="form-control" />
+        <span asp-validation-for="Name" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="Phone1" class="control-label"></label>
+        <input asp-for="Phone1" class="form-control" />
+        <span asp-validation-for="Phone1" class="text-danger"></span>
+    </div>
     @foreach (var photo in Model.photos)
     {
         <img  src="@photo" alt="Image"/>
