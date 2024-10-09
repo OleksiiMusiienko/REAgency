@@ -9,6 +9,7 @@ using REAgency.BLL.Interfaces.Locations;
 using REAgency.BLL.Interfaces.Object;
 using REAgency.BLL.Interfaces.Persons;
 using REAgency.BLL.Services.Objects;
+using REAgency.DAL.Entities.Object;
 using REAgency.Models;
 using REAgency.Models.Flat;
 using REAgency.Models.House;
@@ -33,13 +34,16 @@ namespace REAgency.Controllers
         private readonly IAreaService _areaService;
         private readonly IFlatService _flatService;
         private readonly IHouseSevice _houseSevice;
+
+        private readonly IWebHostEnvironment _env;
         public int pageSize = 9;
 
         public OfficeController(IEstateObjectService objectService, IOperationService operationService, IRegionService regionService, 
             IDistrictService districtService, ILocalityService localityService, ICurrencyService currencyService, IClientService clientService,
             IEmployeeService employeeService, IWebHostEnvironment appEnvironment, ILocationService locationService,
-            IAreaService areaService, IFlatService flatService, IHouseSevice houseSevice)
+            IAreaService areaService, IFlatService flatService, IHouseSevice houseSevice, IWebHostEnvironment env)
         {
+            _env = env;
             _objectService = objectService;
             _operationService = operationService;
             _regionService = regionService;
@@ -436,9 +440,14 @@ namespace REAgency.Controllers
 
         public UpdateFlatViewModel SelectFlat(FlatDTO flat)
         {
+            string rootFolder = Path.Combine(_env.WebRootPath);
+            rootFolder = rootFolder  + flat.pathPhoto;
+            
+            List<string> imagePaths = GetImagePaths(rootFolder, flat.Id);
+
             var viewModel = new UpdateFlatViewModel
             {
-              
+
                 flatId = flat.Id,
                 employeeId = flat.employeeId,
                 OperationId = flat.operationId,
@@ -463,13 +472,41 @@ namespace REAgency.Controllers
                 DistrictId = (int)flat.DistrictId,
                 clientId = flat.clientId,
                 Date = flat.Date,
-                countViews = flat.countViews
-               
+                countViews = flat.countViews,
+                photos = imagePaths
+
+
 
 
 
             };
             return viewModel;
+        }
+        public static List<string> GetImagePaths(string rootFolder, int flatId)
+        {
+           
+            string[] imageExtensions = { "*.jpg", "*.jpeg", "*.png", "*.gif", "*.bmp" };
+
+            List<string> imagePaths = new List<string>();
+
+            foreach (var extension in imageExtensions)
+            {
+               
+                if (Directory.Exists(rootFolder)) 
+                {
+                    string[] files = Directory.GetFiles(rootFolder, extension, SearchOption.TopDirectoryOnly);
+                    foreach (var file in files)
+                    {
+
+                        string fileName = Path.GetFileName(file);
+                        string finalPath = $"/images/{flatId}/{fileName}";
+
+                        imagePaths.Add(finalPath);
+                    }
+                }
+            }
+            
+            return imagePaths;
         }
 
         private async Task<LocationDTO> CreateLocation(int regionId, int districtId,int localityId, DateTime dateTime)
