@@ -8,8 +8,6 @@ using REAgency.BLL.Interfaces;
 using REAgency.BLL.Interfaces.Locations;
 using REAgency.BLL.Interfaces.Object;
 using REAgency.BLL.Interfaces.Persons;
-using REAgency.BLL.Services.Objects;
-using REAgency.DAL.Entities.Object;
 using REAgency.Models;
 using REAgency.Models.Flat;
 using REAgency.Models.House;
@@ -34,18 +32,15 @@ namespace REAgency.Controllers
         private readonly ILocationService _locationService;
         private readonly IAreaService _areaService;
         private readonly IFlatService _flatService;
-        private readonly IHouseSevice _houseSevice;
-
-        private readonly IWebHostEnvironment _env;
         private readonly IHouseSevice _houseService;
+        private readonly IWebHostEnvironment _env;
         private readonly IRoomService _roomService;
         public int pageSize = 9;
 
         public OfficeController(IEstateObjectService objectService, IOperationService operationService, IRegionService regionService, 
             IDistrictService districtService, ILocalityService localityService, ICurrencyService currencyService, IClientService clientService,
             IEmployeeService employeeService, IWebHostEnvironment appEnvironment, ILocationService locationService,
-            IAreaService areaService, IFlatService flatService, IHouseSevice houseSevice, IWebHostEnvironment env)
-            IAreaService areaService, IFlatService flatService, IHouseSevice houseService, IRoomService roomService)
+            IAreaService areaService, IFlatService flatService, IHouseSevice houseService, IWebHostEnvironment env, IRoomService roomService)
         {
             _env = env;
             _objectService = objectService;
@@ -487,8 +482,6 @@ namespace REAgency.Controllers
                     {
                         Console.WriteLine(ex.Message);
                     }
-                   
-
                   
                 }
               
