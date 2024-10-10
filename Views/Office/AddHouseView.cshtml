@@ -94,7 +94,8 @@
             </div>
             <div class="form-group">
                 <div class="box">
-                    <input name="formFiles" type="file" multiple accept="image/*">
+                    <input name="formFiles" type="file" multiple accept="image/*" onchange="previewImages(event)">  
+                    <div id="imagePreview"></div>
                 </div>
             </div>
             <div class="form-group">

@@ -107,5 +107,7 @@ namespace REAgency.Models.Flat
         public ObjectType estateType { get; set; }
 
         public int unitAreaId { get; set; }
+
+        public List<string> photos {  get; set; } 
     }
 }
