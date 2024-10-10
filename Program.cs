@@ -34,6 +34,7 @@ builder.Services.AddTransient<IOrderService, OrderService>();
 builder.Services.AddTransient<ILocationService, LocationService>();
 builder.Services.AddTransient<IRegionService, RegionService>();
 builder.Services.AddTransient<IDistrictService, DistrictService>();
+builder.Services.AddTransient<IRoomService, RoomService>();
 
 builder.Services.AddControllersWithViews();
 
