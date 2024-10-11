@@ -29,12 +29,14 @@ builder.Services.AddTransient<IGarageService, GarageService>();
 builder.Services.AddTransient<ISteadService, SteadService>();
 builder.Services.AddTransient<IAreaService, AreaService>();
 builder.Services.AddTransient<ICurrencyService, CurrencyService>();
-builder.Services.AddTransient<IEstateObjectService, EstateObjectService>();
 builder.Services.AddTransient<IOrderService, OrderService>();
 builder.Services.AddTransient<ILocationService, LocationService>();
 builder.Services.AddTransient<IRegionService, RegionService>();
 builder.Services.AddTransient<IDistrictService, DistrictService>();
 builder.Services.AddTransient<IRoomService, RoomService>();
+builder.Services.AddTransient<IPremisService, PremisService>();
+builder.Services.AddTransient<IParkingService, ParkingService>();
+builder.Services.AddTransient<IStorageService, StorageService>();
 
 builder.Services.AddControllersWithViews();
 
