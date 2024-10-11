@@ -346,7 +346,7 @@
                                     <p>@Html.DisplayFor(modelItem => item.Price) @Html.DisplayFor(modelItem => item.currencyName)</p>
                                     <p>@Html.DisplayFor(modelItem => item.localityName)</p>
 
-                                    <a asp-controller="Office" asp-action="ShowFlatForUpdate" asp-route-id="@item.Id" asp-route-typeObject="@item.typeObject" class="update-button">Редагувати</a>
+                                    <a asp-controller="Office" asp-action="Update" asp-route-id="@item.Id" asp-route-typeObject="@item.typeObject" class="update-button">Редагувати</a>
                                     <a asp-controller="Office" asp-action="ShowFlatForUpdate" asp-route-id="@item.Id" asp-route-typeObject="@item.typeObject" class="delete-button">Видалити</a>
                                     
 

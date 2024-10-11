@@ -33,7 +33,7 @@ namespace REAgency.Controllers
         private readonly ILocationService _locationService;
         private readonly IAreaService _areaService;
         private readonly IFlatService _flatService;
-        private readonly IHouseSevice _houseSevice;
+        private readonly IHouseSevice _houseService;
 
         private readonly IWebHostEnvironment _env;
         public int pageSize = 9;
@@ -56,7 +56,7 @@ namespace REAgency.Controllers
             _locationService = locationService;
             _areaService = areaService;
             _flatService= flatService;
-            _houseSevice= houseSevice;
+            _houseService = houseSevice;
 		}
 
         public async Task<IActionResult> Index(int page = 1)
@@ -256,7 +256,7 @@ namespace REAgency.Controllers
                 estateObjectDTO.clientId = clientDTO.Id;
                 estateObjectDTO.employeeId = (int)HttpContext.Session.GetInt32("Id");
                 estateObjectDTO.operationId = houseViewModel.OperationId;
-
+               
                 estateObjectDTO.LocalityId = houseViewModel.LocalityId;
                 estateObjectDTO.Street = houseViewModel.Street;
                 estateObjectDTO.numberStreet = houseViewModel.numberStreet;
@@ -288,7 +288,7 @@ namespace REAgency.Controllers
                     houseDTO.livingArea = houseViewModel.livingArea;
                     houseDTO.steadArea = houseViewModel.steadArea;
                 }
-                await _houseSevice.CreateHouse(houseDTO); //сохраняем House в базу 
+                await _houseService.CreateHouse(houseDTO); //сохраняем House в базу 
 
             }
             return RedirectToAction("Index");
@@ -312,7 +312,7 @@ namespace REAgency.Controllers
            
         }
 
-        public async Task<IActionResult> ShowFlatForUpdate(int id, string typeObject)
+        public async Task<IActionResult> Update(int id, string typeObject)
         {
             try
             {
@@ -334,8 +334,9 @@ namespace REAgency.Controllers
                     case "Flat":
                         FlatDTO flat = await _flatService.GetFlatByEstateObjectId((int)id);
                         return View("UpdateFlat", SelectFlat(flat));
-                        //case "House":
-                        //    return View(AddHouseView);
+                    case "House":
+                        HouseDTO house = await _houseService.GetHouseByEstateObjectId(id);
+                        return View("UpdateHouse", SelectHouse(house));
                         //case "Room":
                         //    return View(AddRoomView);
                         //case "Stead":
@@ -441,6 +442,84 @@ namespace REAgency.Controllers
           
         }
 
+        public async Task<IActionResult> UpdateHouse(UpdateHouseViewModel model, IFormFileCollection formFiles)
+        {
+            try
+            {
+                await _clientService.UpdateClientNameAndPhone(model.clientId, model.Name, model.Phone1);
+
+                LocationDTO locationDTO = new LocationDTO();
+                locationDTO.Id = model.locationId;
+                locationDTO.CountryId = 1;
+                locationDTO.LocalityId = model.LocalityId;
+                locationDTO.RegionId = model.RegionId;
+                locationDTO.DistrictId = model.DistrictId;
+                await _locationService.UpdateLocation(locationDTO);
+
+
+                HouseDTO houseDTO = new HouseDTO();
+                houseDTO.Id = model.houseId;
+                houseDTO.Floors = model.Floors;
+                houseDTO.Rooms = model.Rooms;
+                houseDTO.livingArea = model.livingArea;
+                houseDTO.kitchenArea = model.kitchenArea;
+                houseDTO.steadArea = model.steadArea;
+                houseDTO.estateObjectId = model.estateObjectId;
+                await _houseService.UpdateHouse(houseDTO);
+
+
+                EstateObjectDTO objectDTO = new EstateObjectDTO();
+                objectDTO.Id = model.estateObjectId;
+                objectDTO.Street = model.Street;
+                objectDTO.numberStreet = model.numberStreet;
+                objectDTO.Price = model.Price;
+                objectDTO.currencyId = model.currencyId;
+                objectDTO.countViews = model.countViews;
+                objectDTO.employeeId = model.employeeId;
+                objectDTO.clientId = model.clientId;
+                objectDTO.locationId = model.locationId;
+                objectDTO.operationId = model.OperationId;
+                objectDTO.Area = model.Area;
+                objectDTO.unitAreaId = model.unitAreaId;
+                objectDTO.Description = model.Description;
+                objectDTO.Date = model.Date;
+                objectDTO.clientId = model.clientId;
+                objectDTO.estateType = ObjectType.House;
+                objectDTO.pathPhoto = model.Path;
+                objectDTO.Status = model.status;
+                await _objectService.UpdateEstateObject(objectDTO);
+
+                //update photos
+                if (formFiles.Count != 0)
+                {
+                    try
+                    {
+                        string folder = Path.Combine(_env.WebRootPath);
+                        folder = folder + model.Path;
+                        Directory.Delete(folder, true);
+                        var estateObject = await _objectService.GetEstateObjectById(model.estateObjectId);
+                        await AddFoto(estateObject, formFiles);
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine(ex.Message);
+                    }
+
+                }
+
+
+
+                return RedirectToAction("Index", "Office");
+
+            }
+            catch
+            {
+                return View(model);
+            }
+
+
+        }
+
         public UpdateFlatViewModel SelectFlat(FlatDTO flat)
         {
             string rootFolder = Path.Combine(_env.WebRootPath);
@@ -483,6 +562,49 @@ namespace REAgency.Controllers
 
 
 
+
+            };
+            return viewModel;
+        }
+
+        public UpdateHouseViewModel SelectHouse(HouseDTO house)
+        {
+            string rootFolder = Path.Combine(_env.WebRootPath);
+            rootFolder = rootFolder + house.pathPhoto;
+
+            List<string> imagePaths = GetImagePaths(rootFolder, house.estateObjectId);
+
+            var viewModel = new UpdateHouseViewModel
+            {
+
+                houseId = house.Id,
+                employeeId = house.employeeId,
+                OperationId = house.operationId,
+                Street = house.Street,
+                numberStreet = (int)house.numberStreet,
+                Price = house.Price,
+                currencyId = house.currencyId,
+                Area = house.Area,
+                Description = house.Description,
+                Path = house.pathPhoto,
+                Floors = house.Floors,
+                Rooms = house.Rooms,
+                kitchenArea = house.kitchenArea,
+                livingArea = house.livingArea,
+                steadArea = house.steadArea,
+                status = house.Status,
+                estateObjectId = house.estateObjectId,
+                locationId = house.locationId,
+                LocalityId = (int)house.LocalityId,
+                RegionId = (int)house.RegionId,
+                countryId = house.countryId,
+                DistrictId = (int)house.DistrictId,
+                clientId = house.clientId,
+                Date = house.Date,
+                countViews = house.countViews,
+                photos = imagePaths,
+                Name = house.clientName,
+                Phone1 = house.clientPhone
 
             };
             return viewModel;
