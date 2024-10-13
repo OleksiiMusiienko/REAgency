@@ -714,8 +714,9 @@ namespace REAgency.Controllers
                     case "House":
                         HouseDTO house = await _houseService.GetHouseByEstateObjectId(id);
                         return View("UpdateHouse", SelectHouse(house));
-                        //case "Room":
-                        //    return View(AddRoomView);
+                    case "Room":
+                        RoomDTO room = await _roomService.GetRoomByEstateObjectId(id);
+                        return View("UpdateRoom", SelectRoom(room));
                         //case "Stead":
                         //    return View(AddSteadView);
                         //case "Office":
@@ -730,7 +731,7 @@ namespace REAgency.Controllers
                         //    return View(AddStorageView);
 
                 }
-               
+
             }
             catch
             {
@@ -895,6 +896,82 @@ namespace REAgency.Controllers
 
 
         }
+
+        public async Task<IActionResult> UpdateRoom(UpdateRoomViewModel model, IFormFileCollection formFiles)
+        {
+            try
+            {
+                await _clientService.UpdateClientNameAndPhone(model.clientId, model.Name, model.Phone1);
+
+                LocationDTO locationDTO = new LocationDTO();
+                locationDTO.Id = model.locationId;
+                locationDTO.CountryId = 1;
+                locationDTO.LocalityId = model.LocalityId;
+                locationDTO.RegionId = model.RegionId;
+                locationDTO.DistrictId = model.DistrictId;
+                await _locationService.UpdateLocation(locationDTO);
+
+
+                RoomDTO roomDTO = new RoomDTO();
+                roomDTO.Id = model.roomId;
+                roomDTO.Floors = model.Floors;
+                roomDTO.Floor = model.Floor;
+                roomDTO.livingArea = model.livingArea;
+                roomDTO.estateObjectId = model.estateObjectId;
+                await _roomService.UpdateRoom(roomDTO);
+
+
+                EstateObjectDTO objectDTO = new EstateObjectDTO();
+                objectDTO.Id = model.estateObjectId;
+                objectDTO.Street = model.Street;
+                objectDTO.numberStreet = model.numberStreet;
+                objectDTO.Price = model.Price;
+                objectDTO.currencyId = model.currencyId;
+                objectDTO.countViews = model.countViews;
+                objectDTO.employeeId = model.employeeId;
+                objectDTO.clientId = model.clientId;
+                objectDTO.locationId = model.locationId;
+                objectDTO.operationId = model.OperationId;
+                objectDTO.Area = (double)model.Area;
+                objectDTO.unitAreaId = model.unitAreaId;
+                objectDTO.Description = model.Description;
+                objectDTO.Date = model.Date;
+                objectDTO.clientId = model.clientId;
+                objectDTO.estateType = ObjectType.House;
+                objectDTO.pathPhoto = model.Path;
+                objectDTO.Status = model.status;
+                await _objectService.UpdateEstateObject(objectDTO); //тут исключение
+
+                //update photos
+                if (formFiles.Count != 0)
+                {
+                    try
+                    {
+                        string folder = Path.Combine(_env.WebRootPath);
+                        folder = folder + model.Path;
+                        Directory.Delete(folder, true);
+                        var estateObject = await _objectService.GetEstateObjectById(model.estateObjectId);
+                        await AddFoto(estateObject, formFiles);
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine(ex.Message);
+                    }
+
+                }
+
+
+
+                return RedirectToAction("Index", "Office");
+
+            }
+            catch
+            {
+                return NotFound();
+            }
+
+
+        }
         public UpdateFlatViewModel SelectFlat(FlatDTO flat)
         {
             string rootFolder = Path.Combine(_env.WebRootPath);
@@ -960,6 +1037,7 @@ namespace REAgency.Controllers
                 Price = house.Price,
                 currencyId = house.currencyId,
                 Area = house.Area,
+               
                 Description = house.Description,
                 Path = house.pathPhoto,
                 Floors = house.Floors,
@@ -980,6 +1058,48 @@ namespace REAgency.Controllers
                 photos = imagePaths,
                 Name = house.clientName,
                 Phone1 = house.clientPhone
+
+            };
+            return viewModel;
+        }
+
+        public UpdateRoomViewModel SelectRoom(RoomDTO room)
+        {
+            string rootFolder = Path.Combine(_env.WebRootPath);
+            rootFolder = rootFolder + room.pathPhoto;
+
+            List<string> imagePaths = GetImagePaths(rootFolder, room.estateObjectId);
+
+            var viewModel = new UpdateRoomViewModel
+            {
+
+                roomId = room.Id,
+                employeeId = room.employeeId,
+                OperationId = room.operationId,
+                Street = room.Street,
+                numberStreet = (int)room.numberStreet,
+                Price = room.Price,
+                currencyId = room.currencyId,
+                Area = room.Area,
+                unitAreaId = room.unitAreaId,
+                Description = room.Description,
+                Path = room.pathPhoto,
+                Floor = room.Floor,
+                Floors = room.Floors,
+                livingArea = room.livingArea,
+                status = room.Status,
+                estateObjectId = room.estateObjectId,
+                locationId = room.locationId,
+                LocalityId = (int)room.LocalityId,
+                RegionId = (int)room.RegionId,
+                countryId = room.countryId,
+                DistrictId = (int)room.DistrictId,
+                clientId = room.clientId,
+                Date = room.Date,
+                countViews = room.countViews,
+                photos = imagePaths,
+                Name = room.clientName,
+                Phone1 = room.clientPhone
 
             };
             return viewModel;

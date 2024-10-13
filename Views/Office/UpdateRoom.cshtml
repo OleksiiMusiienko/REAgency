@@ -1,11 +1,11 @@
-﻿@model REAgency.Models.Room.AddRoomViewModel
+﻿@model REAgency.Models.Room.UpdateRoomViewModel
 
 <link rel="stylesheet" href="~/css/AddFormStyle.css">
 <h4>Додаємо кімнату. Заповніть усі поля.</h4>
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="AddRoomView" enctype="multipart/form-data">
+        <form enctype="multipart/form-data">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
                 <label asp-for="OperationId" class="control-label"></label>
@@ -23,7 +23,7 @@
                 <select asp-for="DistrictId" class="form-control" asp-items="ViewBag.Districts as SelectList"></select>
                 <span asp-validation-for="DistrictId" class="text-danger"></span>
             </div>
-            <div class="form-group">
+            <div class="form-group"> 
                 <label asp-for="LocalityId" class="control-label"></label>
                 <select asp-for="LocalityId" class="form-control" asp-items="ViewBag.Localities as SelectList"></select>
                 <span asp-validation-for="LocalityId" class="text-danger"></span>
@@ -73,6 +73,22 @@
                 <input asp-for="Description" class="form-control" />
                 <span asp-validation-for="Description" class="text-danger"></span>
             </div>
+            @if (Context.Session.GetString("IsAdmin") == "True")
+            {
+                <div class="form-group">
+                    <label asp-for="employeeId" class="control-label"></label>
+                    <select asp-for="employeeId" class="form-control" asp-items="ViewBag.Employees as SelectList"></select>
+                    <span asp-validation-for="employeeId" class="text-danger"></span>
+                </div>
+            }
+            else
+            {
+                <input type="hidden" asp-for="employeeId" class="form-control" />
+            }
+            @foreach (var photo in Model.photos)
+            {
+                <img src="@photo" alt="Image" />
+            }
             <div class="form-group">
                 <label asp-for="Name" class="control-label"></label>
                 <input asp-for="Name" class="form-control" />
@@ -84,13 +100,36 @@
                 <span asp-validation-for="Phone1" class="text-danger"></span>
             </div>
             <div class="form-group">
+                <label asp-for="status" class="control-label"></label>
+                <select asp-for="status" class="form-control">
+                    <option value="True">Активне</option>
+                    <option value="False">Не активне</option>
+                </select>
+                <span asp-validation-for="status" class="text-danger"></span>
+            </div>
+            <div class="form-group">
                 <div class="box">
                     <input name="formFiles" type="file" multiple accept="image/*" onchange="previewImages(event)">
                     <div id="imagePreview"></div>
                 </div>
             </div>
+
+            <input type="hidden" asp-for="estateObjectId" class="form-control" />
+            <input type="hidden" asp-for="clientId" class="form-control" />
+           
+            <input type="hidden" asp-for="countryId" class="form-control" />
+            <input type="hidden" asp-for="countViews" class="form-control" />
+            <input type="hidden" asp-for="locationId" class="form-control" />
+            <input type="hidden" asp-for="Date" class="form-control" />
+            <input type="hidden" asp-for="estateType" class="form-control" />
+            <input type="hidden" asp-for="roomId" class="form-control" />
+            <input type="hidden" asp-for="unitAreaId" class="form-control" />
+
+
+            <input type="hidden" asp-for="Path" class="form-control" />
+
             <div class="form-group">
-                <input type="submit" value="Додати об'єкт'" class="btn btn-primary" asp-action="CreateRoom" asp-controller="Office" />
+                <input type="submit" value="Редагувати об'єкт" class="btn btn-primary" asp-action="UpdateRoom" asp-controller="Office" />
             </div>
         </form>
     </div>
@@ -99,11 +138,3 @@
 <div>
     <a asp-action="Index" asp-controller="Office">Відміна</a>
 </div>
-
-@section Scripts {
-    @{
-        await Html.RenderPartialAsync("_ValidationScriptsPartial");
-    }
-
-}
-

@@ -85,11 +85,18 @@
         <input asp-for="Description" class="form-control" />
         <span asp-validation-for="Description" class="text-danger"></span>
     </div>
-    <div class="form-group">
-        <label asp-for="employeeId" class="control-label"></label>
-        <select asp-for="employeeId" class="form-control" asp-items="ViewBag.Employees as SelectList"></select>
-        <span asp-validation-for="employeeId" class="text-danger"></span>
-    </div>
+    @if (Context.Session.GetString("IsAdmin") == "True")
+    {
+        <div class="form-group">
+            <label asp-for="employeeId" class="control-label"></label>
+            <select asp-for="employeeId" class="form-control" asp-items="ViewBag.Employees as SelectList"></select>
+            <span asp-validation-for="employeeId" class="text-danger"></span>
+        </div>
+    }
+    else
+    {
+        <input type="hidden" asp-for="employeeId" class="form-control" />
+    }
     <div class="form-group">
         <label asp-for="Name" class="control-label"></label>
         <input asp-for="Name" class="form-control" />
