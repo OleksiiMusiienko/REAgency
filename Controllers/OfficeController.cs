@@ -749,8 +749,9 @@ namespace REAgency.Controllers
                     case "Premis":
                         PremisDTO premis = await _premisService.GetPremisByEstateObjectId(id);
                         return View("UpdatePremis", SelectPremis(premis));
-                        //case "Parking":
-                        //    return View(AddParkingView);
+                    case "Parking":
+                        ParkingDTO parking = await _parkingService.GetParkingByEstateObjectId(id);
+                        return View("UpdateParking", SelectParking(parking));
                         //case "Storage":
                         //    return View(AddStorageView);
 
@@ -959,7 +960,7 @@ namespace REAgency.Controllers
                 objectDTO.Description = model.Description;
                 objectDTO.Date = model.Date;
                 objectDTO.clientId = model.clientId;
-                objectDTO.estateType = ObjectType.House;
+                objectDTO.estateType = ObjectType.Room;
                 objectDTO.pathPhoto = model.Path;
                 objectDTO.Status = model.status;
                 await _objectService.UpdateEstateObject(objectDTO); //тут исключение
@@ -1291,6 +1292,72 @@ namespace REAgency.Controllers
 
 
         }
+        public async Task<IActionResult> UpdateParking(UpdateParkingViewModel model, IFormFileCollection formFiles)
+        {
+            try
+            {
+                await _clientService.UpdateClientNameAndPhone(model.clientId, model.Name, model.Phone1);
+
+                LocationDTO locationDTO = new LocationDTO();
+                locationDTO.Id = model.locationId;
+                locationDTO.CountryId = 1;
+                locationDTO.LocalityId = model.LocalityId;
+                locationDTO.RegionId = model.RegionId;
+                locationDTO.DistrictId = model.DistrictId;
+                await _locationService.UpdateLocation(locationDTO);
+
+
+
+                EstateObjectDTO objectDTO = new EstateObjectDTO();
+                objectDTO.Id = model.estateObjectId;
+                objectDTO.Street = model.Street;
+                objectDTO.numberStreet = model.numberStreet;
+                objectDTO.Price = model.Price;
+                objectDTO.currencyId = model.currencyId;
+                objectDTO.countViews = model.countViews;
+                objectDTO.employeeId = model.employeeId;
+                objectDTO.clientId = model.clientId;
+                objectDTO.locationId = model.locationId;
+                objectDTO.operationId = model.OperationId;
+                objectDTO.Area = (double)model.Area;
+                objectDTO.unitAreaId = model.unitAreaId;
+                objectDTO.Description = model.Description;
+                objectDTO.Date = model.Date;
+                objectDTO.clientId = model.clientId;
+                objectDTO.estateType = ObjectType.Parking;
+                objectDTO.pathPhoto = model.Path;
+                objectDTO.Status = model.status;
+                await _objectService.UpdateEstateObject(objectDTO);
+
+                //update photos
+                if (formFiles.Count != 0)
+                {
+                    try
+                    {
+                        string folder = Path.Combine(_env.WebRootPath);
+                        folder = folder + model.Path;
+                        Directory.Delete(folder, true);
+                        var estateObject = await _objectService.GetEstateObjectById(model.estateObjectId);
+                        await AddFoto(estateObject, formFiles);
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine(ex.Message);
+                    }
+
+                }
+
+
+                return RedirectToAction("Index", "Office");
+
+            }
+            catch
+            {
+                return NotFound();
+            }
+
+
+        }
         public UpdateFlatViewModel SelectFlat(FlatDTO flat)
         {
             string rootFolder = Path.Combine(_env.WebRootPath);
@@ -1569,6 +1636,44 @@ namespace REAgency.Controllers
                 photos = imagePaths,
                 Name = garage.clientName,
                 Phone1 = garage.clientPhone
+
+            };
+            return viewModel;
+        }
+        public UpdateParkingViewModel SelectParking(ParkingDTO parking)
+        {
+            string rootFolder = Path.Combine(_env.WebRootPath);
+            rootFolder = rootFolder + parking.pathPhoto;
+
+            List<string> imagePaths = GetImagePaths(rootFolder, parking.estateObjectId);
+
+            var viewModel = new UpdateParkingViewModel
+            {
+
+                parkingId = parking.Id,
+                employeeId = parking.employeeId,
+                OperationId = parking.operationId,
+                Street = parking.Street,
+                numberStreet = (int)parking.numberStreet,
+                Price = parking.Price,
+                currencyId = parking.currencyId,
+                Area = parking.Area,
+                unitAreaId = parking.unitAreaId,
+                Description = parking.Description,
+                Path = parking.pathPhoto,
+                status = parking.Status,
+                estateObjectId = parking.estateObjectId,
+                locationId = parking.locationId,
+                LocalityId = (int)parking.LocalityId,
+                RegionId = (int)parking.RegionId,
+                countryId = parking.countryId,
+                DistrictId = (int)parking.DistrictId,
+                clientId = parking.clientId,
+                Date = parking.Date,
+                countViews = parking.countViews,
+                photos = imagePaths,
+                Name = parking.clientName,
+                Phone1 = parking.clientPhone
 
             };
             return viewModel;
