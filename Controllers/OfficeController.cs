@@ -430,6 +430,7 @@ namespace REAgency.Controllers
             return RedirectToAction("Index");
         }
         public async Task<IActionResult> CreateOffice(AddOfficeViewModel officeViewModel, IFormFileCollection formFiles)
+
         {
             //    1.Создать estateObject
             //    2. Добавить его в базу что бы получить Id и сформировать путь к папке с фотографиями
@@ -717,10 +718,11 @@ namespace REAgency.Controllers
                     case "Room":
                         RoomDTO room = await _roomService.GetRoomByEstateObjectId(id);
                         return View("UpdateRoom", SelectRoom(room));
+                   case "Office":
+                        OfficeDTO office = await _officeService.GetOfficeByEstateObjectId(id);
+                        return View("UpdateOffice" , SelectOffice(office));
                         //case "Stead":
                         //    return View(AddSteadView);
-                        //case "Office":
-                        //    return View(AddOfficeView);
                         //case "Garage":
                         //    return View(AddGarageView);
                         //case "Premis":
@@ -972,6 +974,80 @@ namespace REAgency.Controllers
 
 
         }
+
+        public async Task<IActionResult> UpdateOffice(UpdateOfficeViewModel model, IFormFileCollection formFiles)
+        {
+            try
+            {
+                await _clientService.UpdateClientNameAndPhone(model.clientId, model.Name, model.Phone1);
+
+                LocationDTO locationDTO = new LocationDTO();
+                locationDTO.Id = model.locationId;
+                locationDTO.CountryId = 1;
+                locationDTO.LocalityId = model.LocalityId;
+                locationDTO.RegionId = model.RegionId;
+                locationDTO.DistrictId = model.DistrictId;
+                await _locationService.UpdateLocation(locationDTO);
+
+
+                OfficeDTO officeDTO = new OfficeDTO();
+                officeDTO.Id = model.officeId;
+                
+                officeDTO.estateObjectId = model.estateObjectId;
+                await _officeService.Update(officeDTO);
+
+
+                EstateObjectDTO objectDTO = new EstateObjectDTO();
+                objectDTO.Id = model.estateObjectId;
+                objectDTO.Street = model.Street;
+                objectDTO.numberStreet = model.numberStreet;
+                objectDTO.Price = model.Price;
+                objectDTO.currencyId = model.currencyId;
+                objectDTO.countViews = model.countViews;
+                objectDTO.employeeId = model.employeeId;
+                objectDTO.clientId = model.clientId;
+                objectDTO.locationId = model.locationId;
+                objectDTO.operationId = model.OperationId;
+                objectDTO.Area = (double)model.Area;
+                objectDTO.unitAreaId = model.unitAreaId;
+                objectDTO.Description = model.Description;
+                objectDTO.Date = model.Date;
+                objectDTO.clientId = model.clientId;
+                objectDTO.estateType = ObjectType.Office;
+                objectDTO.pathPhoto = model.Path;
+                objectDTO.Status = model.status;
+                await _objectService.UpdateEstateObject(objectDTO); 
+
+                //update photos
+                if (formFiles.Count != 0)
+                {
+                    try
+                    {
+                        string folder = Path.Combine(_env.WebRootPath);
+                        folder = folder + model.Path;
+                        Directory.Delete(folder, true);
+                        var estateObject = await _objectService.GetEstateObjectById(model.estateObjectId);
+                        await AddFoto(estateObject, formFiles);
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine(ex.Message);
+                    }
+
+                }
+
+
+
+                return RedirectToAction("Index", "Office");
+
+            }
+            catch
+            {
+                return NotFound();
+            }
+
+
+        }
         public UpdateFlatViewModel SelectFlat(FlatDTO flat)
         {
             string rootFolder = Path.Combine(_env.WebRootPath);
@@ -1010,10 +1086,6 @@ namespace REAgency.Controllers
                 photos = imagePaths,
                 Name = flat.clientName,
                 Phone1 = flat.clientPhone
-
-
-
-
 
             };
             return viewModel;
@@ -1104,6 +1176,46 @@ namespace REAgency.Controllers
             };
             return viewModel;
         }
+
+        public UpdateOfficeViewModel SelectOffice(OfficeDTO office)
+        {
+            string rootFolder = Path.Combine(_env.WebRootPath);
+            rootFolder = rootFolder + office.pathPhoto;
+
+            List<string> imagePaths = GetImagePaths(rootFolder, office.estateObjectId);
+
+            var viewModel = new UpdateOfficeViewModel
+            {
+
+                officeId = office.Id,
+                employeeId = office.employeeId,
+                OperationId = office.operationId,
+                Street = office.Street,
+                numberStreet = (int)office.numberStreet,
+                Price = office.Price,
+                currencyId = office.currencyId,
+                Area = office.Area,
+                unitAreaId = office.unitAreaId,
+                Description = office.Description,
+                Path = office.pathPhoto,
+                status = office.Status,
+                estateObjectId = office.estateObjectId,
+                locationId = office.locationId,
+                LocalityId = (int)office.LocalityId,
+                RegionId = (int)office.RegionId,
+                countryId = office.countryId,
+                DistrictId = (int)office.DistrictId,
+                clientId = office.clientId,
+                Date = office.Date,
+                countViews = office.countViews,
+                photos = imagePaths,
+                Name = office.clientName,
+                Phone1 = office.clientPhone
+
+            };
+            return viewModel;
+        }
+
         public static List<string> GetImagePaths(string rootFolder, int objectId)
         {
            
