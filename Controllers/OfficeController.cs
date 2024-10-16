@@ -752,8 +752,9 @@ namespace REAgency.Controllers
                     case "Parking":
                         ParkingDTO parking = await _parkingService.GetParkingByEstateObjectId(id);
                         return View("UpdateParking", SelectParking(parking));
-                        //case "Storage":
-                        //    return View(AddStorageView);
+                    case "Storage":
+                        StorageDTO storage = await _storageService.GetStorageByEstateObjectId(id);
+                        return View("UpdateStorage",SelectStorage(storage));
 
                 }
 
@@ -1012,7 +1013,6 @@ namespace REAgency.Controllers
 
                 OfficeDTO officeDTO = new OfficeDTO();
                 officeDTO.Id = model.officeId;
-                
                 officeDTO.estateObjectId = model.estateObjectId;
                 await _officeService.Update(officeDTO);
 
@@ -1358,6 +1358,72 @@ namespace REAgency.Controllers
 
 
         }
+        public async Task<IActionResult> UpdateStorage(UpdateStorageViewModel model, IFormFileCollection formFiles)
+        {
+            try
+            {
+                await _clientService.UpdateClientNameAndPhone(model.clientId, model.Name, model.Phone1);
+
+                LocationDTO locationDTO = new LocationDTO();
+                locationDTO.Id = model.locationId;
+                locationDTO.CountryId = 1;
+                locationDTO.LocalityId = model.LocalityId;
+                locationDTO.RegionId = model.RegionId;
+                locationDTO.DistrictId = model.DistrictId;
+                await _locationService.UpdateLocation(locationDTO);
+
+
+                EstateObjectDTO objectDTO = new EstateObjectDTO();
+                objectDTO.Id = model.estateObjectId;
+                objectDTO.Street = model.Street;
+                objectDTO.numberStreet = model.numberStreet;
+                objectDTO.Price = model.Price;
+                objectDTO.currencyId = model.currencyId;
+                objectDTO.countViews = model.countViews;
+                objectDTO.employeeId = model.employeeId;
+                objectDTO.clientId = model.clientId;
+                objectDTO.locationId = model.locationId;
+                objectDTO.operationId = model.OperationId;
+                objectDTO.Area = (double)model.Area;
+                objectDTO.unitAreaId = model.unitAreaId;
+                objectDTO.Description = model.Description;
+                objectDTO.Date = model.Date;
+                objectDTO.clientId = model.clientId;
+                objectDTO.estateType = ObjectType.Storage;
+                objectDTO.pathPhoto = model.Path;
+                objectDTO.Status = model.status;
+                await _objectService.UpdateEstateObject(objectDTO);
+
+                //update photos
+                if (formFiles.Count != 0)
+                {
+                    try
+                    {
+                        string folder = Path.Combine(_env.WebRootPath);
+                        folder = folder + model.Path;
+                        Directory.Delete(folder, true);
+                        var estateObject = await _objectService.GetEstateObjectById(model.estateObjectId);
+                        await AddFoto(estateObject, formFiles);
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine(ex.Message);
+                    }
+
+                }
+
+
+
+                return RedirectToAction("Index", "Office");
+
+            }
+            catch
+            {
+                return NotFound();
+            }
+
+
+        }
         public UpdateFlatViewModel SelectFlat(FlatDTO flat)
         {
             string rootFolder = Path.Combine(_env.WebRootPath);
@@ -1674,6 +1740,44 @@ namespace REAgency.Controllers
                 photos = imagePaths,
                 Name = parking.clientName,
                 Phone1 = parking.clientPhone
+
+            };
+            return viewModel;
+        }
+        public UpdateStorageViewModel SelectStorage(StorageDTO storage)
+        {
+            string rootFolder = Path.Combine(_env.WebRootPath);
+            rootFolder = rootFolder + storage.pathPhoto;
+
+            List<string> imagePaths = GetImagePaths(rootFolder, storage.estateObjectId);
+
+            var viewModel = new UpdateStorageViewModel
+            {
+
+                storageId = storage.Id,
+                employeeId = storage.employeeId,
+                OperationId = storage.operationId,
+                Street = storage.Street,
+                numberStreet = (int)storage.numberStreet,
+                Price = storage.Price,
+                currencyId = storage.currencyId,
+                Area = storage.Area,
+                unitAreaId = storage.unitAreaId,
+                Description = storage.Description,
+                Path = storage.pathPhoto,
+                status = storage.Status,
+                estateObjectId = storage.estateObjectId,
+                locationId = storage.locationId,
+                LocalityId = (int)storage.LocalityId,
+                RegionId = (int)storage.RegionId,
+                countryId = storage.countryId,
+                DistrictId = (int)storage.DistrictId,
+                clientId = storage.clientId,
+                Date = storage.Date,
+                countViews = storage.countViews,
+                photos = imagePaths,
+                Name = storage.clientName,
+                Phone1 = storage.clientPhone
 
             };
             return viewModel;
