@@ -8,6 +8,7 @@ using REAgency.BLL.Interfaces;
 using REAgency.BLL.Interfaces.Locations;
 using REAgency.BLL.Interfaces.Object;
 using REAgency.BLL.Interfaces.Persons;
+using REAgency.DAL.Entities.Object;
 using REAgency.Models;
 using REAgency.Models.Flat;
 using REAgency.Models.Garage;
@@ -119,40 +120,7 @@ namespace REAgency.Controllers
 
         }
         
-        public async Task<IActionResult> Create(string selEstate)
-        {
-            if (selEstate != null)
-            {
-                ViewBag.Operations = new SelectList(await _operationService.GetAll(), "Id", "Name");
-                ViewBag.Regions = new SelectList(await _regionService.GetRegions(), "Id", "Name", "CountryId");
-                ViewBag.Districts = new SelectList(await _districtService.GetDistrict(), "Id", "Name", "RegionId");
-                ViewBag.Localities = new SelectList(await _localityService.GetLocalities(), "Id", "Name", "DistrictId");
-                ViewBag.Currencies = new SelectList(await _currencyService.GetAll(), "Id", "Name");    
-            }
-            switch (selEstate)
-            {
-                case "Flat":
-                    return View("AddFlatView");
-                case "House":
-                    return View("AddHouseView");
-                case "Room":
-                    return View("AddRoomView");
-                case "Stead":
-                    return View("AddSteadView");
-                case "Office":
-                    return View("AddOfficeView");
-                case "Garage":
-                    return View("AddGarageView");
-                case "Premis":
-                    return View("AddPremisView");
-                case "Parking":
-                    return View("AddParkingView");
-                case "Storage":
-                    return View("AddStorageView");
-
-            }
-            return View();
-        }
+       
 
         public async Task AddFoto(EstateObjectDTO estateObjectDTO, IFormFileCollection formFiles)
         {
@@ -187,6 +155,42 @@ namespace REAgency.Controllers
                 await _objectService.UpdateEstateObjectPath(estateObjectDTO); //обновляем обьект               
 			}
 		}
+
+        #region create
+        public async Task<IActionResult> Create(string selEstate)
+        {
+            if (selEstate != null)
+            {
+                ViewBag.Operations = new SelectList(await _operationService.GetAll(), "Id", "Name");
+                ViewBag.Regions = new SelectList(await _regionService.GetRegions(), "Id", "Name", "CountryId");
+                ViewBag.Districts = new SelectList(await _districtService.GetDistrict(), "Id", "Name", "RegionId");
+                ViewBag.Localities = new SelectList(await _localityService.GetLocalities(), "Id", "Name", "DistrictId");
+                ViewBag.Currencies = new SelectList(await _currencyService.GetAll(), "Id", "Name");
+            }
+            switch (selEstate)
+            {
+                case "Flat":
+                    return View("AddFlatView");
+                case "House":
+                    return View("AddHouseView");
+                case "Room":
+                    return View("AddRoomView");
+                case "Stead":
+                    return View("AddSteadView");
+                case "Office":
+                    return View("AddOfficeView");
+                case "Garage":
+                    return View("AddGarageView");
+                case "Premis":
+                    return View("AddPremisView");
+                case "Parking":
+                    return View("AddParkingView");
+                case "Storage":
+                    return View("AddStorageView");
+
+            }
+            return View();
+        }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -689,7 +693,22 @@ namespace REAgency.Controllers
             return clientDTO;
            
         }
+        private async Task<LocationDTO> CreateLocation(int regionId, int districtId, int localityId, DateTime dateTime)
+        {
+            LocationDTO locationDTO = new LocationDTO();
+            locationDTO.CountryId = 1; //в базе одна страна
+            locationDTO.RegionId = regionId;
+            locationDTO.DistrictId = districtId;
+            locationDTO.LocalityId = localityId;
+            locationDTO.Date = dateTime;
+            await _locationService.CreateLocation(locationDTO);
+            locationDTO = await _locationService.GetByDateTime(dateTime);
+            return locationDTO;
+        }
 
+        #endregion
+
+        #region update
         public async Task<IActionResult> Update(int id, string typeObject)
         {
             try
@@ -721,8 +740,9 @@ namespace REAgency.Controllers
                    case "Office":
                         OfficeDTO office = await _officeService.GetOfficeByEstateObjectId(id);
                         return View("UpdateOffice" , SelectOffice(office));
-                        //case "Stead":
-                        //    return View(AddSteadView);
+                    case "Stead":
+                        SteadDTO stead = await _steadService.GetSteadByEstateObjectId(id);
+                        return View("UpdateStead", SelectStead(stead));
                         //case "Garage":
                         //    return View(AddGarageView);
                         //case "Premis":
@@ -820,7 +840,6 @@ namespace REAgency.Controllers
             
           
         }
-
         public async Task<IActionResult> UpdateHouse(UpdateHouseViewModel model, IFormFileCollection formFiles)
         {
             try
@@ -898,7 +917,6 @@ namespace REAgency.Controllers
 
 
         }
-
         public async Task<IActionResult> UpdateRoom(UpdateRoomViewModel model, IFormFileCollection formFiles)
         {
             try
@@ -974,7 +992,6 @@ namespace REAgency.Controllers
 
 
         }
-
         public async Task<IActionResult> UpdateOffice(UpdateOfficeViewModel model, IFormFileCollection formFiles)
         {
             try
@@ -1048,6 +1065,93 @@ namespace REAgency.Controllers
 
 
         }
+        public async Task<IActionResult> UpdateStead(UpdateSteadViewModel model, IFormFileCollection formFiles)
+        {
+            try
+            {
+                await _clientService.UpdateClientNameAndPhone(model.clientId, model.Name, model.Phone1);
+
+                LocationDTO locationDTO = new LocationDTO();
+                locationDTO.Id = model.locationId;
+                locationDTO.CountryId = 1;
+                locationDTO.LocalityId = model.LocalityId;
+                locationDTO.RegionId = model.RegionId;
+                locationDTO.DistrictId = model.DistrictId;
+                await _locationService.UpdateLocation(locationDTO);
+
+
+                SteadDTO steadDTO = new SteadDTO();
+                steadDTO.Id = model.steadId;
+                steadDTO.Cadastr = model.Cadastr;
+                if (model.Use == 1)
+                {
+                    steadDTO.Use = LandUse.residential;
+                }
+                else if (model.Use == 2)
+                {
+                    steadDTO.Use = LandUse.industrial;
+                }
+                else if (model.Use == 3)
+                {
+                    steadDTO.Use = LandUse.gardening;
+                }
+                else if (model.Use == 4)
+                {
+                    steadDTO.Use = LandUse.agricultural;
+                }
+                steadDTO.estateObjectId = model.estateObjectId;
+                await _steadService.UpdateStead(steadDTO);
+
+
+                EstateObjectDTO objectDTO = new EstateObjectDTO();
+                objectDTO.Id = model.estateObjectId;
+                objectDTO.Street = model.Street;
+                objectDTO.numberStreet = model.numberStreet;
+                objectDTO.Price = model.Price;
+                objectDTO.currencyId = model.currencyId;
+                objectDTO.countViews = model.countViews;
+                objectDTO.employeeId = model.employeeId;
+                objectDTO.clientId = model.clientId;
+                objectDTO.locationId = model.locationId;
+                objectDTO.operationId = model.OperationId;
+                objectDTO.Area = (double)model.Area;
+                objectDTO.unitAreaId = model.unitAreaId;
+                objectDTO.Description = model.Description;
+                objectDTO.Date = model.Date;
+                objectDTO.clientId = model.clientId;
+                objectDTO.estateType = ObjectType.Office;
+                objectDTO.pathPhoto = model.Path;
+                objectDTO.Status = model.status;
+                await _objectService.UpdateEstateObject(objectDTO);
+
+                //update photos
+                if (formFiles.Count != 0)
+                {
+                    try
+                    {
+                        string folder = Path.Combine(_env.WebRootPath);
+                        folder = folder + model.Path;
+                        Directory.Delete(folder, true);
+                        var estateObject = await _objectService.GetEstateObjectById(model.estateObjectId);
+                        await AddFoto(estateObject, formFiles);
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine(ex.Message);
+                    }
+
+                }
+
+                return RedirectToAction("Index", "Office");
+
+            }
+            catch
+            {
+                return NotFound();
+            }
+
+
+        }
         public UpdateFlatViewModel SelectFlat(FlatDTO flat)
         {
             string rootFolder = Path.Combine(_env.WebRootPath);
@@ -1090,7 +1194,6 @@ namespace REAgency.Controllers
             };
             return viewModel;
         }
-
         public UpdateHouseViewModel SelectHouse(HouseDTO house)
         {
             string rootFolder = Path.Combine(_env.WebRootPath);
@@ -1134,7 +1237,6 @@ namespace REAgency.Controllers
             };
             return viewModel;
         }
-
         public UpdateRoomViewModel SelectRoom(RoomDTO room)
         {
             string rootFolder = Path.Combine(_env.WebRootPath);
@@ -1176,7 +1278,6 @@ namespace REAgency.Controllers
             };
             return viewModel;
         }
-
         public UpdateOfficeViewModel SelectOffice(OfficeDTO office)
         {
             string rootFolder = Path.Combine(_env.WebRootPath);
@@ -1215,7 +1316,47 @@ namespace REAgency.Controllers
             };
             return viewModel;
         }
+        public UpdateSteadViewModel SelectStead(SteadDTO stead)
+        {
+            string rootFolder = Path.Combine(_env.WebRootPath);
+            rootFolder = rootFolder + stead.pathPhoto;
 
+            List<string> imagePaths = GetImagePaths(rootFolder, stead.estateObjectId);
+
+            var viewModel = new UpdateSteadViewModel
+            {
+
+                steadId = stead.Id,
+                employeeId = stead.employeeId,
+                OperationId = stead.operationId,
+                Street = stead.Street,
+                numberStreet = (int)stead.numberStreet,
+                Price = stead.Price,
+                currencyId = stead.currencyId,
+                Area = stead.Area,
+                unitAreaId = stead.unitAreaId,
+                Cadastr = stead.Cadastr,
+                Use = (int)stead.Use,
+                Description = stead.Description,
+                Path = stead.pathPhoto,
+                status = stead.Status,
+                estateObjectId = stead.estateObjectId,
+                locationId = stead.locationId,
+                LocalityId = (int)stead.LocalityId,
+                RegionId = (int)stead.RegionId,
+                countryId = stead.countryId,
+                DistrictId = (int)stead.DistrictId,
+                clientId = stead.clientId,
+                Date = stead.Date,
+                countViews = stead.countViews,
+                photos = imagePaths,
+                Name = stead.clientName,
+                Phone1 = stead.clientPhone,
+               
+
+            };
+            return viewModel;
+        }
         public static List<string> GetImagePaths(string rootFolder, int objectId)
         {
            
@@ -1242,18 +1383,8 @@ namespace REAgency.Controllers
             
             return imagePaths;
         }
-        private async Task<LocationDTO> CreateLocation(int regionId, int districtId,int localityId, DateTime dateTime)
-        {
-            LocationDTO locationDTO = new LocationDTO();
-            locationDTO.CountryId = 1; //в базе одна страна
-            locationDTO.RegionId = regionId;
-            locationDTO.DistrictId = districtId;
-            locationDTO.LocalityId = localityId;
-            locationDTO.Date = dateTime;
-            await _locationService.CreateLocation(locationDTO);
-            locationDTO = await _locationService.GetByDateTime(dateTime);
-            return locationDTO;
-        }
+
+        #endregion
 
         public IEnumerable<ObjectsViewModel> SelectEstateObject(IEnumerable<EstateObjectDTO> estateObjects, IEnumerable<OperationDTO> operations,
         IEnumerable<AreaDTO> areas, IEnumerable<CurrencyDTO> currencies, IEnumerable<LocationDTO> locations, IEnumerable<LocalityDTO> localities)
