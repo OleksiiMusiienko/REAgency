@@ -743,10 +743,11 @@ namespace REAgency.Controllers
                     case "Stead":
                         SteadDTO stead = await _steadService.GetSteadByEstateObjectId(id);
                         return View("UpdateStead", SelectStead(stead));
-                        //case "Garage":
-                        //    return View(AddGarageView);
-                        //case "Premis":
-                        //    return View(AddPremisView);
+                    //case "Garage":
+                    //    return View(AddGarageView);
+                    case "Premis":
+                        PremisDTO premis = await _premisService.GetPremisByEstateObjectId(id);
+                        return View("UpdatePremis", SelectPremis(premis));
                         //case "Parking":
                         //    return View(AddParkingView);
                         //case "Storage":
@@ -1065,6 +1066,70 @@ namespace REAgency.Controllers
 
 
         }
+        public async Task<IActionResult> UpdatePremis(UpdatePremisViewModel model, IFormFileCollection formFiles)
+        {
+            try
+            {
+                await _clientService.UpdateClientNameAndPhone(model.clientId, model.Name, model.Phone1);
+
+                LocationDTO locationDTO = new LocationDTO();
+                locationDTO.Id = model.locationId;
+                locationDTO.CountryId = 1;
+                locationDTO.LocalityId = model.LocalityId;
+                locationDTO.RegionId = model.RegionId;
+                locationDTO.DistrictId = model.DistrictId;
+                await _locationService.UpdateLocation(locationDTO);
+
+
+                EstateObjectDTO objectDTO = new EstateObjectDTO();
+                objectDTO.Id = model.estateObjectId;
+                objectDTO.Street = model.Street;
+                objectDTO.numberStreet = model.numberStreet;
+                objectDTO.Price = model.Price;
+                objectDTO.currencyId = model.currencyId;
+                objectDTO.countViews = model.countViews;
+                objectDTO.employeeId = model.employeeId;
+                objectDTO.clientId = model.clientId;
+                objectDTO.locationId = model.locationId;
+                objectDTO.operationId = model.OperationId;
+                objectDTO.Area = (double)model.Area;
+                objectDTO.unitAreaId = model.unitAreaId;
+                objectDTO.Description = model.Description;
+                objectDTO.Date = model.Date;
+                objectDTO.clientId = model.clientId;
+                objectDTO.estateType = ObjectType.Premis;
+                objectDTO.pathPhoto = model.Path;
+                objectDTO.Status = model.status;
+                await _objectService.UpdateEstateObject(objectDTO);
+
+                //update photos
+                if (formFiles.Count != 0)
+                {
+                    try
+                    {
+                        string folder = Path.Combine(_env.WebRootPath);
+                        folder = folder + model.Path;
+                        Directory.Delete(folder, true);
+                        var estateObject = await _objectService.GetEstateObjectById(model.estateObjectId);
+                        await AddFoto(estateObject, formFiles);
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine(ex.Message);
+                    }
+
+                }
+
+                return RedirectToAction("Index", "Office");
+
+            }
+            catch
+            {
+                return NotFound();
+            }
+
+
+        }
         public async Task<IActionResult> UpdateStead(UpdateSteadViewModel model, IFormFileCollection formFiles)
         {
             try
@@ -1119,7 +1184,7 @@ namespace REAgency.Controllers
                 objectDTO.Description = model.Description;
                 objectDTO.Date = model.Date;
                 objectDTO.clientId = model.clientId;
-                objectDTO.estateType = ObjectType.Office;
+                objectDTO.estateType = ObjectType.Stead;
                 objectDTO.pathPhoto = model.Path;
                 objectDTO.Status = model.status;
                 await _objectService.UpdateEstateObject(objectDTO);
@@ -1312,6 +1377,44 @@ namespace REAgency.Controllers
                 photos = imagePaths,
                 Name = office.clientName,
                 Phone1 = office.clientPhone
+
+            };
+            return viewModel;
+        }
+        public UpdatePremisViewModel SelectPremis(PremisDTO premis)
+        {
+            string rootFolder = Path.Combine(_env.WebRootPath);
+            rootFolder = rootFolder + premis.pathPhoto;
+
+            List<string> imagePaths = GetImagePaths(rootFolder, premis.estateObjectId);
+
+            var viewModel = new UpdatePremisViewModel
+            {
+
+                premisId = premis.Id,
+                employeeId = premis.employeeId,
+                OperationId = premis.operationId,
+                Street = premis.Street,
+                numberStreet = (int)premis.numberStreet,
+                Price = premis.Price,
+                currencyId = premis.currencyId,
+                Area = premis.Area,
+                unitAreaId = premis.unitAreaId,
+                Description = premis.Description,
+                Path = premis.pathPhoto,
+                status = premis.Status,
+                estateObjectId = premis.estateObjectId,
+                locationId = premis.locationId,
+                LocalityId = (int)premis.LocalityId,
+                RegionId = (int)premis.RegionId,
+                countryId = premis.countryId,
+                DistrictId = (int)premis.DistrictId,
+                clientId = premis.clientId,
+                Date = premis.Date,
+                countViews = premis.countViews,
+                photos = imagePaths,
+                Name = premis.clientName,
+                Phone1 = premis.clientPhone
 
             };
             return viewModel;
