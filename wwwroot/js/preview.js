@@ -10,9 +10,9 @@
         reader.onload = function (e) {
             var imgElement = document.createElement('img');
             imgElement.src = e.target.result;
-            imgElement.style.width = '150px';
-            imgElement.style.height = '150px';
-            imgElement.style.margin = '10px';
+            //imgElement.style.width = '150px';
+            //imgElement.style.height = '150px';
+            //imgElement.style.margin = '10px';
             previewContainer.appendChild(imgElement);
         };
 
