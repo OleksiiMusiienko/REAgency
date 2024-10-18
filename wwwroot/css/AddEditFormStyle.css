@@ -98,3 +98,22 @@
         object-fit: cover; 
     }
 
+.back-style-add {
+    position: absolute; 
+    top: 10px; 
+    right: 200%; 
+    text-decoration: none; 
+    font-size: 2em; 
+    color: black; 
+    font-weight: 1700
+}
+
+.back-style-edit {
+    position: absolute;
+    top: 10px;
+    right: 150%;
+    text-decoration: none;
+    font-size: 2em;
+    color: black;
+    font-weight: 1700
+}

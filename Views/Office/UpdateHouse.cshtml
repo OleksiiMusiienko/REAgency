@@ -1,8 +1,12 @@
 ﻿@model REAgency.Models.House.UpdateHouseViewModel
 
-<br />
-<h4>Редагуваня будинку. Заповніть усі поля.</h4>
-<hr />
+<div style="position: relative;">
+    <br />
+    <a asp-action="Index" asp-controller="Office" class="back-style-edit">←</a>
+    <h4 style="text-align: center; margin: 0;">Редагуваня будинку. Заповніть усі поля.</h4>
+    <hr />
+</div>
+
 
 <form asp-action="AddFlatView" enctype="multipart/form-data">
     <div asp-validation-summary="ModelOnly" class="text-danger"></div>

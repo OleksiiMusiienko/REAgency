@@ -1,92 +1,100 @@
 ﻿@model REAgency.Models.Flat.UpdateFlatViewModel
 
+<div style="position: relative;">
+    <br />
+    <a asp-action="Index" asp-controller="Office" class="back-style-edit">←</a>
+    <h4 style="text-align: center; margin: 0;">Редагуваня квартири. Заповніть усі поля.</h4>
+    <hr />
+</div>
+
+
 <form  enctype="multipart/form-data">
     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-    <div class="form-group">
+    <div>
         <label asp-for="OperationId" class="control-label"></label>
         <select asp-for="OperationId" class="form-control" asp-items="ViewBag.Operations as SelectList"></select>
         <span asp-validation-for="OperationId" class="text-danger"></span>
     </div>
 
-    <div class="form-group">
+    <div>
         <label asp-for="RegionId" class="control-label"></label>
         <select asp-for="RegionId" class="form-control" asp-items="ViewBag.Regions"></select>
         <span asp-validation-for="RegionId" class="text-danger"></span>
     </div>
-    <div class="form-group">
+    <div>
         <label asp-for="DistrictId" class="control-label"></label>
         <select asp-for="DistrictId" class="form-control" asp-items="ViewBag.Districts"></select>
         <span asp-validation-for="DistrictId" class="text-danger"></span>
     </div>
-    <div class="form-group">
+    <div>
         <label asp-for="LocalityId" class="control-label"></label>
         <select asp-for="LocalityId" class="form-control" asp-items="ViewBag.Localities"></select>
         <span asp-validation-for="LocalityId" class="text-danger"></span>
     </div>
-    <div class="form-group">
+    <div>
         <label asp-for="Street" class="control-label"></label>
         <input asp-for="Street" class="form-control" />
         <span asp-validation-for="Street" class="text-danger"></span>
     </div>
-    <div class="form-group">
+    <div>
         <label asp-for="numberStreet" class="control-label"></label>
         <input asp-for="numberStreet" class="form-control" />
         <span asp-validation-for="numberStreet" class="text-danger"></span>
     </div>
   
-    <div class="form-group">
+    <div>
         <label asp-for="Price" class="control-label"></label>
         <input asp-for="Price" class="form-control" />
         <span asp-validation-for="Price" class="text-danger"></span>
     </div>
-    <div class="form-group">
+    <div>
         <label asp-for="currencyId" class="control-label"></label>
         <select asp-for="currencyId" class="form-control" asp-items="ViewBag.Currencies as SelectList"></select>
         <span asp-validation-for="currencyId" class="text-danger"></span>
     </div>
-    <div class="form-group">
+    <div>
         <label asp-for="Rooms" class="control-label"></label>
         <input asp-for="Rooms" class="form-control" />
         <span asp-validation-for="Rooms" class="text-danger"></span>
     </div>
-    <div class="form-group">
+    <div>
         <label asp-for="Area" class="control-label"></label>
         <input asp-for="Area" class="form-control" />
         <span asp-validation-for="Area" class="text-danger"></span>
     </div>
-    <div class="form-group">
+    <div>
         <label asp-for="unitAreaId" class="control-label"></label>
         <select asp-for="unitAreaId" class="form-control" asp-items="ViewBag.Areas as SelectList"></select>
         <span asp-validation-for="unitAreaId" class="text-danger"></span>
     </div>
-    <div class="form-group">
+    <div>
         <label asp-for="livingArea" class="control-label"></label>
         <input asp-for="livingArea" class="form-control" />
         <span asp-validation-for="livingArea" class="text-danger"></span>
     </div>
-    <div class="form-group">
+    <div>
         <label asp-for="kitchenArea" class="control-label"></label>
         <input asp-for="kitchenArea" class="form-control" />
         <span asp-validation-for="kitchenArea" class="text-danger"></span>
     </div>
-    <div class="form-group">
+    <div>
         <label asp-for="Floor" class="control-label"></label>
         <input asp-for="Floor" class="form-control" />
         <span asp-validation-for="Floor" class="text-danger"></span>
     </div>
-    <div class="form-group">
+    <div>
         <label asp-for="Floors" class="control-label"></label>
         <input asp-for="Floors" class="form-control" />
         <span asp-validation-for="Floors" class="text-danger"></span>
     </div>
-    <div class="form-group">
+    <div>
         <label asp-for="Description" class="control-label"></label>
-        <input asp-for="Description" class="form-control" />
+        <textarea asp-for="Description" class="form-control"></textarea>
         <span asp-validation-for="Description" class="text-danger"></span>
     </div>
     @if (Context.Session.GetString("IsAdmin") == "True")
     {
-        <div class="form-group">
+        <div>
             <label asp-for="employeeId" class="control-label"></label>
             <select asp-for="employeeId" class="form-control" asp-items="ViewBag.Employees as SelectList"></select>
             <span asp-validation-for="employeeId" class="text-danger"></span>
@@ -97,21 +105,25 @@
         <input type="hidden" asp-for="employeeId" class="form-control" />
     }
 
-    <div class="form-group">
+    <div>
         <label asp-for="Name" class="control-label"></label>
         <input asp-for="Name" class="form-control" />
         <span asp-validation-for="Name" class="text-danger"></span>
     </div>
-    <div class="form-group">
+    <div>
         <label asp-for="Phone1" class="control-label"></label>
         <input asp-for="Phone1" class="form-control" />
         <span asp-validation-for="Phone1" class="text-danger"></span>
     </div>
-    @foreach (var photo in Model.photos)
-    {
-        <img  src="@photo" alt="Image"/>
-    }
-    <div class="form-group">
+    <label class="control-label">Фотографії</label>
+    <div class="preview-container">
+
+        @foreach (var photo in Model.photos)
+        {
+            <img src="@photo" alt="Image" />
+        }
+    </div>
+    <div>
         <label asp-for="status" class="control-label"></label>
         <select asp-for="status" class="form-control">
             <option value="True">Активне</option>
@@ -136,13 +148,17 @@
 
     
 
-    <div class="form-group">
-        <div class="box">
-            <input name="formFiles" type="file" multiple accept="image/*" onchange="previewImages(event)">
-            <div id="imagePreview"></div>
+    <div>
+        <div class="file-container">
+            <input name="formFiles" type="file" id="file-1" multiple accept="image/*" onchange="previewImages(event)" class="inputfile inputfile-1" data-multiple-caption="{count} файлів вибрано">
+            <label for="file-1">
+                <img src="~/img/download.png" width="27" height="25" viewBox="0 0 27 25" style="padding-bottom: 5px"></img> <span>Виберіть нові фото</span>
+            </label>
+
         </div>
+        <div id="imagePreview" class="preview-container"></div>
     </div>
-    <div class="form-group">
-        <input type="submit" value="hh" class="btn btn-primary" asp-action="UpdateFlat" asp-controller="Office" />
+    <div class="submit-container">
+        <input type="submit" value="Редагувати" class="submitButton" asp-action="UpdateFlat" asp-controller="Office" />
     </div>
 </form>
