@@ -124,9 +124,9 @@ namespace REAgency.Controllers
 
                 PageViewModel pageViewModel = new PageViewModel(count, page, pageSize);
                 
-                pageViewModel.typeOfAction = "ShowObjectsByType";
+                //pageViewModel.typeOfAction = "ShowObjectsByType";
                 ObjectPageViewModel objectPageViewModel = new ObjectPageViewModel(items, pageViewModel);
-
+                objectPageViewModel.typeOfAction = "ShowObjectsByType";
                 return View("Objects", objectPageViewModel);
             }
             else if (homePageViewModel.objectType == ObjectType.House || objectTypeSession == "House")
@@ -139,9 +139,9 @@ namespace REAgency.Controllers
 
                 PageViewModel pageViewModel = new PageViewModel(count, page, pageSize);
 
-                pageViewModel.typeOfAction = "ShowObjectsByType";
+                //pageViewModel.typeOfAction = "ShowObjectsByType";
                 ObjectPageViewModel objectPageViewModel = new ObjectPageViewModel(items, pageViewModel);
-
+                objectPageViewModel.typeOfAction = "ShowObjectsByType";
 
                 return View("Objects", objectPageViewModel);
             }
@@ -155,8 +155,9 @@ namespace REAgency.Controllers
 
                 PageViewModel pageViewModel = new PageViewModel(count, page, pageSize);
 
-                pageViewModel.typeOfAction = "ShowObjectsByType";
+                //pageViewModel.typeOfAction = "ShowObjectsByType";
                 ObjectPageViewModel objectPageViewModel = new ObjectPageViewModel(items, pageViewModel);
+                objectPageViewModel.typeOfAction = "ShowObjectsByType";
                 return View("Objects", objectPageViewModel);
             }
             else if (homePageViewModel.objectType == ObjectType.Garage || objectTypeSession == "Garage")
@@ -169,8 +170,9 @@ namespace REAgency.Controllers
 
                 PageViewModel pageViewModel = new PageViewModel(count, page, pageSize);
 
-                pageViewModel.typeOfAction = "ShowObjectsByType";
+                //pageViewModel.typeOfAction = "ShowObjectsByType";
                 ObjectPageViewModel objectPageViewModel = new ObjectPageViewModel(items, pageViewModel);
+                objectPageViewModel.typeOfAction = "ShowObjectsByType";
                 return View("Objects", objectPageViewModel);
             }
             else if(homePageViewModel.objectType == ObjectType.Stead || objectTypeSession == "Stead")
@@ -182,8 +184,9 @@ namespace REAgency.Controllers
 
                 PageViewModel pageViewModel = new PageViewModel(count, page, pageSize);
 
-                pageViewModel.typeOfAction = "ShowObjectsByType";
+                //pageViewModel.typeOfAction = "ShowObjectsByType";
                 ObjectPageViewModel objectPageViewModel = new ObjectPageViewModel(items, pageViewModel);
+                objectPageViewModel.typeOfAction = "ShowObjectsByType";
                 return View("Objects", objectPageViewModel);
             }
 
@@ -279,8 +282,9 @@ namespace REAgency.Controllers
             var items = estateObjects.Skip((page - 1) * pageSize).Take(pageSize).ToList();
 
             PageViewModel pageViewModel = new PageViewModel(count, page, pageSize);
-            pageViewModel.typeOfAction = "Search";
+            //pageViewModel.typeOfAction = "Search";
             ObjectPageViewModel objectPageViewModel = new ObjectPageViewModel(items, pageViewModel);
+            objectPageViewModel.typeOfAction = "Search";
             return objectPageViewModel;
         }
 

@@ -1,0 +1,115 @@
+﻿@model REAgency.BLL.DTO.Persons.EmployeeDTO
+@using REAgencyEnum
+@{
+    ViewData["Title"] = "Add Employee";
+}
+<div style="position: relative;">
+    <br />
+    <a asp-action="Index" asp-controller="Office" class="back-style-add">←</a>
+    <h4 style="text-align: center; margin: 0;">Додавання співробітника. Заповніть усі поля.</h4>
+    <hr />
+
+</div>
+
+<div>
+    <form asp-action="CreateEmployee" asp-controller="Employee" enctype="multipart/form-data" method="post">
+        <div asp-validation-summary="ModelOnly" ></div>
+        <div>
+            <label asp-for="Name" class="control-label"></label>
+            <input asp-for="Name" type="text" class="form-control" />
+            <span asp-validation-for="Name" class="text-danger"></span>
+        </div>
+        <div>
+            <label asp-for="Phone1" class="control-label"></label>
+            <input asp-for="Phone1" type="text" class="form-control" />
+            <span asp-validation-for="Phone1" class="text-danger"></span>
+        </div>
+        <div>
+            <label asp-for="Phone2" class="control-label"></label>
+            <input asp-for="Phone2" type="text" class="form-control" />
+            <span asp-validation-for="Phone2" class="text-danger"></span>
+        </div>
+        <div>
+            <label asp-for="Email" class="control-label"></label>
+            <input asp-for="Email" type="text" class="form-control" id="Email" />
+            <span asp-validation-for="Email" class="text-danger" id="validationEmail"></span>
+        </div>
+        <div>
+            <label asp-for="DateOfBirth"></label>
+            <input type="date" asp-for="DateOfBirth" class="form-control"/>
+            <span asp-validation-for="DateOfBirth" class="text-danger"></span>
+        </div>
+        <div>
+            <label class="control-label">Адмін</label>
+            <select type="text" class="form-control" asp-for="adminStatus">
+                <option value="false">Ні</option>
+                <option value="true">Так</option>
+            </select>
+            <span asp-validation-for="adminStatus" class="text-danger"></span>
+        </div>
+
+
+        <div>
+            <label asp-for="Description" class="control-label"></label>
+            <textarea asp-for="Description" class="form-control"></textarea>
+            <span asp-validation-for="Description" class="text-danger"></span>
+        </div>
+
+
+        <div>
+            <div class="file-container">
+                <input name="formFile" type="file" id="file-1" multiple accept="image/*" onchange="previewImages(event)" class="inputfile inputfile-1">
+                <label for="file-1"><img src="~/img/download.png" width="27" height="25" viewBox="0 0 27 25" style="padding-bottom: 5px"></img> <span>Виберіть фото</span></label>
+
+               
+            </div>
+           
+            <div id="imagePreview" class="preview-container"></div>
+        </div>
+        <div class="submit-container">
+            <input type="submit" value="Додати" class="submitButton"/>
+        </div>
+
+    </form>
+</div>
+
+<script>
+    $('#Email').change(function () {
+        let email = $('#Email').val();
+
+        const url = '/Employee/CheckEmail';
+        console.log(email)
+        checkEmail(url, email);
+    });
+
+    async function checkEmail(url, email) {
+        try {
+            const response = await fetch(url, {
+                method: "POST",
+                headers: {
+                    'Content-Type': 'application/json;charset=utf-8'
+                },
+                body: JSON.stringify(email)
+
+            });
+
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+
+            const responseData = await response.json();
+            console.log(responseData);
+            if (responseData.success === false) {
+                $('#validationEmail').text(responseData.message);
+            }
+            else {
+                $('#validationEmail').text('');
+            }
+
+        }
+        catch (error) {
+            console.error('Error:', error);
+            $('#result').html = 'An error occurred';
+        }
+    }
+</script>

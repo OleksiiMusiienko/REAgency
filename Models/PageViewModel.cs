@@ -7,7 +7,7 @@
         public bool HasPreviousPage => PageNumber > 1;
         public bool HasNextPage => PageNumber < TotalPages;
 
-       public string typeOfAction {  get; set; }
+       
 
         
 

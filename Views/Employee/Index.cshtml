@@ -1,0 +1,48 @@
+﻿@model REAgency.Models.EmployeesPageViewModel
+@using REAgencyEnum
+@{
+    ViewData["Title"] = "Employees";
+}
+<div class="main-div" style="margin-top: 40px;">
+    <div class="objects-container">
+
+        @if (Model.Employees.Any())
+        {
+            @foreach (var item in Model.Employees)
+            {
+                <div class="item">
+                    <div>
+                        <img src="~/img/plot.jpeg" class="object-img" alt="Object Image" />
+
+
+                        <div class="price-style">
+
+                            <p> @Html.DisplayFor(modelItem => item.Name)</p>
+                            <a class="update-button">Редагувати</a>
+                            <a class="delete-button">Видалити</a>
+                        </div>
+                    </div>
+
+
+                    <div class="info" style=" display: none;">
+                        <p>Посада: @Html.DisplayFor(modelItem => item.Post)</p>
+
+                    </div>
+                </div>
+
+                @* @if (Context.Session.GetString("User") == "employee")
+        { *@
+
+
+                //}
+
+            }
+
+
+        }
+        else
+        {
+            <h2>На жаль за Вашим запитом нічого не знайдено</h2>
+        }
+    </div>
+</div>
