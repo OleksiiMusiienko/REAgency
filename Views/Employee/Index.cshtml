@@ -12,21 +12,25 @@
             {
                 <div class="item">
                     <div>
-                        <img src="~/img/plot.jpeg" class="object-img" alt="Object Image" />
+                        <img src="data:image/*;base64,@Convert.ToBase64String(item.Avatar)" class="object-img" alt="Object Image" />
 
 
                         <div class="price-style">
-
+                         
                             <p> @Html.DisplayFor(modelItem => item.Name)</p>
-                            <a class="update-button">Редагувати</a>
-                            <a class="delete-button">Видалити</a>
+                           
                         </div>
                     </div>
 
 
                     <div class="info" style=" display: none;">
+                       
                         <p>Посада: @Html.DisplayFor(modelItem => item.Post)</p>
-
+                        <p>Телефон: @Html.DisplayFor(modelItem => item.Phone1)</p>
+                        <p>Додадковий телефон: @Html.DisplayFor(modelItem => item.Phone2)</p>
+                        <p>Email: @Html.DisplayFor(modelItem => item.Email)</p>
+                        <a class="update-button" asp-action="Update" asp-route-id="@item.Id" style="margin: 5px">Редагувати</a>
+                        
                     </div>
                 </div>
 
@@ -46,3 +50,32 @@
         }
     </div>
 </div>
+<page-link page-model="Model.PageViewModel" page-action="Index"></page-link>
+
+<script>
+    const items = document.querySelectorAll('.item');
+
+    items.forEach(item => {
+        item.addEventListener('mouseenter', function () {
+            const infoElement = item.querySelector('.info');
+
+
+            infoElement.style.display = 'flex';
+            setTimeout(() => {
+                infoElement.classList.add('show');
+            }, 30);
+        });
+
+        item.addEventListener('mouseleave', function () {
+            const infoElement = item.querySelector('.info');
+
+
+            if (infoElement.classList.contains('show')) {
+                infoElement.classList.remove('show');
+                setTimeout(() => {
+                    infoElement.style.display = 'none';
+                }, 300);
+            }
+        });
+    });
+</script>

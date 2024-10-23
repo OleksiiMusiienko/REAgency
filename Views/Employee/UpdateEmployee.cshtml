@@ -3,17 +3,18 @@
 @{
     ViewData["Title"] = "Add Employee";
 }
+
 <div style="position: relative;">
     <br />
     <a asp-action="Index" asp-controller="Office" class="back-style-add">←</a>
-    <h4 style="text-align: center; margin: 0;">Додавання співробітника. Заповніть усі поля.</h4>
+    <h4 style="text-align: center; margin: 0;">Редагування співробітника. Заповніть усі поля.</h4>
     <hr />
 
 </div>
 
 <div>
-    <form asp-action="CreateEmployee" asp-controller="Employee" enctype="multipart/form-data" method="post">
-        <div asp-validation-summary="ModelOnly" ></div>
+    <form asp-action="UpdateEmployee" asp-controller="Employee" enctype="multipart/form-data" method="post">
+        <div asp-validation-summary="ModelOnly"></div>
         <div>
             <label asp-for="Name" class="control-label"></label>
             <input asp-for="Name" type="text" class="form-control" />
@@ -36,7 +37,7 @@
         </div>
         <div>
             <label asp-for="DateOfBirth"></label>
-            <input type="date" asp-for="DateOfBirth" class="form-control"/>
+            <input type="date" asp-for="DateOfBirth" class="form-control" />
             <span asp-validation-for="DateOfBirth" class="text-danger"></span>
         </div>
         <div>
@@ -55,61 +56,31 @@
             <span asp-validation-for="Description" class="text-danger"></span>
         </div>
 
+        <div >
+            <label class="control-label">Аватар</label>
+            <img src="data:image/*;base64,@Convert.ToBase64String(Model.Avatar)" style="width: 250px; height: 250px; justify-content: center; display: flex; margin-left: 28%" alt="Object Image" />
+            
+        </div>
+        <input type="hidden" asp-for="DateOfBirth"/>
+        <input type="hidden" asp-for="dateReg"/>
+        <input type="hidden" asp-for="postId"/>
+        <input type="hidden" asp-for="Description"/>
+        <input type="hidden" asp-for="userStatus"/>
+        <input type="hidden" asp-for="Id"/>
 
         <div>
             <div class="file-container">
                 <input name="formFile" type="file" id="file-1" multiple accept="image/*" onchange="previewImages(event)" class="inputfile inputfile-1">
                 <label for="file-1"><img src="~/img/download.png" width="27" height="25" viewBox="0 0 27 25" style="padding-bottom: 5px"></img> <span>Виберіть фото</span></label>
 
-               
+
             </div>
-           
+
             <div id="imagePreview" class="preview-container"></div>
         </div>
         <div class="submit-container">
-            <input type="submit" value="Додати" class="submitButton"/>
+            <input type="submit" value="Редагувати" class="submitButton" />
         </div>
 
     </form>
 </div>
-
-<script>
-    $('#Email').change(function () {
-        let email = $('#Email').val();
-
-        const url = '/Employee/CheckEmail';
-        console.log(email)
-        checkEmail(url, email);
-    });
-
-    async function checkEmail(url, email) {
-        try {
-            const response = await fetch(url, {
-                method: "POST",
-                headers: {
-                    'Content-Type': 'application/json;charset=utf-8'
-                },
-                body: JSON.stringify(email)
-
-            });
-
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-
-            const responseData = await response.json();
-            console.log(responseData);
-            if (responseData.success === false) {
-                $('#validationEmail').text(responseData.message);
-            }
-            else {
-                $('#validationEmail').text('');
-            }
-
-        }
-        catch (error) {
-            console.error('Error:', error);
-            $('#result').html = 'An error occurred';
-        }
-    }
-</script>
