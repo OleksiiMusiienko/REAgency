@@ -150,7 +150,7 @@ namespace REAgency.Controllers
                         await formFiles[i].CopyToAsync(fileStream); // копируем файл в поток
                     }
                 }
-                string pathdirectory = @"\images\" + id;
+                string pathdirectory = @"/images/" + id;
                 estateObjectDTO.pathPhoto = pathdirectory; //добавляем путь в обьект
                 await _objectService.UpdateEstateObjectPath(estateObjectDTO); //обновляем обьект               
 			}
@@ -1785,7 +1785,7 @@ namespace REAgency.Controllers
         public static List<string> GetImagePaths(string rootFolder, int objectId)
         {
            
-            string[] imageExtensions = { "*.jpg", "*.jpeg", "*.png", "*.gif", "*.bmp" };
+            string[] imageExtensions = { "*.jpg", "*.jpeg", "*.png", "*.gif", "*.bmp", "*.webp" };
 
             List<string> imagePaths = new List<string>();
 

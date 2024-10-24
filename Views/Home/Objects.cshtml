@@ -124,12 +124,16 @@
                         {
                             <p class="item-type">Склад</p>
                         }
+                        else if (item.typeObject == ObjectType.Premis.ToString())
+                        {
+                            <p class="item-type">Приміщення</p>
+                        }
                         else
                         {
                             <p class="item-type">@Html.DisplayFor(modelItem => item.typeObject)</p>
                         }
 
-                        <img src="@Html.DisplayFor(modelItem => item.pathPhoto)" class="object-img" alt="Object Image" />
+                        <img src="@Url.Content(item.photos.First())" class="object-img" alt="Object Image" />
 
 
                         <div class="price-style">
@@ -173,6 +177,6 @@
 }
 else
 {
-    <page-link page-model="Model.PageViewModel" page-action="Search"></page-link>
+    <page-link page-model="Model.PageViewModel" page-action="Search" route-operationTypeId="2"></page-link>
 }
 
