@@ -1,0 +1,34 @@
+﻿@model IEnumerable<REAgency.BLL.DTO.Locations.RegionDTO>
+@using REAgencyEnum
+@{
+    ViewData["Title"] = "Області";
+}
+<div class="main-div" style="margin-top: 40px;">
+    <div class="objects-container">
+
+        @if (Model.Any())
+        {
+            @foreach (var item in Model)
+            {
+                <div class="item">
+                    <div>
+                        <div class="price-style">
+
+                            <p style="padding: 0 10px 0 10px"> @Html.DisplayFor(modelItem => item.Name)</p>
+                            <a class="update-button" asp-action="Update" asp-route-id="@item.Id">Редагувати</a>
+
+                        </div>
+                    </div>
+
+                </div>
+
+            }
+
+        }
+        else
+        {
+            <h2>На жаль за Вашим запитом нічого не знайдено</h2>
+        }
+    </div>
+</div>
+

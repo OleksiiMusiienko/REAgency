@@ -1,0 +1,28 @@
+﻿@model REAgency.BLL.DTO.Locations.RegionDTO
+@using REAgencyEnum
+@{
+    ViewData["Title"] = "Редагування області";
+}
+<div style="position: relative;">
+    <br />
+    <a asp-action="Index" asp-controller="Office" class="back-style-add">←</a>
+    <h4 style="text-align: center; margin: 0;">Редагування області.</h4>
+    <hr />
+
+</div>
+
+<div>
+    <form asp-action="UpdateRegion" asp-controller="Region" enctype="multipart/form-data" method="post">
+        <div asp-validation-summary="ModelOnly"></div>
+        <div>
+            <label asp-for="Name" class="control-label"></label>
+            <input asp-for="Name" type="text" class="form-control" />
+            <span asp-validation-for="Name" class="text-danger"></span>
+        </div>
+        <input type="hidden" asp-for="Id"/>
+        <input type="hidden" asp-for="CountryId"/>
+        <div class="submit-container">
+            <input type="submit" value="Редагувати" class="submitButton" />
+        </div>
+    </form>
+</div>
