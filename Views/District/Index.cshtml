@@ -1,0 +1,40 @@
+﻿@model REAgency.Models.DistrictsPageViewModel
+@using REAgencyEnum
+@{
+    ViewData["Title"] = "Райони";
+}
+<div class="main-div" style="margin-top: 40px;">
+    <div class="objects-container">
+
+        @if (Model.Districts.Any())
+        {
+            @foreach (var item in Model.Districts)
+            {
+                <div class="item">
+                    <div>
+                        <div class="price-style">
+
+                            <p style="padding: 0 10px 0 10px"> @Html.DisplayFor(modelItem => item.Name)</p>
+                            <a class="update-button" asp-action="Update" asp-route-id="@item.Id">Редагувати</a>
+
+                        </div>
+
+                        <div class="info" style=" display: none; border: solid 2px #052a5e; border-top: none">
+                            <p style="padding: 0 10px 0 10px">Область: @Html.DisplayFor(modelItem => item.regionName)</p>
+                        </div>
+                    </div>
+
+                </div>
+
+            }
+
+        }
+        else
+        {
+            <h2>На жаль за Вашим запитом нічого не знайдено</h2>
+        }
+    </div>
+</div>
+<page-link page-model="Model.PageViewModel" page-action="Index"></page-link>
+
+<script src="~/js/ShowBlock.js" asp-append-version="true"></script>

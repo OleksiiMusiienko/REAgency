@@ -163,7 +163,7 @@ namespace REAgency.Controllers
             {
                 ViewBag.Operations = new SelectList(await _operationService.GetAll(), "Id", "Name");
                 ViewBag.Regions = new SelectList(await _regionService.GetRegions(), "Id", "Name", "CountryId");
-                ViewBag.Districts = new SelectList(await _districtService.GetDistrict(), "Id", "Name", "RegionId");
+                ViewBag.Districts = new SelectList(await _districtService.GetDistricts(), "Id", "Name", "RegionId");
                 ViewBag.Localities = new SelectList(await _localityService.GetLocalities(), "Id", "Name", "DistrictId");
                 ViewBag.Currencies = new SelectList(await _currencyService.GetAll(), "Id", "Name");
             }
@@ -720,7 +720,7 @@ namespace REAgency.Controllers
 
                 ViewBag.Operations = new SelectList(await _operationService.GetAll(), "Id", "Name");
                 ViewBag.Regions = new SelectList(await _regionService.GetRegions(), "Id", "Name");
-                ViewBag.Districts = new SelectList(await _districtService.GetDistrict(), "Id", "Name");
+                ViewBag.Districts = new SelectList(await _districtService.GetDistricts(), "Id", "Name");
                 ViewBag.Localities = new SelectList(await _localityService.GetLocalities(), "Id", "Name");
                 ViewBag.Currencies = new SelectList(await _currencyService.GetAll(), "Id", "Name");
                 ViewBag.Employees = new SelectList(await _employeeService.GetEmployees(), "Id", "Name");
