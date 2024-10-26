@@ -248,12 +248,13 @@ body {
     background: linear-gradient(#AFD2E9, #F4F3F7 50%);
 }
 
- /*исправить позже, когда дойдет до валидации*/
 #cookie_note {
+   
     display: none;
-    position: absolute;
-    bottom: 30%;
-    left: 0%;
+    position: fixed;
+    bottom: 6%;
+    right: 0;
+    left: 0;
     max-width: 150%;
     max-height: 90%;
     transform: translateX(-50%);
@@ -262,11 +263,12 @@ body {
     background-color: white;
     border-radius: 4px;
     box-shadow: 2px 3px 10px rgba(0, 0, 0, 0.4);
+    
 }
 
     #cookie_note p {
         margin: 0;
-        font-size: 0.7rem;
+        font-size: 0.7em;
         text-align: left;
         color: black;
     }

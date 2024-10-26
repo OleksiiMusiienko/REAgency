@@ -1,0 +1,98 @@
+﻿@using REAgencyEnum
+@model REAgency.Models.ObjectPageViewModel
+@{
+    ViewData["Title"] = "Обране";
+}
+<div class="main-div" style="margin-top: 40px;">
+    <h4 style="text-align: center; margin: 0;">Обране</h4>
+    <hr />
+    <div class="objects-container">
+        @if (Model.Objects.Any())
+        {
+            @foreach (var item in Model.Objects)
+            {
+                <div class="item">
+                    <div>
+                        @if (item.typeObject == ObjectType.Flat.ToString())
+                        {
+                            <p class="item-type">Квартира</p>
+                        }
+                        else if (item.typeObject == ObjectType.Office.ToString())
+                        {
+                            <p class="item-type">Офіс</p>
+                        }
+                        else if (item.typeObject == ObjectType.Garage.ToString())
+                        {
+                            <p class="item-type">Гараж</p>
+                        }
+                        else if (item.typeObject == ObjectType.House.ToString())
+                        {
+                            <p class="item-type">Дім</p>
+                        }
+                        else if (item.typeObject == ObjectType.Stead.ToString())
+                        {
+                            <p class="item-type">Ділянка</p>
+                        }
+                        else if (item.typeObject == ObjectType.Room.ToString())
+                        {
+                            <p class="item-type">Кімната</p>
+                        }
+                        else if (item.typeObject == ObjectType.Parking.ToString())
+                        {
+                            <p class="item-type">Парко-місце</p>
+                        }
+                        else if (item.typeObject == ObjectType.Storage.ToString())
+                        {
+                            <p class="item-type">Склад</p>
+                        }
+                        else if (item.typeObject == ObjectType.Premis.ToString())
+                        {
+                            <p class="item-type">Приміщення</p>
+                        }
+                        else
+                        {
+                            <p class="item-type">@Html.DisplayFor(modelItem => item.typeObject)</p>
+                        }
+
+
+                        <button class="favorite" style="background-color: #A32305;" id="addFavObject" data-id="@item.Id">
+
+                            <img src="/img/HeartBlack.png" width="20px" height="20px" />
+                        </button>
+
+
+
+                        <img src="@Url.Content(item.photos.First())" class="object-img" alt="Object Image" />
+
+
+                        <div class="price-style">
+
+                            <p> @Html.DisplayFor(modelItem => item.operationName)</p>
+                            <p>@Html.DisplayFor(modelItem => item.Area) @Html.DisplayFor(modelItem => item.unitAreaName)</p>
+
+                            <p> @Html.DisplayFor(modelItem => item.Price) @Html.DisplayFor(modelItem => item.currencyName)</p>
+                        </div>
+                    </div>
+
+
+                    <div class="info" style=" display: none;">
+                        <p>Місцевість: @Html.DisplayFor(modelItem => item.localityName)</p>
+
+                    </div>
+                </div>
+
+
+            }
+
+
+        }
+        else
+        {
+            <h2>Обраних об'єктів немає</h2>
+        }
+    </div>
+</div>
+@if (Model.Objects.Any()!)
+{
+    <page-link page-model="Model.PageViewModel" page-action="Favorites"></page-link>
+}

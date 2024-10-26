@@ -18,6 +18,7 @@ using REAgency.DAL.Interfaces;
 using REAgency.Models;
 using REAgencyEnum;
 using System.Diagnostics;
+using System.Text.Json;
 using System.Text.RegularExpressions;
 using LandUse = REAgencyEnum.LandUse;
 
@@ -26,7 +27,7 @@ namespace REAgency.Controllers
     public class HomeController : Controller
     {
         //private readonly ILogger<HomeController> _logger;
-        private readonly IOperationService _operationService;        
+        private readonly IOperationService _operationService;
         private readonly ILocalityService _localityService;
         private readonly IFlatService _flatService;
         private readonly IClientService _clientService;
@@ -42,11 +43,8 @@ namespace REAgency.Controllers
 
         int pageSize = 9;
 
-
-
-
-        public HomeController(IOperationService operationService, ILocalityService localityService, IFlatService flatService, IClientService clientService, 
-            IHouseSevice houseService, IOfficeService officeService, IGarageService garageService, IAreaService areaService, ICurrencyService currencyService, 
+        public HomeController(IOperationService operationService, ILocalityService localityService, IFlatService flatService, IClientService clientService,
+            IHouseSevice houseService, IOfficeService officeService, IGarageService garageService, IAreaService areaService, ICurrencyService currencyService,
             IEstateObjectService estateObjectService, ISteadService steadService, ILocationService locationService, IWebHostEnvironment env)
         {
             //_logger = logger;
@@ -89,7 +87,7 @@ namespace REAgency.Controllers
         public ActionResult Logout()
         {
             HttpContext.Session.Clear();
-            
+
             return RedirectToAction("Index");
         }
 
@@ -100,8 +98,8 @@ namespace REAgency.Controllers
         }
 
 
-		public async Task <IActionResult> ShowObjectsByType(HomePageViewModel homePageViewModel, int page = 1)
-		{
+        public async Task<IActionResult> ShowObjectsByType(HomePageViewModel homePageViewModel, int page = 1)
+        {
             IEnumerable<OperationDTO> operations = await _operationService.GetAll();
             IEnumerable<AreaDTO> areas = await _areaService.GetAll();
             IEnumerable<CurrencyDTO> currencies = await _currencyService.GetAll();
@@ -111,7 +109,7 @@ namespace REAgency.Controllers
             {
                 HttpContext.Session.SetString("objectType", homePageViewModel.objectType.ToString());
             }
-           
+
 
 
             if (homePageViewModel.objectType == ObjectType.Flat || objectTypeSession == "Flat")
@@ -123,7 +121,7 @@ namespace REAgency.Controllers
                 var items = selectedFlats.Skip((page - 1) * pageSize).Take(pageSize).ToList();
 
                 PageViewModel pageViewModel = new PageViewModel(count, page, pageSize);
-                
+
                 //pageViewModel.typeOfAction = "ShowObjectsByType";
                 ObjectPageViewModel objectPageViewModel = new ObjectPageViewModel(items, pageViewModel);
                 objectPageViewModel.typeOfAction = "ShowObjectsByType";
@@ -175,7 +173,7 @@ namespace REAgency.Controllers
                 objectPageViewModel.typeOfAction = "ShowObjectsByType";
                 return View("Objects", objectPageViewModel);
             }
-            else if(homePageViewModel.objectType == ObjectType.Stead || objectTypeSession == "Stead")
+            else if (homePageViewModel.objectType == ObjectType.Stead || objectTypeSession == "Stead")
             {
                 IEnumerable<SteadDTO> steads = await _steadService.GetSteads();
                 var selectedSteads = SelectSteads(steads, operations, areas, currencies);
@@ -191,10 +189,10 @@ namespace REAgency.Controllers
             }
 
 
-             return View();
+            return View();
 
-            
-		}
+
+        }
 
         public async Task<IActionResult> Search(HomePageViewModel homePageViewModel, int page = 1)
         {
@@ -217,7 +215,7 @@ namespace REAgency.Controllers
                 HttpContext.Session.SetString("minArea", minArea.ToString("R"));
                 HttpContext.Session.SetString("maxArea", maxArea.ToString("R"));
             }
-            
+
 
             var opTypeIdSession = HttpContext.Session.GetInt32("opTypeId");
             var localityIdSession = HttpContext.Session.GetInt32("localityId");
@@ -225,7 +223,7 @@ namespace REAgency.Controllers
             var minPriceSession = HttpContext.Session.GetInt32("minPrice");
             var maxPriceSession = HttpContext.Session.GetInt32("maxPrice");
 
-            
+
             var minAreaSessionStr = HttpContext.Session.GetString("minArea");
             var maxAreaSessionStr = HttpContext.Session.GetString("maxArea");
 
@@ -247,14 +245,14 @@ namespace REAgency.Controllers
             ViewBag.LocalitiesList = new SelectList(await _localityService.GetLocalities(), "Id", "Name");
 
             if (opTypeId != 0 || localityId != 0 || estateTypeId != 0 ||
-                minPrice != 0 || maxPrice != 0 || minArea != 0 || maxArea != 0 )
+                minPrice != 0 || maxPrice != 0 || minArea != 0 || maxArea != 0)
             {
 
                 return View("Objects", ShowObjectsWithPagination(filtredEstateObjects, operations, areas, currencies, localities, locations, page));
             }
             else
             {
-                if(opTypeIdSession == null && localityIdSession == null &&
+                if (opTypeIdSession == null && localityIdSession == null &&
                     estateTypeIdSession == null && minPriceSession == null &&
                     maxPriceSession == null && minAreaSession == null && maxAreaSession == null)
                 {
@@ -268,10 +266,10 @@ namespace REAgency.Controllers
 
                     return View("Objects", ShowObjectsWithPagination(filtredEstateObjectsFromSession, operations, areas, currencies, localities, locations, page));
                 }
-                
-              
+
+
             }
-           
+
         }
 
         public ObjectPageViewModel ShowObjectsWithPagination(IEnumerable<EstateObjectDTO> filtredEstateObjects, IEnumerable<OperationDTO> operations,
@@ -313,10 +311,10 @@ namespace REAgency.Controllers
             return RedirectToAction("Index", "Home");
         }
 
-        public List<ObjectsViewModel> SelectFlats(IEnumerable<FlatDTO> flats, IEnumerable<OperationDTO> operations, 
+        public List<ObjectsViewModel> SelectFlats(IEnumerable<FlatDTO> flats, IEnumerable<OperationDTO> operations,
             IEnumerable<AreaDTO> areas, IEnumerable<CurrencyDTO> currencies)
         {
-            var viewModel = flats.Select(flat => 
+            var viewModel = flats.Select(flat =>
             {
 
                 string rootFolder = Path.Combine(_env.WebRootPath);
@@ -364,9 +362,9 @@ namespace REAgency.Controllers
         public List<ObjectsViewModel> SelectHouses(IEnumerable<HouseDTO> houses, IEnumerable<OperationDTO> operations,
             IEnumerable<AreaDTO> areas, IEnumerable<CurrencyDTO> currencies)
         {
-            var viewModel = houses.Select(house => 
+            var viewModel = houses.Select(house =>
             {
-                 string rootFolder = Path.Combine(_env.WebRootPath);
+                string rootFolder = Path.Combine(_env.WebRootPath);
                 rootFolder = rootFolder + house.pathPhoto;
                 List<string> imagePaths = GetImagePaths(rootFolder, house.estateObjectId);
 
@@ -409,7 +407,7 @@ namespace REAgency.Controllers
         public List<ObjectsViewModel> SelectGarages(IEnumerable<GarageDTO> garages, IEnumerable<OperationDTO> operations,
            IEnumerable<AreaDTO> areas, IEnumerable<CurrencyDTO> currencies)
         {
-            var viewModel = garages.Select(garage => 
+            var viewModel = garages.Select(garage =>
             {
                 string rootFolder = Path.Combine(_env.WebRootPath);
                 rootFolder = rootFolder + garage.pathPhoto;
@@ -448,13 +446,13 @@ namespace REAgency.Controllers
         public List<ObjectsViewModel> SelectSteads(IEnumerable<SteadDTO> steads, IEnumerable<OperationDTO> operations,
            IEnumerable<AreaDTO> areas, IEnumerable<CurrencyDTO> currencies)
         {
-            var viewModel = steads.Select(stead => 
+            var viewModel = steads.Select(stead =>
             {
                 string rootFolder = Path.Combine(_env.WebRootPath);
                 rootFolder = rootFolder + stead.pathPhoto;
                 List<string> imagePaths = GetImagePaths(rootFolder, stead.estateObjectId);
 
-                return new ObjectsViewModel { 
+                return new ObjectsViewModel {
                     Id = stead.Id,
                     countViews = stead.countViews,
                     employeeId = stead.employeeId,
@@ -484,11 +482,11 @@ namespace REAgency.Controllers
 
             return viewModel;
         }
-       
+
         public List<ObjectsViewModel> SelectOffices(IEnumerable<OfficeDTO> offices, IEnumerable<OperationDTO> operations,
             IEnumerable<AreaDTO> areas, IEnumerable<CurrencyDTO> currencies)
         {
-            var viewModel = offices.Select(office => 
+            var viewModel = offices.Select(office =>
             {
                 string rootFolder = Path.Combine(_env.WebRootPath);
                 rootFolder = rootFolder + office.pathPhoto;
@@ -598,9 +596,9 @@ namespace REAgency.Controllers
             var viewModel = estateObjects.Select(estateObjectDTO =>
             {
                 string rootFolder = Path.Combine(_env.WebRootPath);
-                 rootFolder = rootFolder + estateObjectDTO.pathPhoto;
+                rootFolder = rootFolder + estateObjectDTO.pathPhoto;
 
-                
+
                 List<string> imagePaths = GetImagePaths(rootFolder, estateObjectDTO.Id);
 
                 return new ObjectsViewModel
@@ -625,7 +623,7 @@ namespace REAgency.Controllers
                     Status = estateObjectDTO.Status,
                     Date = estateObjectDTO.Date,
                     pathPhoto = estateObjectDTO.pathPhoto,
-                    photos = imagePaths, 
+                    photos = imagePaths,
                     typeObject = estateObjectDTO.estateType.ToString(),
                 };
             }).ToList();
@@ -658,6 +656,79 @@ namespace REAgency.Controllers
             }
 
             return imagePaths;
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> AddFavObject([FromBody] int id)
+        {
+            string policyCookie = HttpContext.Request.Cookies["cookies_policy_Agency"];
+            if(policyCookie == null)
+            {
+                return Json(new { success = false, message = "Спочатку підтвердіть використання файлів cookies на головній сторінці" });
+            }
+            if (IsInFavList(id))
+            {
+                return Json(new { success = false, message = "Цей об'єкт уже у вибраному" });
+            }
+            
+
+            var favoriteObjects = GetFavList();
+            EstateObjectDTO estateObject = await _estateObjectService.GetEstateObjectById(id);
+            if (estateObject == null)
+            {
+                return Json(new { success = false, message = "Такого об'єкту не існує" });
+            }
+            favoriteObjects.Add(id);
+            var jsonString = JsonSerializer.Serialize(favoriteObjects);
+            HttpContext.Response.Cookies.Append("favoriteObjectsList", jsonString, new CookieOptions
+            {
+                Expires = DateTimeOffset.Now.AddDays(7) 
+            });
+
+            
+
+            return Json(new {success = true, message = "Успішно"});
+        }
+
+        public bool IsInFavList(int id)
+        {
+            var favoriteObjects = GetFavList();
+            return favoriteObjects.Contains(id);
+        }
+
+        public List<int> GetFavList()
+        {
+            List<int> favoriteObjects = new List<int>();
+            string favListCookie = HttpContext.Request.Cookies["favoriteObjectsList"];
+            if (favListCookie != null)
+            {
+                favoriteObjects = JsonSerializer.Deserialize<List<int>>(favListCookie);
+            }
+           
+            return favoriteObjects;
+        }
+
+        public async Task<IActionResult> Favorites(int page = 1)
+        {
+            List<EstateObjectDTO> estateObjects = new List<EstateObjectDTO>();
+            var favoriteObjects = GetFavList();
+           
+            foreach(var objectId in favoriteObjects)
+            {
+                EstateObjectDTO estateObject = await _estateObjectService.GetEstateObjectById(objectId);
+                estateObjects.Add(estateObject);
+            }
+            IEnumerable<OperationDTO> operations = await _operationService.GetAll();
+            IEnumerable<AreaDTO> areas = await _areaService.GetAll();
+            IEnumerable<CurrencyDTO> currencies = await _currencyService.GetAll();
+            IEnumerable<LocationDTO> locations = await _locationService.GetLocations();
+            IEnumerable<LocalityDTO> localities = await _localityService.GetLocalities();
+            IEnumerable<EstateObjectDTO> enumerableList = estateObjects;
+
+            var objects = ShowObjectsWithPagination(enumerableList, operations, areas, currencies, localities, locations, page);
+            return View(objects);
+
+            
         }
     }
 }
