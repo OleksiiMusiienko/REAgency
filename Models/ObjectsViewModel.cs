@@ -116,7 +116,7 @@ namespace REAgency.Models
 
         public string clientName { get; set; }
         public string clientPhone { get; set; }
-        
-        
+
+        public List<string> photos { get; set; }
     }
 }

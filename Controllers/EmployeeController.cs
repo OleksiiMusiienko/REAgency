@@ -54,11 +54,11 @@ namespace REAgency.Controllers
                     employee.DateOfBirth != null && employee.Email != null)
                 {
                     EmployeeDTO employeesEmail = await _employeeService.GetEmployeeByEmail(employee.Email);
-                    if (employee.Email == employeesEmail.Email)
+                    if (employeesEmail != null)
                     {
                         return View("AddEmployee", employee);
                     }
-                    if (formFile != null)
+                    if (formFile == null)
                     {
                         ModelState.AddModelError("", "Фото має бути обов'язково");
                         return View("AddEmployee", employee);
@@ -145,7 +145,7 @@ namespace REAgency.Controllers
         {
 
             EmployeeDTO employee = await _employeeService.GetEmployeeByEmail(login);
-            if (login == employee.Email)
+            if (employee != null)
             {
                 return Json(new { success = false, message = "Працівник з таким email вже існує" });
             }
@@ -157,6 +157,39 @@ namespace REAgency.Controllers
 
         }
 
+        public async Task<IActionResult> Update(int id)
+        {
+            EmployeeDTO employeeDTO = await _employeeService.GetEmployeeById(id);
+            return View("UpdateEmployee", employeeDTO);
+        }
+
+        public async Task<IActionResult> UpdateEmployee(EmployeeDTO model, IFormFile formFile)
+        {
+            if(formFile  != null)
+            {
+                byte[] avatar = ImageToByteArray(formFile);
+                await _employeeService.UpdateEmployeeAvatar(avatar, model.Id);
+                
+            }
+            EmployeeDTO employeeDTO = new EmployeeDTO();
+            employeeDTO.Id = model.Id;
+            employeeDTO.Name = model.Name;
+            employeeDTO.Email = model.Email;
+            employeeDTO.Phone1 = model.Phone1;
+            employeeDTO.Phone2 = model.Phone2;
+            employeeDTO.dateReg = model.dateReg;
+            employeeDTO.DateOfBirth = model.DateOfBirth;
+            employeeDTO.Description = model.Description;
+            employeeDTO.adminStatus = model.adminStatus;
+            employeeDTO.userStatus = model.userStatus;
+            employeeDTO.postId = model.postId;
+
+            await _employeeService.UpdateEmployee(employeeDTO);
+
+
+
+            return RedirectToAction("Index", "Office");
+        }
 
     }
 }

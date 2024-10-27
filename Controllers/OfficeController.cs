@@ -150,7 +150,7 @@ namespace REAgency.Controllers
                         await formFiles[i].CopyToAsync(fileStream); // копируем файл в поток
                     }
                 }
-                string pathdirectory = @"\images\" + id;
+                string pathdirectory = @"/images/" + id;
                 estateObjectDTO.pathPhoto = pathdirectory; //добавляем путь в обьект
                 await _objectService.UpdateEstateObjectPath(estateObjectDTO); //обновляем обьект               
 			}
@@ -163,7 +163,7 @@ namespace REAgency.Controllers
             {
                 ViewBag.Operations = new SelectList(await _operationService.GetAll(), "Id", "Name");
                 ViewBag.Regions = new SelectList(await _regionService.GetRegions(), "Id", "Name", "CountryId");
-                ViewBag.Districts = new SelectList(await _districtService.GetDistrict(), "Id", "Name", "RegionId");
+                ViewBag.Districts = new SelectList(await _districtService.GetDistricts(), "Id", "Name", "RegionId");
                 ViewBag.Localities = new SelectList(await _localityService.GetLocalities(), "Id", "Name", "DistrictId");
                 ViewBag.Currencies = new SelectList(await _currencyService.GetAll(), "Id", "Name");
             }
@@ -720,7 +720,7 @@ namespace REAgency.Controllers
 
                 ViewBag.Operations = new SelectList(await _operationService.GetAll(), "Id", "Name");
                 ViewBag.Regions = new SelectList(await _regionService.GetRegions(), "Id", "Name");
-                ViewBag.Districts = new SelectList(await _districtService.GetDistrict(), "Id", "Name");
+                ViewBag.Districts = new SelectList(await _districtService.GetDistricts(), "Id", "Name");
                 ViewBag.Localities = new SelectList(await _localityService.GetLocalities(), "Id", "Name");
                 ViewBag.Currencies = new SelectList(await _currencyService.GetAll(), "Id", "Name");
                 ViewBag.Employees = new SelectList(await _employeeService.GetEmployees(), "Id", "Name");
@@ -1785,7 +1785,7 @@ namespace REAgency.Controllers
         public static List<string> GetImagePaths(string rootFolder, int objectId)
         {
            
-            string[] imageExtensions = { "*.jpg", "*.jpeg", "*.png", "*.gif", "*.bmp" };
+            string[] imageExtensions = { "*.jpg", "*.jpeg", "*.png", "*.gif", "*.bmp", "*.webp" };
 
             List<string> imagePaths = new List<string>();
 
