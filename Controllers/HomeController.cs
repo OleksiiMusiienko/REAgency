@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.Identity.Client.Extensions.Msal;
+using Org.BouncyCastle.Ocsp;
 using REAgency.BLL.DTO;
 using REAgency.BLL.DTO.Locations;
 using REAgency.BLL.DTO.Object;
@@ -18,6 +19,8 @@ using REAgency.DAL.Interfaces;
 using REAgency.Models;
 using REAgencyEnum;
 using System.Diagnostics;
+using System.Net;
+using System.Net.Mail;
 using System.Text.Json;
 using System.Text.RegularExpressions;
 using LandUse = REAgencyEnum.LandUse;
@@ -75,6 +78,41 @@ namespace REAgency.Controllers
         public IActionResult Privacy()
         {
             return View();
+        }
+        public IActionResult Contacts()
+        {
+            return View();
+        }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Contacts(ContactsPageDTO cpvm)
+        {
+            if (ModelState.IsValid)
+            {
+                MailAddress from = new MailAddress("testgorodok2024@gmail.com", "АН Городок");
+                MailAddress to = new MailAddress("testgorodok2024@gmail.com", "АН Городок");
+                try
+                {
+                    using (MailMessage message = new MailMessage(from, to))
+                    using (SmtpClient smtpClient = new SmtpClient())
+                    {
+                        message.Subject = "Заявка Городок";
+                        message.Body = "Сообщение от: " + cpvm.Name + "\nТелефон: " + cpvm.Phone + "\n Email: " + cpvm.Email + "\nТекст: " + cpvm.Text;
+                        smtpClient.Host = "smtp.gmail.com";
+                        smtpClient.Port = 587;
+                        smtpClient.EnableSsl = true;
+                        smtpClient.DeliveryMethod = SmtpDeliveryMethod.Network;
+                        smtpClient.UseDefaultCredentials = false;
+                        smtpClient.Credentials = new NetworkCredential(from.Address, "lmcn fbsn gydo jghp");
+                        smtpClient.Send(message);
+                    }
+                }
+                catch (SmtpException se)
+                {
+                    throw new ApplicationException(se.ToString());
+                }
+            }
+            return RedirectToAction("Index");
         }
         public IActionResult Objects()
         {
@@ -287,8 +325,7 @@ namespace REAgency.Controllers
         }
 
         public async Task<IActionResult> SendApplication(HomePageViewModel homePageViewModel)
-        {
-
+        {           
             ClientDTO client = new ClientDTO();
             if (!Regex.IsMatch(homePageViewModel.appPhone, @"^\d+$"))
             {
