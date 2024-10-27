@@ -1,7 +1,12 @@
+#052B5E Ц синий
+#AFD2E9 Ц голубой
+#F4F3F7 - пепельный
+
+
 #aboutUs {
     display: flex;
     flex-direction: column;
-    margin-bottom:30px;
+    margin-bottom: 30px;
 }
 .divDarkBlue{
     background-color: #052B5E;
@@ -53,4 +58,71 @@
     font-family:Verdana, Geneva, Tahoma, sans-serif;
     font-size: 14px;
     text-align:center;
+}
+
+#d-main-contacts {
+    background-color: #F4F3F7;
+    display: flex;
+    margin-top:30px;
+}
+#formCont{
+    display: flex;
+    flex-direction: column;
+}
+#d1-contacts{
+    min-width:400px;
+    margin-right:150px;
+
+}
+.inputContacts {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: auto;
+    text-align: center;
+    border-radius: 10px;
+    width: 80%;
+    background-color: transparent;
+    border: none;
+    border-bottom: 3px solid #052B5E;
+    box-sizing: border-box;
+    color: #052B5E;
+    font-size: 18pt;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    font-weight: inherit;
+}
+.inputText {
+    display: flex;
+    margin: auto;
+    border-radius: 10px;
+    width: 100%;
+    background-color: #AFD2E9;
+    border: 2px solid;
+    box-sizing: border-box;
+    color: #052B5E;
+    font-size: 18pt;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    font-weight: inherit;
+}
+
+.labelCont {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    font-size: 16pt;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    font-weight: inherit;
+    /* color: #F4F3F7;*/
+    color: #052B5E;
+}
+#mapOffice {
+    position: absolute;
+    height: auto;
+    width: auto;
+    max-height: 100%;
+    max-width: 100%;
+    border: solid 2px #052B5E;
+    border-radius: 10px;
+    margin-top:15px;
 }

@@ -9,9 +9,12 @@
     display: flex;
     border-radius: 25px
 }
-    .catalog p {
-        margin: 10px 60px 0px 60px
-    }
+.catalog-header {
+    min-width: 330px;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    font-weight:bold;
+    font-size:18pt;
+}
 
 .catalog-items {
     display: grid;

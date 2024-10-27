@@ -1,0 +1,53 @@
+﻿@model ContactsPageDTO
+
+@{
+    ViewData["Title"] = "Контакти";
+}
+<div id="d-main-contacts">
+    <div id="d1-contacts">  
+    <form  asp-action="Contacts">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>          
+        <div class="inputBlock">
+                <label class="labelCont" asp-for="Name">Ім'я</label>
+            <input class="inputContacts" asp-for="Name" type="text"/>
+            <span class="validation" asp-validation-for="Name" class="text-danger"></span>
+        </div>
+
+        <div class="inputBlock">
+                <label class="labelCont" asp-for="Phone">Телефон</label>
+            <input class="inputContacts" asp-for="Phone" type="text" />
+            <span class="validation" asp-validation-for="Phone" class="text-danger"></span>
+        </div>
+        <div class="inputBlock">
+                <label class="labelCont" asp-for="Email">Електронна адреса</label>
+            <input class="inputContacts" asp-for="Email" type="email" />
+            <span class="validation" class="validation" asp-validation-for="Email" class="text-danger"></span>
+        </div>
+        <div class="inputBlock">
+                <label class="labelCont" asp-for="Text">Повідомлення</label>
+            <input class="inputText" asp-for="Text" type="text"/>
+            <span class="validation" asp-validation-for="Text" class="text-danger"></span>
+        </div>
+        
+        <div class="form-group" style="margin-top: 20px">
+            <input type="submit" value="Відправити" class="submitButton" />
+        </div>
+    </form>
+    </div>
+    <div>
+        <h2>Телефони:</h2>
+        <p>+38 096 380 88 71 Ірина</p>
+        <p>+38 066 111 11 11 Олексій</p>
+        <p>Адреса: оф.83, Київська 164, м.Обухів, Київська область, Україна, 08700</p>
+        <div>
+            <p>
+                <a href="https://maps.app.goo.gl/vA7JNQYRWTQGgysVA">GoogleMaps</a>
+                <a href="https://www.facebook.com/agenstvogorodok">
+                    <img src="~/img/facebook.png" />
+                </a>
+            </p>
+           
+        <img id="mapOffice" src="~/img/map.png" />
+        </div>
+  </div>
+</div>
