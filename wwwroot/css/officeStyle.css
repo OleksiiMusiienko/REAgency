@@ -73,6 +73,7 @@
     height: auto;
 }
 
+
     .delete-button:hover {
         transition: all 0.1s;
         box-shadow: 0 0 20px -2px red;
@@ -80,7 +81,24 @@
         color: white
     }
 
-
+.toList-button {
+    border: none;
+    background-color: #0166AA;
+    border-radius: 10px;
+    color: white;
+    text-decoration: none;
+    text-align: center;
+    padding: 5px;
+    box-shadow: 0 0 5px -5px green;
+    width: auto;
+    height: auto;
+}
+    .toList-button:hover {
+        transition: all 0.1s;
+        box-shadow: 0 0 20px -2px #0166AA;
+        background-color: #0166AA;
+        color: white
+    }
 
 .panel-column {
     width: 98%;

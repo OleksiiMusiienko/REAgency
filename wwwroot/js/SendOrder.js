@@ -14,7 +14,7 @@
             focusConfirm: false,
             preConfirm: () => {
                 name = document.getElementById("Name").value;
-                email = document.getElementById("Email").value;
+                 email = document.getElementById("Email").value;
                 phone = document.getElementById("Phone").value;
 
                 try {

@@ -1,9 +1,9 @@
-﻿@model REAgency.Models.Garage.DetailseGarageViewModel
+﻿@model REAgency.Models.House.DetailseHouseViewModel
 
 <link rel="stylesheet" href="~/css/detailsImg.css">
 <div class="space-between">
     <dd>
-        Гараж
+        Будинок
     </dd>
     <dd>
         @Html.DisplayFor(model => model.operationName)
@@ -58,14 +58,20 @@
                 Номер вулиці:  @Html.DisplayFor(model => model.numberStreet)<br />
             </dd>
         </div>
-        <div class="flex-container">
+        <div class="flex-container" style="flex-direction:column">
             <dt>
                 Характеристики
             </dt>
             <div class="flex-div">
                 <dd>
                     Загальна площа м² @Html.DisplayFor(model => model.Area)<br />
+                    Житлова площа м  @Html.DisplayFor(model => model.livingArea)<br />
+                    Площа кухні м²  @Html.DisplayFor(model => model.kitchenArea)<br />
+                </dd>
+                <dd>
                     Кількість поверхів:  @Html.DisplayFor(model => model.Floors)<br />
+                    Кімнат: @Html.DisplayFor(model => model.Rooms)<br />
+                    Площа ділянки, сот @Html.DisplayFor(model => model.steadArea)
                 </dd>
             </div>
         </div>
@@ -75,19 +81,14 @@
                 @Html.DisplayFor(model => model.Description)
             </dd>
         </div>
-        
-            <div class="space-between">
         @if (Context.Session.GetString("User") == "employee")
         {
             <div class="space-between">
-                <a asp-controller="Office" asp-action="Update" asp-route-id=@Model.garageId asp-route-typeObject=@Model.estateType class="update-button">Редагувати</a>
+                <a asp-controller="Office" asp-action="Update" asp-route-id=@Model.houseId asp-route-typeObject=@Model.estateType class="update-button">Редагувати</a>
                 <a asp-action="Index" class="toList-button">Повернутись до списку</a>
-                <a asp-controller="Office" asp-action="DelateGarage" asp-route-id=@Model.garageId class="delete-button">Видалити</a>
-                }
-            <a data-id="@Model.garageId" class="toList-button" id="SendOrder">Заявка на перегляд</a>
+                <a asp-controller="Office" asp-action="DelateGarage" asp-route-id=@Model.houseId class="delete-button">Видалити</a>
             </div>
-
-        
+        }
     </div>
 </div>
 
@@ -110,6 +111,4 @@
         }
         x[slideIndex - 1].style.display = "block";
     }
-
-    
 </script>
