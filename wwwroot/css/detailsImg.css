@@ -1,0 +1,111 @@
+﻿{
+    box-sizing: border-box
+}
+
+body {
+    font-family: Verdana, sans-serif;
+    margin: 0
+}
+
+.mySlides1 {
+    display: none;
+    color: black;
+    padding: 10px;
+    margin: 10px;
+    font-size: 1.1em;
+    display: flex;
+    justify-content: center;
+    background-color: #f1f1f1;
+    border-radius: 0 0 15px 15px;
+    position: relative;
+}
+    .mySlides1 img {
+        width: 550px;
+        height: 450px;
+        display: flex;
+        align-items: center;
+    }
+
+
+/* Кнопки «Далее» и «Предыдущее» */
+.slideshow-container {
+    position: relative;
+    margin: auto;
+    background-color: #f9f9f9;
+}
+
+/* Next & previous buttons */
+.prev, .next {
+    cursor: pointer;
+    position: absolute;
+    top: 10px;
+    width: auto;
+    padding: 212px 30px;
+    color: gray;
+    font-weight: bold;
+    font-size: 18px;
+    transition: 0.6s ease;
+    border-radius: 0 3px 3px 0;
+    user-select: none;
+    text-decoration: none;
+    opacity: 0.5;
+}
+    .prev{
+        left:0;
+    }
+    /* Размещаем кнопку «Далее» справа */
+    .next {
+        right: 0;
+        border-radius: 3px 0 0 3px;
+    }
+
+
+    /* При наведении добавляем серый цвет фона */
+    .prev:hover, .next:hover {
+        background-color: #f1f1f1;
+        color: black;
+    }
+
+
+.space-between {
+    display: flex;
+    justify-content: space-between;
+    margin: 10px;
+    padding: 10px;
+    background-color: #81d2ed60;
+    color: black;
+    padding: 10px;
+    font-size: 1.1em;
+    display: flex;
+    justify-content: space-between;
+    border-radius: 0 0 15px 15px;
+    position: relative;
+}
+
+.flex-container {
+    margin: 10px;
+    padding: 10px;
+    box-sizing: border-box;
+    background-color: #f9f9f9;
+    text-align: center;
+    border-radius: 15px;
+    overflow: visible;
+    margin-bottom: 20px;
+    position: relative;
+    background-color: #81d2ed60;
+    color: black;
+    padding: 10px;
+    font-size: 1.1em;
+    display: flex;
+    justify-content: space-around;
+    border-radius: 0 0 15px 15px;
+    position: relative;
+}
+
+    .flex-container dd {
+        text-align: left;
+    }
+.flex-div {
+    display: flex;
+    justify-content: space-between;
+}
