@@ -1,0 +1,40 @@
+﻿@model REAgency.Models.ClientsPageViewModel
+@{
+    ViewData["Title"] = "Клієнти";
+}
+<div class="main-div" style="margin-top: 40px;">
+    <div class="objects-container">
+
+        @if (Model.Clients.Any())
+        {
+            @foreach (var item in Model.Clients)
+            {
+                <div class="item">
+                    <div>
+                        <div class="price-style">
+
+                            <p style="padding: 0 10px 0 10px"> @Html.DisplayFor(modelItem => item.Name)</p>
+                           
+                        </div>
+                        <div class="info" style=" display: none; border: solid 2px #052a5e; border-top: none">
+                            @if (item.Email != null)
+                            {
+                                <p style="padding: 0 10px 0 10px">Пошта: @Html.DisplayFor(modelItem => item.Email)</p>
+                            }
+                            <p style="padding: 0 10px 0 10px">Телефон: @Html.DisplayFor(modelItem => item.Phone1)</p>
+                        </div>
+                    </div>
+
+                </div>
+
+            }
+
+        }
+        else
+        {
+            <h2>На жаль за Вашим запитом нічого не знайдено</h2>
+        }
+    </div>
+</div>
+<page-link page-model="Model.PageViewModel" page-action="Index"></page-link>
+<script src="~/js/ShowBlock.js" asp-append-version="true"></script>
