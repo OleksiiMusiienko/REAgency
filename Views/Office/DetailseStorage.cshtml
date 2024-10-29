@@ -1,0 +1,108 @@
+﻿@model REAgency.Models.Storage.DetailseStorageViewModel
+
+
+<link rel="stylesheet" href="~/css/detailsImg.css">
+<div class="space-between">
+    <dd>
+        Ділянка
+    </dd>
+    <dd>
+        @Html.DisplayFor(model => model.operationName)
+    </dd>
+    <dd>
+        @Html.DisplayFor(model => model.Price)  @Html.DisplayFor(model => model.currencyName)
+    </dd>
+</div>
+<div class="flex-container">
+    <div class="slideshow-container">
+        @foreach (var photo in Model.photos)
+        {
+            <div class="mySlides1">
+                <img src="@photo">
+            </div>
+        }
+        <a class="prev" onclick="plusSlides(-1, 0)">❮</a>
+        <a class="next" onclick="plusSlides(1, 0)">❯</a>
+        <div class="flex-div" style="justify-content: space-between">
+            <div>@Html.DisplayFor(model => model.countViews)👁️</div>
+            <div style="color:darkgray">@Html.DisplayFor(model => model.Date)</div>
+        </div>
+    </div>
+    <div>
+        @if (Context.Session.GetString("User") == "employee")
+        {
+            <div class="flex-container">
+                <dt>Кліент:</dt>
+                <dd>
+                    @Html.DisplayFor(model => model.clientName)
+                    @Html.DisplayFor(model => model.clientPhone)
+                </dd>
+            </div>
+        }
+        @if (Context.Session.GetString("IsAdmin") == "True")
+        {
+            <div class="flex-container">
+                <dt>Спіробітник:</dt>
+                <dd>
+                    @Html.DisplayFor(model => model.employeeName)
+                    @Html.DisplayFor(model => model.employeePhone)
+                </dd>
+            </div>
+        }
+        <div class="flex-container">
+            <dt>Адреса</dt>
+            <dd>
+                Країна:  @Html.DisplayFor(model => model.countryName)<br />
+                Регіон:  @Html.DisplayFor(model => model.RegionName)<br />
+                Район:  @Html.DisplayFor(model => model.DistrictName)<br />
+                Вулиця:  @Html.DisplayFor(model => model.Street)<br />
+                Номер вулиці:  @Html.DisplayFor(model => model.numberStreet)<br />
+            </dd>
+        </div>
+        <div class="flex-container">
+            <dt>
+                Характеристики
+            </dt>
+            <div class="flex-div">
+                <dd>
+                    Загальна площа м² @Html.DisplayFor(model => model.Area)<br />
+                </dd>
+            </div>
+        </div>
+        <div class="flex-container">
+            <dt>Опис:</dt>
+            <dd>
+                @Html.DisplayFor(model => model.Description)
+            </dd>
+        </div>
+        @if (Context.Session.GetString("User") == "employee")
+        {
+            <div class="space-between">
+                <a asp-controller="Office" asp-action="Update" asp-route-id=@Model.storageId asp-route-typeObject=@Model.estateType class="update-button">Редагувати</a>
+                <a asp-action="Index" class="toList-button">Повернутись до списку</a>
+                <a asp-controller="Office" asp-action="DelateGarage" asp-route-id=@Model.storageId class="delete-button">Видалити</a>
+            </div>
+        }
+    </div>
+</div>
+
+<script>
+    var slideIndex = 1;
+    var slideId = "mySlides1"
+    showSlides(1, 0);
+
+    function plusSlides(n, no) {
+        showSlides(slideIndex += n, no);
+    }
+
+    function showSlides(n, no) {
+        var i;
+        var x = document.getElementsByClassName(slideId);
+        if (n > x.length) { slideIndex = 1 }
+        if (n < 1) { slideIndex = x.length }
+        for (i = 0; i < x.length; i++) {
+            x[i].style.display = "none";
+        }
+        x[slideIndex - 1].style.display = "block";
+    }
+</script>
