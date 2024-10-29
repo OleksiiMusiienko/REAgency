@@ -7,11 +7,12 @@
     <h4 style="text-align: center; margin: 0;">Обране</h4>
     <hr />
     <div class="objects-container">
+       
         @if (Model.Objects.Any())
         {
             @foreach (var item in Model.Objects)
             {
-                <div class="item">
+                <a class="item"  asp-controller="Office" asp-action="Detailse" asp-route-id="@item.Id" asp-route-typeObject="@item.typeObject" style="text-decoration: none">
                     <div>
                         @if (item.typeObject == ObjectType.Flat.ToString())
                         {
@@ -79,7 +80,7 @@
                         <p>Місцевість: @Html.DisplayFor(modelItem => item.localityName)</p>
 
                     </div>
-                </div>
+                </a>
 
 
             }
