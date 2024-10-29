@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.Identity.Client.Extensions.Msal;
+using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages;
+using MimeKit;
 using Org.BouncyCastle.Ocsp;
 using REAgency.BLL.DTO;
 using REAgency.BLL.DTO.Locations;
@@ -18,6 +20,7 @@ using REAgency.DAL.Entities.Person;
 using REAgency.DAL.Interfaces;
 using REAgency.Models;
 using REAgencyEnum;
+using System;
 using System.Diagnostics;
 using System.Net;
 using System.Net.Mail;
@@ -766,6 +769,115 @@ namespace REAgency.Controllers
             return View(objects);
 
             
+        }
+
+        public async Task<IActionResult> OrderViewing(string name, string email, string phone, int id)
+        {
+            var message = new MimeMessage();
+            message.From.Add(new MailboxAddress("АН Городок", "babenko.viktoria.v@gmail.com"));
+            message.To.Add(new MailboxAddress("", email));
+            message.Subject = "Замовленя перегляду!";
+
+            var bodyBuilder = new BodyBuilder();
+            bodyBuilder.HtmlBody = $@" <html>
+ <head>
+     <style>
+         body {{
+             font-family: 'Arial', sans-serif;
+             background-color: #f4f4f4;
+         }}
+         .container {{
+             max-width: 600px;
+             margin: 0 auto;
+             padding: 20px;
+             background-color: #fff;
+             border-radius: 5px;
+             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+             align-items: center;
+         }}
+         h1 {{
+             color: #E7734F;
+             margin-left: 30px;
+         }}
+         a {{
+             color: white;
+         }}
+         .block {{
+             background-image: url(https://sotni.ru/wp-content/uploads/2023/08/niuiork-4-1.webp);
+             height: 130px;
+             background-size: cover;
+             width: 100%;
+             display: flex;
+             justify-content: right;
+             margin-right: 10px;
+         }}
+         .title {{
+             padding: 10px;
+             color: white;
+             font-size: 1.5rem;
+             font-weight: 600;
+         }}
+         .button {{
+             text-decoration: none;
+             color: white;
+             padding: 7px 20px;
+             background-color: #E7734F;
+             margin-left: 30px;
+         }}
+         .textbefore {{
+             padding: 20px 20px 10px 20px;
+            text-align: center;
+         }}
+         .footer {{
+             margin-top: 35px;
+             width: 100%;
+             background-color: #dcdcdc;
+             padding: 15px 8px;
+             display: flex;
+             justify-content: space-between;
+         }}
+         .footer a {{
+             text-decoration: none;
+             color: black;
+         }}
+         .footcont {{
+             padding-right: 40px;
+         }}
+        p{{
+         text-align: center;
+        }}
+
+     </style>
+ </head>
+ <body>
+     <div class='container'>
+         <div class=""block"">
+             <div class=""title"">
+             <img src=""~/logo.ico"" width=""125px"" height=""96,9px"" style=""margin-bottom:-63px""/>
+             АН Городок</div>
+         </div>
+
+         <h1 class=""textbefore"">Замовлення на перегляд</h1>
+         <p>Ім'я: {name}</p></div>      
+         <p>Телефон: {phone}</p></div>      
+         <p>Пошта: {email}</p></div>      
+         <p>Об'єкт: {id}</p></div>      
+
+        
+     </div>
+
+ </body>
+ </html>";
+
+            message.Body = bodyBuilder.ToMessageBody();
+            using (var client1 = new MailKit.Net.Smtp.SmtpClient())
+            {
+                await client1.ConnectAsync("smtp.gmail.com", 465, true);
+                await client1.AuthenticateAsync("babenko.viktoria.v@gmail.com", "wfctwlvtpojxunqn");
+                await client1.SendAsync(message);
+                await client1.DisconnectAsync(true);
+            }
+            return View();
         }
     }
 }
