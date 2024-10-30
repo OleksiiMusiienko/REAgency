@@ -52,5 +52,6 @@ namespace REAgency.Models.Room
         public double livingArea { get; set; }
         public int Floor { get; set; }
         public int Floors { get; set; }
+        public int estateObjectId { get; set; }
     }
 }

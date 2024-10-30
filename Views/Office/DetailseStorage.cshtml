@@ -75,14 +75,21 @@
                 @Html.DisplayFor(model => model.Description)
             </dd>
         </div>
-        @if (Context.Session.GetString("User") == "employee")
-        {
-            <div class="space-between">
-                <a asp-controller="Office" asp-action="Update" asp-route-id=@Model.storageId asp-route-typeObject=@Model.estateType class="update-button">Редагувати</a>
-                <a asp-action="Index" class="toList-button">Повернутись до списку</a>
-                <a asp-controller="Office" asp-action="DelateGarage" asp-route-id=@Model.storageId class="delete-button">Видалити</a>
+        <div class="space-between">
+            <div>
+                @if (Context.Session.GetString("User") == "employee")
+                {
+                    <a asp-controller="Office" asp-action="Update" asp-route-id=@Model.storageId asp-route-typeObject=@Model.estateType class="update-button">Редагувати</a>
+                    <a asp-action="Index" class="toList-button">Повернутись до списку</a>
+                    <a asp-controller="Office" asp-action="DelateGarage" asp-route-id=@Model.storageId class="delete-button">Видалити</a>
+                }
+                else
+                {
+                    <a data-id="@Model.estateObjectId" class="toList-button" id="Send">Заявка на перегляд</a>
+                }
+
             </div>
-        }
+        </div>
     </div>
 </div>
 

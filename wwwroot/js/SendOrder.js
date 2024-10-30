@@ -1,29 +1,50 @@
 ﻿$(document).ready(function () {
-    $('#SendOrder').on('click', function () {
+    $('#Send').on('click', function () {
         
 
         let id = $(this).data('id');
         let name = "";
         let email = "";
-        console.log("Adding favorite ID:", id);
+        let url = "/Home/OrderViewing";
+       
         Swal.fire({
-            title: "Multiple inputs",
-             html: `<input id="Name" class="swal2-input" placeholder="Enter your name">
-                    <input id="Email" class="swal2-input" placeholder="Enter your email">
-                    <input id="Phone" class="swal2-input" placeholder="Enter your email">`,
+            title: "Заповните заявку",
+             html: `<input id="Name" class="swal2-input" placeholder="Ім'я">
+                    <input id="Email" class="swal2-input" placeholder="Email">
+                    <input id="Phone" class="swal2-input" placeholder="Номер телефону">`,
             focusConfirm: false,
-            preConfirm: () => {
+            showCancelButton: true,
+            confirmButtonColor: "#052a5e",
+            preConfirm: async () => {
                 name = document.getElementById("Name").value;
-                 email = document.getElementById("Email").value;
+                email = document.getElementById("Email").value;
                 phone = document.getElementById("Phone").value;
 
+                const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                const phonePattern = /^\d{10}$/;
+
+                if (!emailPattern.test(email)) {
+                    Swal.showValidationMessage("Введіть дійсну електронну адресу.");
+                    return false;
+                }
+
+                if (!phonePattern.test(phone)) {
+                    Swal.showValidationMessage("Введіть дійсний 10-значний номер телефону.");
+                    return false;
+                }
+
                 try {
-                    const response = await fetch("/Office/AddFavObject", {
+                    const response = await fetch(url, {
                         method: "POST",
                         headers: {
                             'Content-Type': 'application/json;charset=utf-8'
                         },
-                        body: JSON.stringify(id)
+                        body: JSON.stringify({
+                            name: name,
+                            email: email,
+                            phone: phone,
+                            id: id
+                        })
 
                     });
 
@@ -60,17 +81,7 @@
                 return { name: name, email: email };
             }
         })
-        //.then((result) => {
-        //    if (result.isConfirmed) {
-        //        // Display the collected values
-        //        Swal.fire({
-        //            title: "Collected Values",
-        //            text: `Name: ${result.value.name}, Email: ${result.value.email}`
-        //        });
-        //    }
-        //});
-
-        console.log(name,email)
+       
     });
 
 });

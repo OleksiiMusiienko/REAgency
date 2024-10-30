@@ -23,7 +23,7 @@ namespace REAgency.Controllers
             if (HttpContext.Session.GetString("IsAdmin") != "True")
             {
                 int employeeId = (int)HttpContext.Session.GetInt32("Id");
-                clients.Where(c => c.employeeId == employeeId).ToList();
+                clients = clients.Where(c => c.employeeId == employeeId).ToList();
             }
                
             var count = clients.Count();

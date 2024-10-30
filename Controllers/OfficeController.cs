@@ -89,6 +89,7 @@ namespace REAgency.Controllers
             IEnumerable<ObjectsViewModel> estateObjects;
 
             IEnumerable<EstateObjectDTO> objects = await _objectService.GetEstateObjectByEmployeeId(HttpContext.Session.GetInt32("Id")!.Value);
+
             IEnumerable<OperationDTO> operations = await _operationService.GetAll();
             IEnumerable<AreaDTO> areas = await _areaService.GetAll();
             IEnumerable<CurrencyDTO> currencies = await _currencyService.GetAll();

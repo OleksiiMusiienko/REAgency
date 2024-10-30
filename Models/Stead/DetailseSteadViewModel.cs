@@ -51,5 +51,7 @@ namespace REAgency.Models.Stead
 
         public string Cadastr { get; set; }
         public int Use { get; set; }
+        public int estateObjectId { get; set; }
     }
+    
 }

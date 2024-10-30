@@ -53,5 +53,6 @@ namespace REAgency.Models.House
         public double kitchenArea { get; set; }
         public double steadArea { get; set; }
         public double livingArea { get; set; }
+        public int estateObjectId { get; set; }
     }
 }

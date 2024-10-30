@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.Identity.Client.Extensions.Msal;
@@ -328,7 +329,7 @@ namespace REAgency.Controllers
         }
 
         public async Task<IActionResult> SendApplication(HomePageViewModel homePageViewModel)
-        {           
+        {
             ClientDTO client = new ClientDTO();
             if (!Regex.IsMatch(homePageViewModel.appPhone, @"^\d+$"))
             {
@@ -702,7 +703,7 @@ namespace REAgency.Controllers
         public async Task<IActionResult> AddFavObject([FromBody] int id)
         {
             string policyCookie = HttpContext.Request.Cookies["cookies_policy_Agency"];
-            if(policyCookie == null)
+            if (policyCookie == null)
             {
                 return Json(new { success = false, message = "Спочатку підтвердіть використання файлів cookies на головній сторінці" });
             }
@@ -710,7 +711,7 @@ namespace REAgency.Controllers
             {
                 return Json(new { success = false, message = "Цей об'єкт уже у вибраному" });
             }
-            
+
 
             var favoriteObjects = GetFavList();
             EstateObjectDTO estateObject = await _estateObjectService.GetEstateObjectById(id);
@@ -722,12 +723,12 @@ namespace REAgency.Controllers
             var jsonString = JsonSerializer.Serialize(favoriteObjects);
             HttpContext.Response.Cookies.Append("favoriteObjectsList", jsonString, new CookieOptions
             {
-                Expires = DateTimeOffset.Now.AddDays(7) 
+                Expires = DateTimeOffset.Now.AddDays(7)
             });
 
-            
 
-            return Json(new {success = true, message = "Успішно"});
+
+            return Json(new { success = true, message = "Успішно" });
         }
 
         public bool IsInFavList(int id)
@@ -744,7 +745,7 @@ namespace REAgency.Controllers
             {
                 favoriteObjects = JsonSerializer.Deserialize<List<int>>(favListCookie);
             }
-           
+
             return favoriteObjects;
         }
 
@@ -752,8 +753,8 @@ namespace REAgency.Controllers
         {
             List<EstateObjectDTO> estateObjects = new List<EstateObjectDTO>();
             var favoriteObjects = GetFavList();
-           
-            foreach(var objectId in favoriteObjects)
+
+            foreach (var objectId in favoriteObjects)
             {
                 EstateObjectDTO estateObject = await _estateObjectService.GetEstateObjectById(objectId);
                 estateObjects.Add(estateObject);
@@ -768,116 +769,125 @@ namespace REAgency.Controllers
             var objects = ShowObjectsWithPagination(enumerableList, operations, areas, currencies, localities, locations, page);
             return View(objects);
 
-            
+
         }
 
-        public async Task<IActionResult> OrderViewing(string name, string email, string phone, int id)
+        [HttpPost]
+        public async Task<IActionResult> OrderViewing([FromBody] OrderViewModel model)
         {
-            var message = new MimeMessage();
-            message.From.Add(new MailboxAddress("АН Городок", "babenko.viktoria.v@gmail.com"));
-            message.To.Add(new MailboxAddress("", email));
-            message.Subject = "Замовленя перегляду!";
+            try
+            {
+                var message = new MimeMessage();
+                message.From.Add(new MailboxAddress("АН Городок", "babenko.viktoria.v@gmail.com"));
+                message.To.Add(new MailboxAddress("", "leon.pavelko@gmail.com"));
+                message.Subject = "Замовленя перегляду!";
 
-            var bodyBuilder = new BodyBuilder();
-            bodyBuilder.HtmlBody = $@" <html>
- <head>
-     <style>
-         body {{
-             font-family: 'Arial', sans-serif;
-             background-color: #f4f4f4;
-         }}
-         .container {{
-             max-width: 600px;
-             margin: 0 auto;
-             padding: 20px;
-             background-color: #fff;
-             border-radius: 5px;
-             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-             align-items: center;
-         }}
-         h1 {{
-             color: #E7734F;
-             margin-left: 30px;
-         }}
-         a {{
-             color: white;
-         }}
-         .block {{
-             background-image: url(https://sotni.ru/wp-content/uploads/2023/08/niuiork-4-1.webp);
-             height: 130px;
-             background-size: cover;
-             width: 100%;
-             display: flex;
-             justify-content: right;
-             margin-right: 10px;
-         }}
-         .title {{
-             padding: 10px;
-             color: white;
-             font-size: 1.5rem;
-             font-weight: 600;
-         }}
-         .button {{
-             text-decoration: none;
-             color: white;
-             padding: 7px 20px;
-             background-color: #E7734F;
-             margin-left: 30px;
-         }}
-         .textbefore {{
-             padding: 20px 20px 10px 20px;
-            text-align: center;
-         }}
-         .footer {{
-             margin-top: 35px;
-             width: 100%;
-             background-color: #dcdcdc;
-             padding: 15px 8px;
-             display: flex;
-             justify-content: space-between;
-         }}
-         .footer a {{
-             text-decoration: none;
-             color: black;
-         }}
-         .footcont {{
-             padding-right: 40px;
-         }}
-        p{{
-         text-align: center;
-        }}
+                var bodyBuilder = new BodyBuilder();
+                bodyBuilder.HtmlBody = $@" <html>
+                     <head>
+                         <style>
+                             body {{
+                                 font-family: 'Arial', sans-serif;
+                                 background-color: #f4f4f4;
+                             }}
+                             .container {{
+                                 max-width: 600px;
+                                 margin: 0 auto;
+                                 padding: 20px;
+                                 background-color: #fff;
+                                 border-radius: 5px;
+                                 box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+                                 align-items: center;
+                             }}
+                             h1 {{
+                                 color: #E7734F;
+                                 margin-left: 30px;
+                             }}
+                             a {{
+                                 color: white;
+                             }}
+                             .block {{
+                                 background-image: url(https://sotni.ru/wp-content/uploads/2023/08/niuiork-4-1.webp);
+                                 height: 130px;
+                                 background-size: cover;
+                                 width: 100%;
+                                 display: flex;
+                                 justify-content: right;
+                                 margin-right: 10px;
+                             }}
+                             .title {{
+                                 padding: 10px;
+                                 color: white;
+                                 font-size: 1.5rem;
+                                 font-weight: 600;
+                             }}
+                             .button {{
+                                 text-decoration: none;
+                                 color: white;
+                                 padding: 7px 20px;
+                                 background-color: #E7734F;
+                                 margin-left: 30px;
+                             }}
+                             .textbefore {{
+                                 padding: 20px 20px 10px 20px;
+                                text-align: center;
+                             }}
+                             .footer {{
+                                 margin-top: 35px;
+                                 width: 100%;
+                                 background-color: #dcdcdc;
+                                 padding: 15px 8px;
+                                 display: flex;
+                                 justify-content: space-between;
+                             }}
+                             .footer a {{
+                                 text-decoration: none;
+                                 color: black;
+                             }}
+                             .footcont {{
+                                 padding-right: 40px;
+                             }}
+                            p{{
+                             text-align: center;
+                            }}
 
-     </style>
- </head>
- <body>
-     <div class='container'>
-         <div class=""block"">
-             <div class=""title"">
-             <img src=""~/logo.ico"" width=""125px"" height=""96,9px"" style=""margin-bottom:-63px""/>
-             АН Городок</div>
-         </div>
+                         </style>
+                     </head>
+                     <body>
+                         <div class='container'>
+                             <div class=""block"">
+                                 <div class=""title"">
+                                 <img src=""~/logo.ico"" width=""125px"" height=""96,9px"" style=""margin-bottom:-63px""/>
+                                 АН Городок</div>
+                             </div>
 
-         <h1 class=""textbefore"">Замовлення на перегляд</h1>
-         <p>Ім'я: {name}</p></div>      
-         <p>Телефон: {phone}</p></div>      
-         <p>Пошта: {email}</p></div>      
-         <p>Об'єкт: {id}</p></div>      
+                             <h1 class=""textbefore"">Замовлення на перегляд</h1>
+                             <p>Ім'я: {model.name}</p>     
+                             <p>Телефон: {model.phone}</p>      
+                             <p>Пошта: {model.email}</p>      
+                             <p>Об'єкт: {model.id}</p>     
 
         
-     </div>
+                         </div>
 
- </body>
- </html>";
+                     </body>
+                     </html>";
 
-            message.Body = bodyBuilder.ToMessageBody();
-            using (var client1 = new MailKit.Net.Smtp.SmtpClient())
-            {
-                await client1.ConnectAsync("smtp.gmail.com", 465, true);
-                await client1.AuthenticateAsync("babenko.viktoria.v@gmail.com", "wfctwlvtpojxunqn");
-                await client1.SendAsync(message);
-                await client1.DisconnectAsync(true);
+                message.Body = bodyBuilder.ToMessageBody();
+                using (var client1 = new MailKit.Net.Smtp.SmtpClient())
+                {
+                    await client1.ConnectAsync("smtp.gmail.com", 465, true);
+                    await client1.AuthenticateAsync("babenko.viktoria.v@gmail.com", "wfctwlvtpojxunqn");
+                    await client1.SendAsync(message);
+                    await client1.DisconnectAsync(true);
+                }
+                return Ok(new { success = true, message = "Заявка успішно надіслана" });
             }
-            return View();
+            catch(Exception ex)
+            {
+                return BadRequest(new { success = false, message = "Щось пішло не так" });
+            }
+           
         }
     }
 }

@@ -303,7 +303,7 @@
                         <div class="item">
                             <div>
                                 <div class="price-style">
-
+                                    <p> ID: @Html.DisplayFor(modelItem => item.Id)</p>
                                     <p> @Html.DisplayFor(modelItem => item.operationName)</p>
                                     @if (item.typeObject == ObjectType.Flat.ToString())
                                     {
@@ -350,7 +350,7 @@
                                     <p>@Html.DisplayFor(modelItem => item.localityName)</p>
 
                                     <a asp-controller="Office" asp-action="Update" asp-route-id="@item.Id" asp-route-typeObject="@item.typeObject" class="update-button">Редагувати</a>
-                                    <a asp-controller="Office" asp-action="Detailse" asp-route-id="@item.Id" asp-route-typeObject="@item.typeObject" class="button">Деталі</a>
+                                    <a asp-controller="Office" asp-action="Detailse" asp-route-id="@item.Id" asp-route-typeObject="@item.typeObject" class="toList-button" style="padding: 5px">Деталі</a>
                                     
 
                                 </div>

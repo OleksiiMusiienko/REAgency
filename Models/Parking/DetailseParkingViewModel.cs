@@ -47,5 +47,6 @@ namespace REAgency.Models.Parking
         public string Path { get; set; }
 
         public ObjectType estateType { get; set; }
+        public int estateObjectId { get; set; }
     }
 }
