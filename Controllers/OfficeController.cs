@@ -2063,30 +2063,75 @@ namespace REAgency.Controllers
             {
                 case "Flat":
                     var flat  = await _flatService.GetFlatByEstateObjectId((int)id);
+                    if (HttpContext.Session.GetString("User") != "employee")
+                    {
+                        int countViews = ++flat.countViews;
+                        await _objectService.UpdateEstateObjectCountViews(flat.estateObjectId, countViews);
+                    }
                     return View("DetailseFlat", DetailseFlat(flat));
                 case "Garage":
                     var garage = await _garageService.GetGarageByEstateObjectId((int)id);
+                    if (HttpContext.Session.GetString("User") != "employee")
+                    {
+                        int countViews = ++garage.countViews;
+                        await _objectService.UpdateEstateObjectCountViews(garage.estateObjectId, countViews);
+                    }
                     return View("DetailseGarage", DetailseGarage(garage));
                 case "House":
                     var house = await _houseService.GetHouseByEstateObjectId((int)id);
+                    if (HttpContext.Session.GetString("User") != "employee")
+                    {
+                        int countViews = ++house.countViews;
+                        await _objectService.UpdateEstateObjectCountViews(house.estateObjectId, countViews);
+                    }
                     return View("DetailseHouse", DetailseHouse(house));
                 case "Office":
                     var office = await _officeService.GetOfficeByEstateObjectId((int)id);
+                    if (HttpContext.Session.GetString("User") != "employee")
+                    {
+                        int countViews = ++office.countViews;
+                        await _objectService.UpdateEstateObjectCountViews(office.estateObjectId, countViews);
+                    }
                     return View("DetailseOffice", DetailseOffice(office));
                 case "Parking":
                     var parking = await _parkingService.GetParkingByEstateObjectId((int)id);
+                    if (HttpContext.Session.GetString("User") != "employee")
+                    {
+                        int countViews = ++parking.countViews;
+                        await _objectService.UpdateEstateObjectCountViews(parking.estateObjectId, countViews);
+                    }
                     return View("DetailseParking", DetailseParking(parking));
                 case "Premis":
                     var premis = await _premisService.GetPremisByEstateObjectId((int)id);
+                    if (HttpContext.Session.GetString("User") != "employee")
+                    {
+                        int countViews = ++premis.countViews;
+                        await _objectService.UpdateEstateObjectCountViews(premis.estateObjectId, countViews);
+                    }
                     return View("DetailsePremis", DetailsePremis(premis));
                 case "Room":
                     var room = await _roomService.GetRoomByEstateObjectId((int)id);
+                    if (HttpContext.Session.GetString("User") != "employee")
+                    {
+                        int countViews = ++room.countViews;
+                        await _objectService.UpdateEstateObjectCountViews(room.estateObjectId, countViews);
+                    }
                     return View("DetailseRoom", DetailseRoom(room));
                 case "Stead":
                     var stead = await _steadService.GetSteadByEstateObjectId((int)id);
+                    if (HttpContext.Session.GetString("User") != "employee")
+                    {
+                        int countViews = ++stead.countViews;
+                        await _objectService.UpdateEstateObjectCountViews(stead.estateObjectId, countViews);
+                    }
                     return View("DetailseStead", DetailseStead(stead));
                 case "Storage":
                     var storage = await _storageService.GetStorageByEstateObjectId((int)id);
+                    if (HttpContext.Session.GetString("User") != "employee")
+                    {
+                        int countViews = ++storage.countViews;
+                        await _objectService.UpdateEstateObjectCountViews(storage.estateObjectId, countViews);
+                    }
                     return View("DetailseStorage", DetailseStorage(storage));
 
             }

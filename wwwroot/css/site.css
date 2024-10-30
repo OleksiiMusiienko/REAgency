@@ -472,6 +472,8 @@ h1 {
     outline: none;
     border: none;
     z-index: 1000;
+    overflow-y: auto;
+    max-height: 400px;
 }
 
 .custom-option {
