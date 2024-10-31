@@ -90,7 +90,7 @@
         {
             @foreach (var item in Model.Objects)
             {
-                <a class="item"  asp-controller="Office" asp-action="Detailse" asp-route-id="@item.Id" asp-route-typeObject="@item.typeObject" style="text-decoration: none">
+                <a class="item"  asp-controller="Office" asp-action="Detailse" asp-route-id="@item.Id" asp-route-typeObject="@item.objectType" style="text-decoration: none">
                     <div>
                         @if (item.typeObject == ObjectType.Flat.ToString())
                         {

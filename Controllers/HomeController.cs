@@ -366,7 +366,7 @@ namespace REAgency.Controllers
 
                 return new ObjectsViewModel
                 {
-                    Id = flat.Id,
+                    Id = flat.estateObjectId,
                     countViews = flat.countViews,
                     employeeId = flat.employeeId,
                     operationId = flat.operationId,
@@ -411,7 +411,7 @@ namespace REAgency.Controllers
 
                 return new ObjectsViewModel
                 {
-                    Id = house.Id,
+                    Id = house.estateObjectId,
                     countViews = house.countViews,
                     employeeId = house.employeeId,
                     operationId = house.operationId,
@@ -456,7 +456,7 @@ namespace REAgency.Controllers
 
                 return new ObjectsViewModel
                 {
-                    Id = garage.Id,
+                    Id = garage.estateObjectId,
                     countViews = garage.countViews,
                     employeeId = garage.employeeId,
                     operationId = garage.operationId,
@@ -494,7 +494,7 @@ namespace REAgency.Controllers
                 List<string> imagePaths = GetImagePaths(rootFolder, stead.estateObjectId);
 
                 return new ObjectsViewModel {
-                    Id = stead.Id,
+                    Id = stead.estateObjectId,
                     countViews = stead.countViews,
                     employeeId = stead.employeeId,
                     operationId = stead.operationId,
@@ -535,7 +535,7 @@ namespace REAgency.Controllers
 
                 return new ObjectsViewModel
                 {
-                    Id = office.Id,
+                    Id = office.estateObjectId,
                     countViews = office.countViews,
                     employeeId = office.employeeId,
                     operationId = office.operationId,
@@ -567,7 +567,7 @@ namespace REAgency.Controllers
         {
             var viewModel = new ObjectsViewModel
             {
-                Id = flat.Id,
+                Id = flat.estateObjectId,
                 countViews = flat.countViews,
                 employeeId = flat.employeeId,
                 operationId = flat.operationId,
@@ -603,7 +603,7 @@ namespace REAgency.Controllers
         {
             var viewModel = new ObjectsViewModel
             {
-                Id = garage.Id,
+                Id = garage.estateObjectId,
                 countViews = garage.countViews,
                 employeeId = garage.employeeId,
                 operationId = garage.operationId,
@@ -623,7 +623,8 @@ namespace REAgency.Controllers
                 pathPhoto = garage.pathPhoto,
                 Floors = garage.Floors,
                 typeObject = "Гараж",
-                objectType = ObjectType.Garage
+                objectType = ObjectType.Garage,
+                
             };
 
             return viewModel;
@@ -666,6 +667,8 @@ namespace REAgency.Controllers
                     pathPhoto = estateObjectDTO.pathPhoto,
                     photos = imagePaths,
                     typeObject = estateObjectDTO.estateType.ToString(),
+                    objectType = estateObjectDTO.estateType,
+                    
                 };
             }).ToList();
 
