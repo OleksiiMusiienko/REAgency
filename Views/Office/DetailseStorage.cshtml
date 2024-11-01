@@ -49,15 +49,22 @@
                 </dd>
             </div>
         }
-        <div class="flex-container">
-            <dt>Адреса</dt>
-            <dd>
-                Країна:  @Html.DisplayFor(model => model.countryName)<br />
-                Регіон:  @Html.DisplayFor(model => model.RegionName)<br />
-                Район:  @Html.DisplayFor(model => model.DistrictName)<br />
-                Вулиця:  @Html.DisplayFor(model => model.Street)<br />
-                Номер вулиці:  @Html.DisplayFor(model => model.numberStreet)<br />
-            </dd>
+        <div class="flex-container" style="flex-direction:column">
+            <dt>
+                Адреса
+            </dt>
+            <div class="flex-div">
+                <dd>
+                    Країна:  @Html.DisplayFor(model => model.countryName)<br />
+                    Регіон:  @Html.DisplayFor(model => model.RegionName)<br />
+                    Район:  @Html.DisplayFor(model => model.DistrictName)<br />
+                </dd>
+                <dd>
+                    Населенний пункт : @Html.DisplayFor(model => model.LocalityName)<br />
+                    Вулиця:  @Html.DisplayFor(model => model.Street)<br />
+                    Номер вулиці:  @Html.DisplayFor(model => model.numberStreet)<br />
+                </dd>
+            </div>
         </div>
         <div class="flex-container">
             <dt>
