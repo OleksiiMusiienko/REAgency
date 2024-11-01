@@ -95,7 +95,7 @@ body {
     background-color: #81d2ed60;
     color: black;
     padding: 10px;
-    font-size: 1.1em;
+    font-size: 16px;
     display: flex;
     justify-content: space-around;
     border-radius: 0 0 15px 15px;
@@ -107,5 +107,5 @@ body {
     }
 .flex-div {
     display: flex;
-    justify-content: space-between;
+    justify-content: space-around;
 }
