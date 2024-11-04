@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.CodeAnalysis.Options;
 using REAgency.BLL.DTO;
 using REAgency.BLL.DTO.Locations;
 using REAgency.BLL.DTO.Object;
@@ -19,6 +20,7 @@ using REAgency.Models.Room;
 using REAgency.Models.Stead;
 using REAgency.Models.Storage;
 using REAgencyEnum;
+using System.Collections.Generic;
 using System.Data;
 
 namespace REAgency.Controllers
@@ -164,7 +166,7 @@ namespace REAgency.Controllers
                 ViewBag.Operations = new SelectList(await _operationService.GetAll(), "Id", "Name");
                 ViewBag.Regions = new SelectList(await _regionService.GetRegions(), "Id", "Name", "CountryId");
                 ViewBag.Districts = new SelectList(await _districtService.GetDistricts(), "Id", "Name", "RegionId");
-                ViewBag.Localities = new SelectList(await _localityService.GetLocalities(), "Id", "Name", "DistrictId");
+                //ViewBag.Localities = new SelectList(await _localityService.GetLocalities(), "Id", "Name", "DistrictId");
                 ViewBag.Currencies = new SelectList(await _currencyService.GetAll(), "Id", "Name");
             }
             switch (selEstate)
@@ -190,6 +192,10 @@ namespace REAgency.Controllers
 
             }
             return View();
+        }
+        public async Task<IEnumerable<LocalityDTO>> GetLocality([FromBody]int option)
+        {
+            return await _localityService.GetLocalityByDistrictId(option);
         }
 
         [HttpPost]
