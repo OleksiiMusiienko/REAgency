@@ -90,7 +90,7 @@
                     {
                         <a asp-controller="Office" asp-action="Update" asp-route-id=@Model.garageId asp-route-typeObject=@Model.estateType class="update-button">Редагувати</a>
                         <a asp-action="Index" class="toList-button">Повернутись до списку</a>
-                    <a asp-controller="Office" asp-action="DelateGarage" asp-route-id=@Model.garageId class="delete-button">Видалити</a>
+                        <a id="myButton" data-id="@Model.estateObjectId" class="delete-button">Видалити</a>
                     }
                     else
                     {
@@ -103,8 +103,9 @@
         
     </div>
 </div>
-
+<script src="/js/DeleteObject.js"></script>
 <script>
+
     var slideIndex = 1;
     var slideId = "mySlides1"
     showSlides(1, 0);
