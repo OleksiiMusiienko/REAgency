@@ -8,6 +8,8 @@ using REAgency.BLL.Interfaces;
 using REAgency.BLL.Interfaces.Locations;
 using REAgency.BLL.Interfaces.Object;
 using REAgency.BLL.Interfaces.Persons;
+using REAgency.BLL.Services.Locations;
+using REAgency.DAL.Entities.Object;
 using REAgency.Models;
 using REAgency.Models.Flat;
 using REAgency.Models.Garage;
@@ -2232,7 +2234,8 @@ namespace REAgency.Controllers
                 photos = imagePaths,
                 Path = (string)garage.pathPhoto,
                 estateType = garage.estateType,
-                Floors = garage.Floors
+                Floors = garage.Floors,
+                estateObjectId = garage.estateObjectId
             };
             return viewModel;
         }
@@ -2283,7 +2286,8 @@ namespace REAgency.Controllers
                 Rooms = house.Rooms,
                 kitchenArea = house.kitchenArea,
                 steadArea = house.steadArea,
-                livingArea = house.livingArea
+                livingArea = house.livingArea,
+                estateObjectId = house.estateObjectId
             };
             return viewModel;
         }
@@ -2329,7 +2333,8 @@ namespace REAgency.Controllers
                 Date = office.Date,
                 photos = imagePaths,
                 Path = (string)office.pathPhoto,
-                estateType = office.estateType
+                estateType = office.estateType,
+                estateObjectId = office.estateObjectId
             };
             return viewModel;
         }
@@ -2375,7 +2380,8 @@ namespace REAgency.Controllers
                 Date = parking.Date,
                 photos = imagePaths,
                 Path = (string)parking.pathPhoto,
-                estateType = parking.estateType
+                estateType = parking.estateType,
+                estateObjectId = parking.estateObjectId
             };
             return viewModel;
         }
@@ -2421,7 +2427,8 @@ namespace REAgency.Controllers
                 Date = premis.Date,
                 photos = imagePaths,
                 Path = (string)premis.pathPhoto,
-                estateType = premis.estateType
+                estateType = premis.estateType,
+                estateObjectId = premis.estateObjectId
             };
             return viewModel;
         }
@@ -2470,7 +2477,8 @@ namespace REAgency.Controllers
                 estateType = room.estateType, 
                 livingArea = room.livingArea,
                 Floor = room.Floor,
-                Floors = room.Floors
+                Floors = room.Floors,
+                estateObjectId = room.estateObjectId
             };
             return viewModel;
         }
@@ -2518,12 +2526,14 @@ namespace REAgency.Controllers
                 Path = (string)stead.pathPhoto,
                 estateType = stead.estateType,
                 Cadastr = stead.Cadastr,
-                Use = (int)stead.Use
+                Use = (int)stead.Use,
+                estateObjectId = stead.estateObjectId
             };
             return viewModel;
         }
         public DetailseStorageViewModel DetailseStorage(StorageDTO storage)
         {
+            
             string rootFolder = Path.Combine(_env.WebRootPath);
             rootFolder = rootFolder + storage.pathPhoto;
 
@@ -2564,11 +2574,81 @@ namespace REAgency.Controllers
                 Date = storage.Date,
                 photos = imagePaths,
                 Path = (string)storage.pathPhoto,
-                estateType = storage.estateType
+                estateType = storage.estateType,
+                estateObjectId = storage.estateObjectId
             };
             return viewModel;
         }
-        
+
+
+        [HttpPost]
+        public async Task<IActionResult> Delete([FromBody] int id)
+        {
+            if (id == null)
+            {
+                return Json(new { success = false });
+            }
+            var esteteObject = await _objectService.GetEstateObjectById(id);
+            switch (esteteObject.estateType.ToString())
+            {
+                case "Flat":
+                    var flat = await _flatService.GetFlatByEstateObjectId((int)id);
+                    await _flatService.DeleteFlat(flat.Id);
+                    await _locationService.DeleteLocation(flat.locationId);
+                    await _objectService.DeleteEstateObject(id);
+                    return Json(new { success = true });
+                case "Garage":
+                    var garage = await _garageService.GetGarageByEstateObjectId((int)id);
+                    await _garageService.DeleteGarage(garage.Id);
+                    await _locationService.DeleteLocation(garage.locationId);
+                    await _objectService.DeleteEstateObject(id);
+                    return Json(new { success = true });
+                case "House":
+                    var house = await _houseService.GetHouseByEstateObjectId((int)id);
+                    await _houseService.DeleteHouse(house.Id);
+                    await _locationService.DeleteLocation(house.locationId);
+                    await _objectService.DeleteEstateObject(id);
+                    return Json(new { success = true });
+                case "Office":
+                    var office = await _officeService.GetOfficeByEstateObjectId((int)id);
+                    await _officeService.DeleteOffice(office.Id);
+                    await _locationService.DeleteLocation(office.locationId);
+                    await _objectService.DeleteEstateObject(id);
+                    return Json(new { success = true });
+                case "Parking":
+                    var parking = await _parkingService.GetParkingByEstateObjectId((int)id);
+                    await _parkingService.DeleteParking(parking.Id);
+                    await _locationService.DeleteLocation(parking.locationId);
+                    await _objectService.DeleteEstateObject(id);
+                    return Json(new { success = true });
+                case "Premis":
+                    var premis = await _premisService.GetPremisByEstateObjectId((int)id);
+                    await _premisService.Delete(premis.Id);
+                    await _locationService.DeleteLocation(premis.locationId);
+                    await _objectService.DeleteEstateObject(id);
+                    return Json(new { success = true });
+                case "Room":
+                    var room = await _roomService.GetRoomByEstateObjectId((int)id);
+                    await _roomService.DeleteRoom(room.Id);
+                    await _locationService.DeleteLocation(room.locationId);
+                    await _objectService.DeleteEstateObject(id);
+                    return Json(new { success = true });
+                case "Stead":
+                    var stead = await _steadService.GetSteadByEstateObjectId((int)id);
+                    await _steadService.DeleteStead(stead.Id);
+                    await _locationService.DeleteLocation(stead.locationId);
+                    await _objectService.DeleteEstateObject(id);
+                    return Json(new { success = true });
+                case "Storage":
+                    var storage = await _storageService.GetStorageByEstateObjectId((int)id);
+                    await _storageService.DeleteStorage(storage.Id);
+                    await _locationService.DeleteLocation(storage.locationId);
+                    await _objectService.DeleteEstateObject(id);
+                    return Json(new { success = true });
+            }
+            return View("Index");
+        }
+
     }
 }
 
