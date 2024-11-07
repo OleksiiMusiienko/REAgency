@@ -821,7 +821,7 @@ namespace REAgency.Controllers
                 await _objectService.UpdateEstateObject(objectDTO);
 
                 //update photos
-                if (formFiles != null)
+                if (formFiles.Count != 0)
                 {
                     try
                     {
@@ -835,13 +835,7 @@ namespace REAgency.Controllers
                     {
                         Console.WriteLine(ex.Message);
                     }
-
-
-
                 }
-
-
-
                 return RedirectToAction("Index", "Office");
 
             }
