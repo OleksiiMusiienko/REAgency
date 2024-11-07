@@ -3,7 +3,6 @@
 
 
         let district = this.value;
-        console.log("District:", district);
         const url = '/Office/GetLocality/';
         var response = GetItems(url, district);
        
@@ -27,7 +26,6 @@
             }
 
             const responseData = await response.json();
-            console.log(responseData);
             let localitySelect = document.getElementById('selectLocality');
             for (let i = 0; i < responseData.length; i++) {
                 var newOption = document.createElement("option");
