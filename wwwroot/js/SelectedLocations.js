@@ -1,15 +1,14 @@
 ﻿$(document).ready(function () {
+    //$('#selectLocality').on('change', function (event) {
+
+    //    let localitySelect = document.getElementById('selectLocality');
+    //    localitySelect.value = this.value;
+    //});
     $('#selectDistrict').on('change', function (event) {
-
-
         let district = this.value;
         const url = '/Office/GetLocality/';
         var response = GetItems(url, district);
-       
-        
-
-
-    });
+    }); 
     async function GetItems(url, id) {
         try {
             const response = await fetch(url, {
@@ -33,7 +32,7 @@
             else {
                 for (let i = 0; i < responseData.length; i++) {
                     var newOption = document.createElement("option");
-                    newOption.value = i;
+                    newOption.value = i+1;
                     newOption.text = responseData[i].name;
                     localitySelect.add(newOption);
                 }
