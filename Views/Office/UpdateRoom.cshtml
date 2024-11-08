@@ -23,12 +23,12 @@
         </div>
         <div>
             <label asp-for="DistrictId" class="control-label"></label>
-            <select asp-for="DistrictId" class="form-control" asp-items="ViewBag.Districts as SelectList"></select>
+            <select id="selectDistrict" asp-for="DistrictId" class="form-control" asp-items="ViewBag.Districts as SelectList"></select>
             <span asp-validation-for="DistrictId" class="text-danger"></span>
         </div>
         <div>
             <label asp-for="LocalityId" class="control-label"></label>
-            <select asp-for="LocalityId" class="form-control" asp-items="ViewBag.Localities as SelectList"></select>
+            <select id="selectLocality" asp-for="LocalityId" class="form-control" asp-items="ViewBag.Localities as SelectList"></select>
             <span asp-validation-for="LocalityId" class="text-danger"></span>
         </div>
         <div>
