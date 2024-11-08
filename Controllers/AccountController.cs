@@ -32,9 +32,9 @@ namespace REAgency.Controllers
                 PersonDTO person = new PersonDTO();
                 var client = await _clientService.GetClientByEmail(forgotPassword.Email);
                 var employee = await _employeeService.GetEmployeeByEmail(forgotPassword.Email);
-                if (client == null && employee == null)
+                if (client.Email == null && employee == null)
                 {
-                    ModelState.AddModelError("LoginPassword", "Не правильний логін");
+                    ModelState.AddModelError("Email", "Користувача немає з данною адресою!");
                     return View("Index", forgotPassword);
                 }
                 else
@@ -77,7 +77,6 @@ namespace REAgency.Controllers
                                 max-width: 600px;
                                 margin: 0 auto;
                                 padding: 20px;
-                                background-color: #fff;
                                 border-radius: 5px;
                                 box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
                                 align-items: center;
@@ -90,7 +89,6 @@ namespace REAgency.Controllers
                                 color: white;
                             }}
                             .block {{
-                                background-image: url(https://sotni.ru/wp-content/uploads/2023/08/niuiork-4-1.webp);
                                 height: 130px;
                                 background-size: cover;
                                 width: 100%;
@@ -100,7 +98,7 @@ namespace REAgency.Controllers
                             }}
                             .title {{
                                 padding: 10px;
-                                color: white;
+                                color: #E7734F;
                                 font-size: 1.5rem;
                                 font-weight: 600;
                             }}
@@ -116,19 +114,29 @@ namespace REAgency.Controllers
 
                             }}
                             .footer {{
-                                margin-top: 35px;
-                                width: 100%;
-                                background-color: #dcdcdc;
-                                padding: 15px 8px;
-                                display: flex;
-                                justify-content: space-between;
+                                border: none;
+                                background-color: #0166AA;
+                                border-radius: 10px;
+                                color: white;
+                                text-decoration: none;
+                                text-align: center;
+                                padding: 5px;
+                                box-shadow: 0 0 5px -5px green;
+                                width: auto;
+                                height: auto;
                             }}
                             .footer a {{
                                 text-decoration: none;
-                                color: black;
+                                color: white;
                             }}
                             .footcont {{
                                 padding-right: 40px;
+                            }}
+                            .footer:hover{{
+                                transition: all 0.1s;
+                                box-shadow: 0 0 20px -2px #0166AA;
+                                background-color: #0166AA;
+                                color: white
                             }}
                         </style>
                     </head>
@@ -136,15 +144,14 @@ namespace REAgency.Controllers
                         <div class='container'>
                             <div class=""block"">
                                 <div class=""title"">
-                                <img src=""~/lib/logo.png"" width=""125px"" height=""96,9px"" style=""margin-bottom:-63px""/>
-                                АН Городок</div>
+                                <img src=""https://img-resizer.prd.01.eu-west-1.eu.olx.org/img-eu-olxua-production/949446435_1_261x203_rev001.jpg"" width=""125px"" height=""96,9px"" border-radius=""30px"" style=""margin-bottom:-63px""/>
+                                </div>
                             </div>
 
                             <div class=""textbefore"">Привіт, {person.Name} </p>
                             <p>Ви отримали цей лист, тому що попросили відновлення пароля на АН Городок. Якщо ви цього не робили, просто проігноруйте цей лист.</p></div>      
-
                             <div class=""footer"">
-                                <div><a href=""https://localhost:7133/Account/Reset?email={person.Email}"">Відновити пароль</a></div>
+                                 <a class=""footer"" href=""https://localhost:7133/Account/Reset?email={person.Email}"">Відновити пароль</a></div>
                             </div>
                         </div>
 
@@ -157,7 +164,7 @@ namespace REAgency.Controllers
                     using (var client1 = new MailKit.Net.Smtp.SmtpClient())
                     {
                         await client1.ConnectAsync("smtp.gmail.com", 465, true);
-                        await client1.AuthenticateAsync("babenko.viktoria.v@gmail.com", "wfctwlvtpojxunqn");
+                        await client1.AuthenticateAsync("testgorodok2024@gmail.com", "lmcn fbsn gydo jghp");
                         await client1.SendAsync(message);
                         await client1.DisconnectAsync(true);
                     }
