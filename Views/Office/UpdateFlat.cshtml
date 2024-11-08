@@ -2,7 +2,7 @@
 
 <div style="position: relative;">
     <br />
-    <a asp-action="Index" asp-controller="Office" class="back-style-edit">←</a>
+    <a asp-action="Index" asp-controller="Office" class="back-style-edit">←ПОВЕРНУТИСЬ</a>
     <h4 style="text-align: center; margin: 0;">Редагуваня квартири. Заповніть усі поля.</h4>
     <hr />
 </div>
@@ -158,7 +158,10 @@
         </div>
         <div id="imagePreview" class="preview-container"></div>
     </div>
-    <div class="submit-container">
-        <input type="submit" value="Редагувати" class="submitButton" asp-action="UpdateFlat" asp-controller="Office" />
+    
+    <div class="submit-container">            
+        <div style="display: flex; flex-direction:column;">
+            <input type="submit" value="Зберегти зміни" class="submitButton" asp-action="UpdateFlat" asp-controller="Office" />            
+        </div>
     </div>
 </form>

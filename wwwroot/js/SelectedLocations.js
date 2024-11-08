@@ -27,11 +27,16 @@
 
             const responseData = await response.json();
             let localitySelect = document.getElementById('selectLocality');
-            for (let i = 0; i < responseData.length; i++) {
-                var newOption = document.createElement("option");
-                newOption.value = i;
-                newOption.text = responseData[i].name;
-                localitySelect.add(newOption);
+            if (responseData.length == 0) {
+                localitySelect.innerHTML = "";
+            }
+            else {
+                for (let i = 0; i < responseData.length; i++) {
+                    var newOption = document.createElement("option");
+                    newOption.value = i;
+                    newOption.text = responseData[i].name;
+                    localitySelect.add(newOption);
+                }
             }
 
         }
