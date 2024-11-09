@@ -1,9 +1,14 @@
 ﻿$(document).ready(function () {
-    //$('#selectLocality').on('change', function (event) {
+    const textarea = document.getElementById('auto-resize');
 
-    //    let localitySelect = document.getElementById('selectLocality');
-    //    localitySelect.value = this.value;
-    //});
+    textarea.addEventListener('input', function () {
+        // Сбрасываем высоту для правильного расчета
+        this.style.height = 'auto';
+
+        // Устанавливаем новую высоту в зависимости от содержимого
+        this.style.height = `${this.scrollHeight}px`;
+    });
+
     $('#selectDistrict').on('change', function (event) {
         let district = this.value;
         const url = '/Office/GetLocality/';

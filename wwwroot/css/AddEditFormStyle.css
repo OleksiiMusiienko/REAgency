@@ -116,3 +116,9 @@
     color: black;
     font-weight: 1700
 }
+textarea {
+    width: 100%;
+    min-height: 40px;
+    padding: 10px;
+    resize: none; /* Запрещает изменение размера вручную */
+}

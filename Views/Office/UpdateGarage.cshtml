@@ -63,7 +63,7 @@
         </div>
         <div>
             <label asp-for="Description" class="control-label"></label>
-            <textarea asp-for="Description" class="form-control"></textarea>
+            <textarea id="auto-resize" asp-for="Description" class="form-control"></textarea>
             <span asp-validation-for="Description" class="text-danger"></span>
         </div>
         @if (Context.Session.GetString("IsAdmin") == "True")
