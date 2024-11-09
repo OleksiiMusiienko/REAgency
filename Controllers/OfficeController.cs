@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.CodeAnalysis.Options;
+using Microsoft.DotNet.Scaffolding.Shared.Messaging;
 using REAgency.BLL.DTO;
 using REAgency.BLL.DTO.Locations;
 using REAgency.BLL.DTO.Object;
@@ -24,6 +25,7 @@ using REAgency.Models.Storage;
 using REAgencyEnum;
 using System.Collections.Generic;
 using System.Data;
+using System.IO;
 
 namespace REAgency.Controllers
 {
@@ -154,7 +156,7 @@ namespace REAgency.Controllers
                         await formFiles[i].CopyToAsync(fileStream); // копируем файл в поток
                     }
                 }
-                string pathdirectory = @"/images/" + id;
+                string pathdirectory = @"\images\" + id;
                 estateObjectDTO.pathPhoto = pathdirectory; //добавляем путь в обьект
                 await _objectService.UpdateEstateObjectPath(estateObjectDTO); //обновляем обьект               
             }
@@ -2054,7 +2056,7 @@ namespace REAgency.Controllers
             ObjectPageViewModel objectPageViewModel = new ObjectPageViewModel(items, pageViewModel);
             return objectPageViewModel;
         }
-        
+
         public async Task<IActionResult> Detailse(int id, string typeObject)
         {
             if (id == null)
@@ -2180,7 +2182,7 @@ namespace REAgency.Controllers
                 Status = flat.Status,
                 Date = flat.Date,
                 photos = imagePaths,
-                Path = (string)flat.pathPhoto,
+                Path = flat.pathPhoto,
                 estateType = flat.estateType,
                 Floor = flat.Floor,
                 Floors = flat.Floors,
@@ -2589,6 +2591,19 @@ namespace REAgency.Controllers
                 return Json(new { success = false });
             }
             var esteteObject = await _objectService.GetEstateObjectById(id);
+
+            string pathdirectory = _appEnvironment.WebRootPath + @"\images\" + id;
+
+
+            // Проверяем, существует ли папка
+            if (Directory.Exists(pathdirectory))
+            {
+                // Удаляем папку и все её содержимое
+                Directory.Delete(pathdirectory, true);
+            }
+
+
+
             switch (esteteObject.estateType.ToString())
             {
                 case "Flat":
@@ -2596,55 +2611,55 @@ namespace REAgency.Controllers
                     await _flatService.DeleteFlat(flat.Id);
                     await _locationService.DeleteLocation(flat.locationId);
                     await _objectService.DeleteEstateObject(id);
-                    return Json(new { success = true });
+                    return Json(new { success = true , message = "Об'єкт успішно вилучено!" });
                 case "Garage":
                     var garage = await _garageService.GetGarageByEstateObjectId((int)id);
                     await _garageService.DeleteGarage(garage.Id);
                     await _locationService.DeleteLocation(garage.locationId);
                     await _objectService.DeleteEstateObject(id);
-                    return Json(new { success = true });
+                    return Json(new { success = true, message = "Об'єкт успішно вилучено!" });
                 case "House":
                     var house = await _houseService.GetHouseByEstateObjectId((int)id);
                     await _houseService.DeleteHouse(house.Id);
                     await _locationService.DeleteLocation(house.locationId);
                     await _objectService.DeleteEstateObject(id);
-                    return Json(new { success = true });
+                    return Json(new { success = true, message = "Об'єкт успішно вилучено!" });
                 case "Office":
                     var office = await _officeService.GetOfficeByEstateObjectId((int)id);
                     await _officeService.DeleteOffice(office.Id);
                     await _locationService.DeleteLocation(office.locationId);
                     await _objectService.DeleteEstateObject(id);
-                    return Json(new { success = true });
+                    return Json(new { success = true, message = "Об'єкт успішно вилучено!" });
                 case "Parking":
                     var parking = await _parkingService.GetParkingByEstateObjectId((int)id);
                     await _parkingService.DeleteParking(parking.Id);
                     await _locationService.DeleteLocation(parking.locationId);
                     await _objectService.DeleteEstateObject(id);
-                    return Json(new { success = true });
+                    return Json(new { success = true, message = "Об'єкт успішно вилучено!" });
                 case "Premis":
                     var premis = await _premisService.GetPremisByEstateObjectId((int)id);
                     await _premisService.Delete(premis.Id);
                     await _locationService.DeleteLocation(premis.locationId);
                     await _objectService.DeleteEstateObject(id);
-                    return Json(new { success = true });
+                    return Json(new { success = true, message = "Об'єкт успішно вилучено!" });
                 case "Room":
                     var room = await _roomService.GetRoomByEstateObjectId((int)id);
                     await _roomService.DeleteRoom(room.Id);
                     await _locationService.DeleteLocation(room.locationId);
                     await _objectService.DeleteEstateObject(id);
-                    return Json(new { success = true });
+                    return Json(new { success = true, message = "Об'єкт успішно вилучено!" });
                 case "Stead":
                     var stead = await _steadService.GetSteadByEstateObjectId((int)id);
                     await _steadService.DeleteStead(stead.Id);
                     await _locationService.DeleteLocation(stead.locationId);
                     await _objectService.DeleteEstateObject(id);
-                    return Json(new { success = true });
+                    return Json(new { success = true, message = "Об'єкт успішно вилучено!" });
                 case "Storage":
                     var storage = await _storageService.GetStorageByEstateObjectId((int)id);
                     await _storageService.DeleteStorage(storage.Id);
                     await _locationService.DeleteLocation(storage.locationId);
                     await _objectService.DeleteEstateObject(id);
-                    return Json(new { success = true });
+                    return Json(new { success = true, message = "Об'єкт успішно вилучено!" });
             }
             return View("Index");
         }

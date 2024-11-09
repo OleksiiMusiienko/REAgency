@@ -13,8 +13,14 @@ document.getElementById("myButton").addEventListener("click", function () {
         .then(response => response.json())
         .then(data => {
             if (data.success) {
+                Swal.fire({
+                    position: "center",
+                    icon: "success",
+                    title: data.message,
+                    showConfirmButton: false,
+                    timer: 2000
+                });
                 window.location.assign('/Office/Index');
-                alert("Об'єкт успішно вилучено!");
             }
         })
         .catch(error => console.error('Ошибка:', error));
