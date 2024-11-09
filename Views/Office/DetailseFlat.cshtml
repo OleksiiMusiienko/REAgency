@@ -39,30 +39,29 @@
                     </dd>
                 </div>
             }
-            @if (Context.Session.GetString("IsAdmin") == "True")
-            {
-                <div class="flex-container">
-                    <dt>Спіробітник:</dt>
-                    <dd>
-                        @Html.DisplayFor(model => model.employeeName)
-                        @Html.DisplayFor(model => model.employeePhone)
-                    </dd>
-                </div>
-            }
+            <div class="flex-container">
+                <dt>Агент:</dt>
+                <dd>
+                    @Html.DisplayFor(model => model.employeeName)
+                    @Html.DisplayFor(model => model.employeePhone)
+                </dd>
+            </div>
             <div class="flex-container" style="flex-direction:column">
                 <dt>
                     Адреса
                 </dt>
                 <div class="flex-div">
                     <dd>
-                        Країна:  @Html.DisplayFor(model => model.countryName)<br />
-                        Регіон:  @Html.DisplayFor(model => model.RegionName)<br />
+                        Область:  @Html.DisplayFor(model => model.RegionName)<br />
                         Район:  @Html.DisplayFor(model => model.DistrictName)<br />
                     </dd>
                     <dd>
                         Населенний пункт : @Html.DisplayFor(model => model.LocalityName)<br />
                         Вулиця:  @Html.DisplayFor(model => model.Street)<br />
-                        Номер вулиці:  @Html.DisplayFor(model => model.numberStreet)<br />
+                        @if (Context.Session.GetString("User") == "employee")
+                        {
+                        <dd>Номер вулиці:  @Html.DisplayFor(model => model.numberStreet)</dd>
+                        }
                     </dd>
                 </div>
             </div>
@@ -84,7 +83,6 @@
                 </div>
             </div>
             <div class="flex-container">
-                <dt>Опис:</dt>
                 <dd>
                     @Html.DisplayFor(model => model.Description)
                 </dd>
@@ -95,19 +93,20 @@
                     {
                         <a asp-controller="Office" asp-action="Update" asp-route-id=@Model.flatId asp-route-typeObject=@Model.estateType class="update-button">Редагувати</a>
                         <a asp-action="Index" class="toList-button">Повернутись до списку</a>
-                        <a asp-controller="Office" asp-action="DelateGarage" asp-route-id=@Model.flatId class="delete-button">Видалити</a>
+                        <a id="myButton" data-id="@Model.estateObjectId" class="delete-button">Видалити</a>
                     }
                     else
                     {
+                        <a asp-controller="Home" asp-action="ShowObjectsByType" class="toList-button">Повернутись до списку</a>
                         <a data-id="@Model.estateObjectId" class="toList-button" id="Send">Заявка на перегляд</a>
                     }
-
                 </div>
             </div>
 
         </div>
     </div>
 </div>
+<script src="/js/DeleteObject.js"></script>
 
 <script>
     var slideIndex = 1;

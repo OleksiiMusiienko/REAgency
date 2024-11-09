@@ -781,96 +781,94 @@ namespace REAgency.Controllers
             try
             {
                 var message = new MimeMessage();
-                message.From.Add(new MailboxAddress("АН Городок", "babenko.viktoria.v@gmail.com"));
-                message.To.Add(new MailboxAddress("", "leon.pavelko@gmail.com"));
+                message.From.Add(new MailboxAddress("АН Городок", "testgorodok2024@gmail.com"));
+                message.To.Add(new MailboxAddress("", "testgorodok2024@gmail.com"));
                 message.Subject = "Замовленя перегляду!";
-
+                var estateObject = await _estateObjectService.GetEstateObjectById(model.id);
+                model.typeObject = estateObject.objectType;
                 var bodyBuilder = new BodyBuilder();
                 bodyBuilder.HtmlBody = $@" <html>
                      <head>
                          <style>
-                             body {{
-                                 font-family: 'Arial', sans-serif;
-                                 background-color: #f4f4f4;
-                             }}
-                             .container {{
-                                 max-width: 600px;
-                                 margin: 0 auto;
-                                 padding: 20px;
-                                 background-color: #fff;
-                                 border-radius: 5px;
-                                 box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-                                 align-items: center;
-                             }}
-                             h1 {{
-                                 color: #E7734F;
-                                 margin-left: 30px;
-                             }}
-                             a {{
-                                 color: white;
-                             }}
-                             .block {{
-                                 background-image: url(https://sotni.ru/wp-content/uploads/2023/08/niuiork-4-1.webp);
-                                 height: 130px;
-                                 background-size: cover;
-                                 width: 100%;
-                                 display: flex;
-                                 justify-content: right;
-                                 margin-right: 10px;
-                             }}
-                             .title {{
-                                 padding: 10px;
-                                 color: white;
-                                 font-size: 1.5rem;
-                                 font-weight: 600;
-                             }}
-                             .button {{
-                                 text-decoration: none;
-                                 color: white;
-                                 padding: 7px 20px;
-                                 background-color: #E7734F;
-                                 margin-left: 30px;
-                             }}
-                             .textbefore {{
-                                 padding: 20px 20px 10px 20px;
-                                text-align: center;
-                             }}
-                             .footer {{
-                                 margin-top: 35px;
-                                 width: 100%;
-                                 background-color: #dcdcdc;
-                                 padding: 15px 8px;
-                                 display: flex;
-                                 justify-content: space-between;
-                             }}
-                             .footer a {{
-                                 text-decoration: none;
-                                 color: black;
-                             }}
-                             .footcont {{
-                                 padding-right: 40px;
-                             }}
-                            p{{
-                             text-align: center;
+                            body {{
+                                font-family: 'Arial', sans-serif;
+                                background-color: #f4f4f4;
                             }}
+                            .container {{
+                                max-width: 600px;
+                                margin: 0 auto;
+                                padding: 20px;
+                                border-radius: 5px;
+                                box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+                                align-items: center;
+                            }}
+                            h1 {{
+                                color: #E7734F;
+                                margin-left: 30px;
+                            }}
+                            a {{
+                                color: white;
+                            }}
+                            .block {{
+                                height: 130px;
+                                background-size: cover;
+                                width: 100%;
+                                display: flex;
+                                justify-content: right;
+                                margin-right: 10px;
+                            }}
+                            .title {{
+                                padding: 10px;
+                                color: #E7734F;
+                                font-size: 1.5rem;
+                                font-weight: 600;
+                            }}
+                            .textbefore {{
+                                padding: 20px 20px 10px 20px;
 
-                         </style>
+                            }}
+                            .footer {{
+                                border: none;
+                                background-color: #0166AA;
+                                border-radius: 10px;
+                                color: white;
+                                text-decoration: none;
+                                text-align: center;
+                                padding: 5px;
+                                box-shadow: 0 0 5px -5px green;
+                                width: auto;
+                                height: auto;
+                            }}
+                            .footer a {{
+                                text-decoration: none;
+                                color: white;
+                            }}
+                            .footcont {{
+                                padding-right: 40px;
+                            }}
+                            .footer:hover{{
+                                transition: all 0.1s;
+                                box-shadow: 0 0 20px -2px #0166AA;
+                                background-color: #0166AA;
+                                color: white
+                            }}
+                        </style>
                      </head>
                      <body>
                          <div class='container'>
                              <div class=""block"">
                                  <div class=""title"">
-                                 <img src=""~/logo.ico"" width=""125px"" height=""96,9px"" style=""margin-bottom:-63px""/>
-                                 АН Городок</div>
+                                 <img src=""https://img-resizer.prd.01.eu-west-1.eu.olx.org/img-eu-olxua-production/949446435_1_261x203_rev001.jpg"" width=""125px"" height=""96,9px"" style=""margin-bottom:-63px""/></div>
                              </div>
 
                              <h1 class=""textbefore"">Замовлення на перегляд</h1>
                              <p>Ім'я: {model.name}</p>     
                              <p>Телефон: {model.phone}</p>      
                              <p>Пошта: {model.email}</p>      
-                             <p>Об'єкт: {model.id}</p>     
-
-        
+                             <p>Об'єкт: {model.id}</p>   
+                             <div class=""footer"">
+                                  <a  href=""https://localhost:7133/Office/Detailse/{model.id}?typeObject={model.typeObject}"">Подивитись об'єкт</a>
+                             </div>
                          </div>
 
                      </body>
@@ -880,7 +878,7 @@ namespace REAgency.Controllers
                 using (var client1 = new MailKit.Net.Smtp.SmtpClient())
                 {
                     await client1.ConnectAsync("smtp.gmail.com", 465, true);
-                    await client1.AuthenticateAsync("babenko.viktoria.v@gmail.com", "wfctwlvtpojxunqn");
+                    await client1.AuthenticateAsync("testgorodok2024@gmail.com", "lmcn fbsn gydo jghp");
                     await client1.SendAsync(message);
                     await client1.DisconnectAsync(true);
                 }
