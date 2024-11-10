@@ -55,12 +55,14 @@
             <textarea asp-for="Description" class="form-control"></textarea>
             <span asp-validation-for="Description" class="text-danger"></span>
         </div>
-
-        <div >
-            <label class="control-label">Аватар</label>
+        @if (Model.Avatar != null)
+        {
+            <div >
+                <label class="control-label">Аватар</label>
             <img src="data:image/*;base64,@Convert.ToBase64String(Model.Avatar)" style="width: 250px; height: 250px; justify-content: center; display: flex; margin-left: 28%" alt="Object Image" />
             
         </div>
+        }
         <input type="hidden" asp-for="DateOfBirth"/>
         <input type="hidden" asp-for="dateReg"/>
         <input type="hidden" asp-for="postId"/>

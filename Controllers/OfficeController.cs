@@ -126,7 +126,45 @@ namespace REAgency.Controllers
 
         }
 
+        public async Task<IActionResult> Clients(int page = 1)
+        {
+            if (HttpContext.Session.GetString("User") != "employee")
+            {
+                return RedirectToAction("Index", "Home");
+            }
+            IEnumerable<ObjectsViewModel> estateObjects;
 
+            IEnumerable<EstateObjectDTO> objects = await _objectService.GetEstateObjectByEmployeeId(HttpContext.Session.GetInt32("Id")!.Value);
+
+            IEnumerable<OperationDTO> operations = await _operationService.GetAll();
+            IEnumerable<AreaDTO> areas = await _areaService.GetAll();
+            IEnumerable<CurrencyDTO> currencies = await _currencyService.GetAll();
+            IEnumerable<LocationDTO> locations = await _locationService.GetLocations();
+            IEnumerable<LocalityDTO> localities = await _localityService.GetLocalities();
+
+            if (HttpContext.Session.GetString("IsAdmin") == "True")
+            {
+                IEnumerable<EstateObjectDTO> allObjects = await _objectService.GetAllEstateObjects(); //↑
+                estateObjects = SelectEstateObject(allObjects, operations, areas, currencies, locations, localities);
+            }
+            else
+            {
+                estateObjects = SelectEstateObject(objects, operations, areas, currencies, locations, localities);
+            }
+
+            var count = estateObjects.Count();
+            var items = estateObjects.Skip((page - 1) * pageSize).Take(pageSize).ToList();
+
+            PageViewModel pageViewModel = new PageViewModel(count, page, pageSize);
+
+            ObjectPageViewModel objectPageViewModel = new ObjectPageViewModel(items, pageViewModel);
+
+            ViewBag.OperatrionsList = new SelectList(await _operationService.GetAll(), "Id", "Name");
+            ViewBag.LocalitiesList = new SelectList(await _localityService.GetLocalities(), "Id", "Name");
+            ViewBag.EmployeesList = new SelectList(await _employeeService.GetEmployees(), "Id", "Name");
+            return View(objectPageViewModel);
+
+        }
 
         public async Task AddFoto(EstateObjectDTO estateObjectDTO, IFormFileCollection formFiles)
         {

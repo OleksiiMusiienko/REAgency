@@ -1,7 +1,7 @@
 ﻿@model REAgency.Models.ObjectPageViewModel
 @using REAgencyEnum
 @{
-    ViewData["Title"] = "Office";
+    ViewData["Title"] = "Clients";
 }
 <div class="containerForOffice">
   
@@ -29,7 +29,8 @@
                 <li class="custom-li">
                     <a class="custom-a" >Клієнти...</a>
                     <ul class="dropdown">
-                        <li><a class="custom-a" asp-action="Clients" asp-controller="Office">Переглянути всіх клієнтів</a></li>                       
+                        <li><a class="custom-a" asp-action="Clients" asp-controller="Office">Переглянути всіх клієнтів</a></li>
+                       
                     </ul>
                 </li>
                 @if (Context.Session.GetString("IsAdmin") == "True")
@@ -104,8 +105,8 @@
                         <div class="item">
                             <div>
                                 <div class="price-style">
-                                    <p> ID: @Html.DisplayFor(modelItem => item.Id)</p>
-                                    <p> @Html.DisplayFor(modelItem => item.operationName)</p>
+                                    <p> @Html.DisplayFor(modelItem => item.clientName)</p>
+                                    <p> @Html.DisplayFor(modelItem => item.clientPhone)</p>
                                     @if (item.typeObject == ObjectType.Flat.ToString())
                                     {
                                         <p>Квартира</p>
@@ -146,37 +147,21 @@
                                     {
                                         <p>@Html.DisplayFor(modelItem => item.typeObject)</p>
                                     }
-                                    <p>@Html.DisplayFor(modelItem => item.Area) @Html.DisplayFor(modelItem => item.unitAreaName)</p>
-                                    <p>@Html.DisplayFor(modelItem => item.Price) @Html.DisplayFor(modelItem => item.currencyName)</p>
+                                    <p>@Html.DisplayFor(modelItem => item.Price)</p>
+                                    @* <p>@Html.DisplayFor(modelItem => item.Area) @Html.DisplayFor(modelItem => item.unitAreaName)</p>
+                                    <p>@Html.DisplayFor(modelItem => item.Price) @Html.DisplayFor(modelItem => item.currencyName)</p> *@
                                     <p>@Html.DisplayFor(modelItem => item.localityName)</p>
+                                    <p>@Html.DisplayFor(modelItem => item.employeeId)</p>
 
-                                    <a asp-controller="Office" asp-action="Update" asp-route-id="@item.Id" asp-route-typeObject="@item.typeObject" class="update-button">Редагувати</a>
-                                    <a asp-controller="Office" asp-action="Detailse" asp-route-id="@item.Id" asp-route-typeObject="@item.typeObject" class="toList-button" style="padding: 5px">Деталі</a>
+                                    @* <a asp-controller="Office" asp-action="Update" asp-route-id="@item.Id" asp-route-typeObject="@item.typeObject" class="update-button">Редагувати</a> *@
+                                    @* <a asp-controller="Office" asp-action="Detailse" asp-route-id="@item.Id" asp-route-typeObject="@item.typeObject" class="toList-button" style="padding: 5px">Деталі</a> *@
                                     
 
                                 </div>
-                            </div>
-
-
-                            <div class="info-for-employee" style=" display: none;">@* всплывающая платформа *@
-
-                                <p>Ім'я клієнта: @Html.DisplayFor(modelItem => item.clientName)</p>
-                                <p>Телефон клієнта: @Html.DisplayFor(modelItem => item.clientPhone)</p>
-                                <p>Кількість переглядів: @Html.DisplayFor(modelItem => item.countViews)</p>
-
-
-                            </div>
-                        </div>
-
-                        @* @if (Context.Session.GetString("User") == "employee")
-                { *@
+                            </div>                            
+                        </div>                    
                         
-
-                        //}
-
                     }
-
-
                 }
                 else
                 {
